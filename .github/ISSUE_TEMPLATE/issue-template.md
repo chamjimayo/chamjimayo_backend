@@ -1,13 +1,12 @@
 ---
 name: Issue template
 about: Issue templater
-title: ''
+title: [Commit Type] + 이슈 제목
 labels: ''
 assignees: ''
 
 ---
 
-제목: Feat: 소셜로그인 구현
 
 ### 🦾만들고자 하는 기능
 
