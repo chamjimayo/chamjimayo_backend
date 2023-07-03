@@ -1,7 +1,7 @@
 ---
 name: Issue_Template
 about: Templates
-title: "[Commit Type] + 이슈 제목"
+title: "[Type] + 이슈 제목"
 labels: ''
 assignees: ''
 
