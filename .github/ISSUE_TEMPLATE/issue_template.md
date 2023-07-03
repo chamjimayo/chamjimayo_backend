@@ -1,6 +1,6 @@
 ---
-name: Templates
-about: Issue templater
+name: Issue_Template
+about: Templates
 title: "[Commit Type] + 이슈 제목"
 labels: ''
 assignees: ''
