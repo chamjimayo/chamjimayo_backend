@@ -12,4 +12,4 @@ feature/#100
 
 ### 📨관련 이슈
 
-- Resolved: #100
+Resolved: #100
