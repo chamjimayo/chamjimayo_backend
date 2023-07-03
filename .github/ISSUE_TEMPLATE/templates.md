@@ -1,12 +1,11 @@
 ---
-name: Issue template
+name: Templates
 about: Issue templater
-title: '[Commit Type] + 이슈 제목'
+title: "[Commit Type] + 이슈 제목"
 labels: ''
 assignees: ''
 
 ---
-
 
 ### 🦾만들고자 하는 기능
 
