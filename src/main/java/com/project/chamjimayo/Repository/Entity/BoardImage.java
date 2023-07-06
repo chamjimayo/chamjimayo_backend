@@ -1,12 +1,16 @@
-package com.project.chamjimayo.entity;
+package com.project.chamjimayo.Repository.Entity;
 
-import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
 @Entity
 @Table(name = "board_image")
+@Getter
+@ToString(exclude = "image_id")
+@NoArgsConstructor
 public class BoardImage {
 
 	@Id

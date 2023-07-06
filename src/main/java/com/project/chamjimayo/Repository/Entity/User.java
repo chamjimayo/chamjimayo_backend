@@ -1,14 +1,17 @@
-package com.project.chamjimayo.entity;
-
-import lombok.Data;
+package com.project.chamjimayo.Repository.Entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
 @Entity
 @Table(name = "user")
+@Getter
+@ToString(exclude = "user_id")
+@NoArgsConstructor
 public class User {
 
 	@Id

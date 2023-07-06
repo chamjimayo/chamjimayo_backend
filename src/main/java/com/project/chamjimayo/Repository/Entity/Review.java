@@ -1,13 +1,17 @@
-package com.project.chamjimayo.entity;
+package com.project.chamjimayo.Repository.Entity;
 
-import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
 @Entity
 @Table(name = "review")
+@Getter
+@ToString(exclude = "review_id")
+@NoArgsConstructor
 public class Review {
 
 	@Id

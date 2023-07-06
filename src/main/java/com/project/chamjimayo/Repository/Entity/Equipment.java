@@ -1,11 +1,15 @@
-package com.project.chamjimayo.entity;
+package com.project.chamjimayo.Repository.Entity;
 
-import lombok.Data;
 import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
 @Entity
 @Table(name = "equipment")
+@Getter
+@ToString(exclude = "equipment_id")
+@NoArgsConstructor
 public class Equipment {
 
 	@Id
