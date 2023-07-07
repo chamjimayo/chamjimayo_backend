@@ -1,5 +1,6 @@
 package com.project.chamjimayo.Repository.Entity;
 
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ public class RestroomManager {
 	private Integer managerId;
 
 	// 화장실 아이디 (어느 화장실을 관리하는지)
-	@Column(name = "restroom_id")
-	private Integer restroomId;
+	@OneToMany(mappedBy = "restroom")
+	private List<Restroom> restrooms;
 
 	// 전화번호
 	@Column(name = "phone_number")

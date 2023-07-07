@@ -1,5 +1,6 @@
 package com.project.chamjimayo.Repository.Entity;
 
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -93,4 +94,15 @@ public class Restroom {
 	// 여자 이용 가능 대변기 수
 	@Column(name = "available_female_toilet_count")
 	private Integer availableFemaleToiletCount;
+
+	@OneToMany(mappedBy = "restroom")
+	private List<Equipment> equipments;
+
+	@OneToMany(mappedBy = "restroom")
+	private List<Review> reviews;
+
+	@ManyToOne
+	@JoinColumn(name = "manager_id")
+	private RestroomManager restroomManager;
+
 }

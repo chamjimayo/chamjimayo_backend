@@ -18,8 +18,9 @@ public class Equipment {
 	private Integer equipmentId;
 
 	// 화장실 아이디 (해당 비품의 화장실)
-	@Column(name = "restroom_id")
-	private Integer restroomId;
+	@ManyToOne
+	@JoinColumn(name = "restroom_id")
+	private Restroom restroom;
 
 	// 비품 이름
 	@Column(name = "equipment_name")

@@ -20,12 +20,14 @@ public class Comment {
 	private Integer commentId;
 
 	// 게시글 아이디 (댓글이 달린 게시글)
-	@Column(name = "board_id")
-	private Integer boardId;
+	@ManyToOne
+	@JoinColumn(name = "board_id")
+	private Board board;
 
 	// 회원 아이디 (댓글을 쓴 회원)
-	@Column(name = "user_id")
-	private Integer userId;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	// 내용
 	@Column(name = "content")

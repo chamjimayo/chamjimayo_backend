@@ -1,5 +1,6 @@
 package com.project.chamjimayo.Repository.Entity;
 
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -28,8 +29,9 @@ public class Board {
 	private String content;
 
 	// 회원 아이디 (글을 쓴 회원)
-	@Column(name = "user_id")
-	private Integer userId;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	// 생성일
 	@Column(name = "created_date")
@@ -51,5 +53,11 @@ public class Board {
 	@Pattern(regexp = "[01]")
 	@Column(name = "board_status")
 	private boolean boardStatus;
+
+	@OneToMany(mappedBy = "board")
+	private List<Comment> comments;
+
+	@OneToMany(mappedBy = "board")
+	private List<BoardImage> boardImages;
 }
 

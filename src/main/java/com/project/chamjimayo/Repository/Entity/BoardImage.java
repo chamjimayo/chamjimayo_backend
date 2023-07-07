@@ -19,8 +19,9 @@ public class BoardImage {
 	private Integer imageId;
 
 	// 게시글 아이디 (어떤 게시글의 사진인가)
-	@Column(name = "board_id")
-	private Integer boardId;
+	@ManyToOne
+	@JoinColumn(name = "board_id")
+	private Board board;
 
 	// 사진 url
 	@Column(name = "url")

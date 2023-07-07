@@ -20,12 +20,14 @@ public class Review {
 	private Integer reviewId;
 
 	// 회원 아이디 (해당 리뷰를 어떤 회원이 썼는가)
-	@Column(name = "user_id")
-	private Integer userId;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	// 화장실 아이디 (어떤 화장실에 대한 리뷰인가)
-	@Column(name = "restroom_id")
-	private Integer restroomId;
+	@ManyToOne
+	@JoinColumn(name = "restroom_id")
+	private Restroom restroom;
 
 	// 리뷰 내용
 	@Column(name = "review_content")

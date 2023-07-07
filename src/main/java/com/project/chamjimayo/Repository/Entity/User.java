@@ -1,5 +1,6 @@
 package com.project.chamjimayo.Repository.Entity;
 
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -51,5 +52,14 @@ public class User {
 	// 프로필 사진 url
 	@Column(name = "user_profile")
 	private String userProfile;
+
+	@OneToMany(mappedBy = "user")
+	private List<Board> boards;
+
+	@OneToMany(mappedBy = "user")
+	private List<Comment> comments;
+
+	@OneToMany(mappedBy = "user")
+	private List<Review> reviews;
 }
 
