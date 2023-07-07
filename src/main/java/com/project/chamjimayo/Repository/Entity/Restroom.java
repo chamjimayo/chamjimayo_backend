@@ -67,8 +67,8 @@ public class Restroom {
 	private Boolean active;
 
 	// 등록일
-	@Column(name = "registration_date")
-	private LocalDateTime registrationDate;
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
 
 	// 수정일
 	@Column(name = "updated_date")
@@ -101,7 +101,7 @@ public class Restroom {
 	@OneToMany(mappedBy = "restroom")
 	private List<Review> reviews;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_id")
 	private RestroomManager restroomManager;
 

@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString(exclude = "board_id")
 @NoArgsConstructor
-public class Board {
+public class Board extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Board {
 	private String content;
 
 	// 회원 아이디 (글을 쓴 회원)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -51,8 +51,8 @@ public class Board {
 
 	// 게시글 상태
 	@Pattern(regexp = "[01]")
-	@Column(name = "board_status")
-	private boolean boardStatus;
+	@Column(name = "status")
+	private boolean status;
 
 	@OneToMany(mappedBy = "board")
 	private List<Comment> comments;

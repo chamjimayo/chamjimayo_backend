@@ -19,7 +19,7 @@ public class BoardImage {
 	private Integer imageId;
 
 	// 게시글 아이디 (어떤 게시글의 사진인가)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id")
 	private Board board;
 
@@ -29,6 +29,6 @@ public class BoardImage {
 
 	// 이미지 상태
 	@Pattern(regexp = "[01]")
-	@Column(name = "image_status")
-	private boolean imageStatus;
+	@Column(name = "status")
+	private boolean status;
 }

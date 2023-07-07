@@ -37,8 +37,8 @@ public class RestroomManager {
 	private String email;
 
 	// 등록일
-	@Column(name = "registration_date")
-	private LocalDateTime registrationDate;
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
 
 	// 수정일
 	@Column(name = "updated_date")
@@ -46,6 +46,6 @@ public class RestroomManager {
 
 	// 관리자 상태
 	@Pattern(regexp = "[01]")
-	@Column(name = "manager_status")
-	private boolean managerStatus;
+	@Column(name = "status")
+	private boolean status;
 }

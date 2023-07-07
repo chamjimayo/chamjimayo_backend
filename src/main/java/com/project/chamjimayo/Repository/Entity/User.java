@@ -37,8 +37,8 @@ public class User {
 	private String gender;
 
 	// 등록일
-	@Column(name = "registration_date")
-	private LocalDateTime registrationDate;
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
 
 	// 수정일
 	@Column(name = "updated_date")
@@ -46,8 +46,8 @@ public class User {
 
 	// 회원 상태
 	@Pattern(regexp = "[01]")
-	@Column(name = "user_status")
-	private boolean userStatus;
+	@Column(name = "status")
+	private boolean status;
 
 	// 프로필 사진 url
 	@Column(name = "user_profile")

@@ -20,12 +20,12 @@ public class Review {
 	private Integer reviewId;
 
 	// 회원 아이디 (해당 리뷰를 어떤 회원이 썼는가)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	// 화장실 아이디 (어떤 화장실에 대한 리뷰인가)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "restroom_id")
 	private Restroom restroom;
 
@@ -49,7 +49,7 @@ public class Review {
 
 	// 리뷰 상태
 	@Pattern(regexp = "[01]")
-	@Column(name = "review_status")
-	private boolean reviewStatus;
+	@Column(name = "status")
+	private boolean status;
 }
 

@@ -20,12 +20,12 @@ public class Comment {
 	private Integer commentId;
 
 	// 게시글 아이디 (댓글이 달린 게시글)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id")
 	private Board board;
 
 	// 회원 아이디 (댓글을 쓴 회원)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -47,7 +47,7 @@ public class Comment {
 
 	// 댓글 상태
 	@Pattern(regexp = "[01]")
-	@Column(name = "comment_status")
-	private boolean commentStatus;
+	@Column(name = "status")
+	private boolean status;
 }
 

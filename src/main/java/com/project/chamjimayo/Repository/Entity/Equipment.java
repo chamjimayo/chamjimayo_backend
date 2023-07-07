@@ -18,7 +18,7 @@ public class Equipment {
 	private Integer equipmentId;
 
 	// 화장실 아이디 (해당 비품의 화장실)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "restroom_id")
 	private Restroom restroom;
 
