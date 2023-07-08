@@ -2,8 +2,6 @@ package com.project.chamjimayo.Repository.Entity;
 
 import java.util.List;
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString(exclude = "user_id")
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,22 +34,10 @@ public class User {
 	@Column(name = "gender")
 	private String gender;
 
-	// 등록일
-	@Column(name = "created_date")
-	private LocalDateTime createdDate;
-
-	// 수정일
-	@Column(name = "updated_date")
-	private LocalDateTime updatedDate;
-
-	// 회원 상태
-	@Pattern(regexp = "[01]")
-	@Column(name = "status")
-	private boolean status;
-
 	// 프로필 사진 url
 	@Column(name = "user_profile")
 	private String userProfile;
+
 
 	@OneToMany(mappedBy = "user")
 	private List<Board> boards;

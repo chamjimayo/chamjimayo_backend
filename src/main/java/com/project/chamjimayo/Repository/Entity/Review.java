@@ -2,7 +2,6 @@ package com.project.chamjimayo.Repository.Entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString(exclude = "review_id")
 @NoArgsConstructor
-public class Review {
+public class Review extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,17 +38,5 @@ public class Review {
 	@Column(name = "rating")
 	private Float rating;
 
-	// 생성일
-	@Column(name = "created_date")
-	private LocalDateTime createdDate;
-
-	// 수정일
-	@Column(name = "updated_date")
-	private LocalDateTime updatedDate;
-
-	// 리뷰 상태
-	@Pattern(regexp = "[01]")
-	@Column(name = "status")
-	private boolean status;
 }
 

@@ -2,8 +2,6 @@ package com.project.chamjimayo.Repository.Entity;
 
 import java.util.List;
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -33,14 +31,6 @@ public class Board extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	// 생성일
-	@Column(name = "created_date")
-	private LocalDateTime createdDate;
-
-	// 수정일
-	@Column(name = "updated_date")
-	private LocalDateTime updatedDate;
-
 	// 조회수
 	@Column(name = "view_count")
 	private Integer viewCount;
@@ -49,10 +39,6 @@ public class Board extends BaseEntity {
 	@Column(name = "like_count")
 	private Integer likeCount;
 
-	// 게시글 상태
-	@Pattern(regexp = "[01]")
-	@Column(name = "status")
-	private boolean status;
 
 	@OneToMany(mappedBy = "board")
 	private List<Comment> comments;

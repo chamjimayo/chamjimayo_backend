@@ -3,7 +3,6 @@ package com.project.chamjimayo.Repository.Entity;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,7 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString(exclude = "restroom_id")
 @NoArgsConstructor
-public class Restroom {
+public class Restroom extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +47,6 @@ public class Restroom {
 	@Column(name = "closing_hour")
 	private String closingHour;
 
-
 	// 화장실 대표 사진 url
 	@Column(name = "restroom_photo")
 	private String restroomPhoto;
@@ -60,19 +58,6 @@ public class Restroom {
 	// 공용(무료)인가 유료인가?
 	@Column(name = "public_or_paid")
 	private String publicOrPaid;
-
-	// 활성화 변수 (0 = 사용X, 1 = 사용가능)
-	@Pattern(regexp = "[01]")
-	@Column(name = "active")
-	private Boolean active;
-
-	// 등록일
-	@Column(name = "created_date")
-	private LocalDateTime createdDate;
-
-	// 수정일
-	@Column(name = "updated_date")
-	private LocalDateTime updatedDate;
 
 	// 이용가능한 상태인가?
 	@Column(name = "accessible_toilet_existence")
@@ -94,6 +79,7 @@ public class Restroom {
 	// 여자 이용 가능 대변기 수
 	@Column(name = "available_female_toilet_count")
 	private Integer availableFemaleToiletCount;
+
 
 	@OneToMany(mappedBy = "restroom")
 	private List<Equipment> equipments;

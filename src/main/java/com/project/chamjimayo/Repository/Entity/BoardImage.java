@@ -1,7 +1,6 @@
 package com.project.chamjimayo.Repository.Entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -11,7 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString(exclude = "image_id")
 @NoArgsConstructor
-public class BoardImage {
+public class BoardImage extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +26,4 @@ public class BoardImage {
 	@Column(name = "url")
 	private String url;
 
-	// 이미지 상태
-	@Pattern(regexp = "[01]")
-	@Column(name = "status")
-	private boolean status;
 }

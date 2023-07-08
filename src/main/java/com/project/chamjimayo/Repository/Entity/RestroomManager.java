@@ -2,8 +2,6 @@ package com.project.chamjimayo.Repository.Entity;
 
 import java.util.List;
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString(exclude = "manager_id")
 @NoArgsConstructor
-public class RestroomManager {
+public class RestroomManager extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,16 +34,4 @@ public class RestroomManager {
 	@Column(name = "email")
 	private String email;
 
-	// 등록일
-	@Column(name = "created_date")
-	private LocalDateTime createdDate;
-
-	// 수정일
-	@Column(name = "updated_date")
-	private LocalDateTime updatedDate;
-
-	// 관리자 상태
-	@Pattern(regexp = "[01]")
-	@Column(name = "status")
-	private boolean status;
 }
