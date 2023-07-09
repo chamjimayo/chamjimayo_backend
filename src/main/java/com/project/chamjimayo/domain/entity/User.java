@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
 import javax.persistence.*;
@@ -38,6 +38,9 @@ public class User extends BaseEntity {
 	@Column(name = "user_profile")
 	private String userProfile;
 
+	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
 	@OneToMany(mappedBy = "user")
 	private List<Board> boards;
