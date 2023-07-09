@@ -19,7 +19,7 @@ public class RestroomManager extends BaseEntity {
 	private Integer managerId;
 
 	// 화장실 아이디 (어느 화장실을 관리하는지)
-	@OneToMany(mappedBy = "restroomManager")
+	@OneToMany(mappedBy = "restroom")
 	private List<Restroom> restrooms;
 
 	// 전화번호
