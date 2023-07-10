@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
 import javax.persistence.*;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "board")
 @Getter
-@ToString(exclude = "board_id")
+@ToString(exclude = "boardId")
 @NoArgsConstructor
 public class Board extends BaseEntity {
 
@@ -38,7 +38,6 @@ public class Board extends BaseEntity {
 	// 추천 수
 	@Column(name = "like_count")
 	private Integer likeCount;
-
 
 	@OneToMany(mappedBy = "board")
 	private List<Comment> comments;

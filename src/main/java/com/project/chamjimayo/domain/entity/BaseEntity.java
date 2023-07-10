@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;

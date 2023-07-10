@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
 import javax.persistence.*;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "restroom_manager")
 @Getter
-@ToString(exclude = "manager_id")
+@ToString(exclude = "managerId")
 @NoArgsConstructor
 public class RestroomManager extends BaseEntity {
 

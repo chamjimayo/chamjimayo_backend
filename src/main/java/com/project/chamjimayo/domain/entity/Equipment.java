@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import javax.persistence.*;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "equipment")
 @Getter
-@ToString(exclude = "equipment_id")
+@ToString(exclude = "equipmentId")
 @NoArgsConstructor
 public class Equipment {
 

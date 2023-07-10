@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "review")
 @Getter
-@ToString(exclude = "review_id")
+@ToString(exclude = "reviewId")
 @NoArgsConstructor
 public class Review extends BaseEntity {
 
