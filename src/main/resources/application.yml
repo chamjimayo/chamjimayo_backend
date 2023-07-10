@@ -1,8 +1,12 @@
 server:
-    port: 8080
+  port: 8080
 spring:
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://chamjimayo.cms7bjyoqsch.ap-northeast-2.rds.amazonaws.com:3306/database?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-        username: admin
-        password: hongchosim9900
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://chamjimayo.cms7bjyoqsch.ap-northeast-2.rds.amazonaws.com:3306/database?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: hongchosim9900
+
+naver:
+  client-id: hyxkn1dbth
+  client-secret: e3bHekXROrx9H8QSlFc6rEkGcaeQiZxbQxK3uwU6

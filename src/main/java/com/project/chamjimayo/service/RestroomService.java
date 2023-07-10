@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +25,12 @@ import org.springframework.web.client.RestTemplate;
 public class RestroomService {
 
     RestroomRepository restroomRepository;
+    Environment env;
 
     @Autowired
-    public RestroomService(RestroomRepository restroomRepository) {
+    public RestroomService(RestroomRepository restroomRepository,Environment env) {
         this.restroomRepository = restroomRepository;
+        this.env = env;
     }
 
     public ArrayList<Map> readJson() throws Exception {
@@ -68,8 +71,10 @@ public class RestroomService {
             + address; //네이버 cloud platform GeoCoding 사용
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-NCP-APIGW-API-KEY-ID", "hyxkn1dbth");
-        httpHeaders.add("X-NCP-APIGW-API-KEY", "e3bHekXROrx9H8QSlFc6rEkGcaeQiZxbQxK3uwU6");
+        String client_Id = env.getProperty("naver.client-id");
+        String client_Secret = env.getProperty("naver.client-secret");
+        httpHeaders.add("X-NCP-APIGW-API-KEY-ID", client_Id);
+        httpHeaders.add("X-NCP-APIGW-API-KEY", client_Secret);
         ResponseEntity<Map> response = restTemplate.exchange(
             apiUrl,
             HttpMethod.GET,
@@ -111,7 +116,7 @@ public class RestroomService {
             restroom.setAvailableFemaleToiletCount(
                 Integer.parseInt((String) restroom_info.get("여성용-대변기수"))); // default를 전체 대변기 수로 설정
             //restroomRepository.save(restroom); // 데이터베이스에 화장실 정보 저장
-            //System.out.println(restroom); 테스트
+            System.out.println(restroom); //테스트
         }
     }
 }
