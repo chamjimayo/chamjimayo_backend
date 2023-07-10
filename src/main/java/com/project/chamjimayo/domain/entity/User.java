@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -31,8 +32,8 @@ public class User extends BaseEntity {
 	private String name;
 
 	// 닉네임
-	@Column(name = "nick_name")
-	private String nickName;
+	@Column(name = "nickname")
+	private String nickname;
 
 	// 포인트 (재화 <- 충전식)
 	@Column(name = "point")
@@ -50,6 +51,12 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
+	@Column(name = "auth_id")
+	private String authId;
+
+	@Column(name = "auth_type")
+	private AuthType authType;
+
 	@OneToMany(mappedBy = "user")
 	private List<Board> boards;
 
@@ -62,5 +69,16 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private List<Search> searches;
 
+	@Builder
+	public User(String name, String nickname, Integer point,
+			String gender, Role role, String authId, AuthType authType) {
+		this.name = name;
+		this.nickname = nickname;
+		this.point = point;
+		this.gender = gender;
+		this.role = role;
+		this.authId = authId;
+		this.authType = authType;
+	}
 }
 
