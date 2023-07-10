@@ -38,4 +38,21 @@ public class Search {
 	@Column(name = "road_address")
 	private String roadAddress;
 
+	// 도로명 주소의 상태 (0: 클릭 전, 1: 클릭 후)
+	@Column(name = "click")
+	private int click;
+
+	// 회원별 검색 기록을 위한 setter
+	public Search(User user, String searchWord, String roadAddress) {
+		this.user = user;
+		this.searchWord = searchWord;
+		this.roadAddress = roadAddress;
+		this.click = 0; // 초기 상태는 0으로 설정
+	}
+
+	// 클릭 처리를 하기 위한 setter
+	public void setClick(int click) {
+		this.click = click;
+	}
 }
+

@@ -44,6 +44,15 @@ public class User extends BaseEntity {
 	@Column(name = "user_profile")
 	private String userProfile;
 
+	@Column(name = "role")
+	private String role;
+
+	@Column(name = "auth_id")
+	private String authId;
+
+	@Column(name = "auth_type")
+	private String authType;
+
 	@OneToMany(mappedBy = "user")
 	private List<Board> boards;
 
