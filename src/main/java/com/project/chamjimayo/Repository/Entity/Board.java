@@ -45,5 +45,6 @@ public class Board extends BaseEntity {
 
 	@OneToMany(mappedBy = "board")
 	private List<BoardImage> boardImages;
+
 }
 

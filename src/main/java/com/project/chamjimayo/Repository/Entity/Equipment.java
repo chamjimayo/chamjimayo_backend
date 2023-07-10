@@ -33,5 +33,6 @@ public class Equipment {
 	// 화장실 구역 (몇 번째 칸인가?)
 	@Column(name = "restroom_section")
 	private String restroomSection;
+
 }
 
