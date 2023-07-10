@@ -8,7 +8,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "comment")
 @Getter
-@ToString(exclude = "comment_id")
+@ToString(exclude = "commentId")
 @NoArgsConstructor
 public class Comment extends BaseEntity {
 

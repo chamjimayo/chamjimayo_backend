@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "restroom_manager")
 @Getter
-@ToString(exclude = "manager_id")
+@ToString(exclude = "managerId")
 @NoArgsConstructor
 public class RestroomManager extends BaseEntity {
 
@@ -19,7 +19,7 @@ public class RestroomManager extends BaseEntity {
 	private Integer managerId;
 
 	// 화장실 아이디 (어느 화장실을 관리하는지)
-	@OneToMany(mappedBy = "restroom")
+	@OneToMany(mappedBy = "restroomManager")
 	private List<Restroom> restrooms;
 
 	// 전화번호

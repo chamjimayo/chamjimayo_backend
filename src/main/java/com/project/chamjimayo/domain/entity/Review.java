@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "review")
 @Getter
-@ToString(exclude = "review_id")
+@ToString(exclude = "reviewId")
 @NoArgsConstructor
 public class Review extends BaseEntity {
 

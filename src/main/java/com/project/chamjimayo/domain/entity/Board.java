@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "board")
 @Getter
-@ToString(exclude = "board_id")
+@ToString(exclude = "boardId")
 @NoArgsConstructor
 public class Board extends BaseEntity {
 
@@ -39,11 +39,11 @@ public class Board extends BaseEntity {
 	@Column(name = "like_count")
 	private Integer likeCount;
 
-
 	@OneToMany(mappedBy = "board")
 	private List<Comment> comments;
 
 	@OneToMany(mappedBy = "board")
 	private List<BoardImage> boardImages;
+
 }
 

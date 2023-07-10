@@ -10,7 +10,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "restroom")
 @Getter
-@ToString(exclude = "restroom_id")
+@ToString(exclude = "restroomId")
 @NoArgsConstructor
 public class Restroom extends BaseEntity {
 
@@ -79,7 +79,6 @@ public class Restroom extends BaseEntity {
 	// 여자 이용 가능 대변기 수
 	@Column(name = "available_female_toilet_count")
 	private Integer availableFemaleToiletCount;
-
 
 	@OneToMany(mappedBy = "restroom")
 	private List<Equipment> equipments;

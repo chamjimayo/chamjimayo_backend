@@ -8,7 +8,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "board_image")
 @Getter
-@ToString(exclude = "image_id")
+@ToString(exclude = "imageId")
 @NoArgsConstructor
 public class BoardImage extends BaseEntity {
 
