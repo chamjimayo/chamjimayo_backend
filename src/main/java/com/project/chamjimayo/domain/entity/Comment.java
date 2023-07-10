@@ -1,4 +1,4 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import javax.persistence.*;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "comment")
 @Getter
-@ToString(exclude = "comment_id")
+@ToString(exclude = "commentId")
 @NoArgsConstructor
 public class Comment extends BaseEntity {
 

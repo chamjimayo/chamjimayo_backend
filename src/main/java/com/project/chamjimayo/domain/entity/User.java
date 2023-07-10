@@ -1,7 +1,13 @@
-package com.project.chamjimayo.Repository.Entity;
+package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,7 +15,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "user")
 @Getter
-@ToString(exclude = "user_id")
+@ToString(exclude = "userId")
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -22,9 +28,9 @@ public class User extends BaseEntity {
 	@Column(name = "name")
 	private String name;
 
-	// 이메일
-	@Column(name = "email")
-	private String email;
+	// 닉네임
+	@Column(name = "nick_name")
+	private String nickName;
 
 	// 포인트 (재화 <- 충전식)
 	@Column(name = "point")
@@ -38,7 +44,6 @@ public class User extends BaseEntity {
 	@Column(name = "user_profile")
 	private String userProfile;
 
-
 	@OneToMany(mappedBy = "user")
 	private List<Board> boards;
 
@@ -47,5 +52,9 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews;
+
+	@OneToMany(mappedBy = "user")
+	private List<Search> searches;
+
 }
 
