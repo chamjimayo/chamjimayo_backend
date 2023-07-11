@@ -1,6 +1,7 @@
 package com.project.chamjimayo.security;
 
 import com.project.chamjimayo.domain.entity.User;
+import com.project.chamjimayo.exception.AuthIdNotFoundException;
 import com.project.chamjimayo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,16 @@ public class CustomUserDetailsService implements UserDetailsService {
             new UsernameNotFoundException("유저를 찾을 수 없습니다. id: " + id)
         );
 
-    return CustomUserDetails.create(user.getUserId(), user.getRole());
+    return CustomUserDetails.create(String.valueOf(user.getUserId()), user.getRole());
+  }
+
+  @Transactional(readOnly = true)
+  public UserDetails loadUserByAuthId(String authId) {
+    User user = userRepository.findUserByAuthId(authId)
+        .orElseThrow(() ->
+            new AuthIdNotFoundException("식별 아이디를 찾을 수 없습니다. authId: " + authId)
+        );
+
+    return CustomUserDetails.create(String.valueOf(user.getUserId()), user.getRole());
   }
 }
