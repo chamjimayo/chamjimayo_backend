@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### 중요 정보 보호 ###
-application.yml
+*.yml
