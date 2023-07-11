@@ -1,7 +1,8 @@
-package com.project.chamjimayo.security;
+package com.project.chamjimayo.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.exception.AuthException;
+import com.project.chamjimayo.security.AuthIdToken;
 import com.project.chamjimayo.security.dto.LoginRequest;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,14 +45,14 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
       authId = "";
     }
 
-    SocialAuthenticationToken authRequest = SocialAuthenticationToken.unauthenticated(authId);
+    AuthIdToken authRequest = AuthIdToken.unauthenticated(authId);
 
     setDetails(request, authRequest);
 
     return this.getAuthenticationManager().authenticate(authRequest);
   }
 
-  protected void setDetails(HttpServletRequest request, SocialAuthenticationToken authRequest) {
+  protected void setDetails(HttpServletRequest request, AuthIdToken authRequest) {
     authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
   }
 }

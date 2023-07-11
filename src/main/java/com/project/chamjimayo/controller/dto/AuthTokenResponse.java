@@ -6,7 +6,7 @@ import lombok.Getter;
 public class AuthTokenResponse {
   private final String token;
 
-  public AuthTokenResponse(String token) {
+  private AuthTokenResponse(String token) {
     this.token = token;
   }
 
