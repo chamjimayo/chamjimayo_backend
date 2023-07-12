@@ -2,7 +2,6 @@ package com.project.chamjimayo.security;
 
 import com.project.chamjimayo.exception.AuthException;
 import com.project.chamjimayo.exception.InvalidTokenException;
-import com.project.chamjimayo.exception.TokenExpiredException;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.config.JwtProperties;
 import io.jsonwebtoken.Claims;
@@ -60,7 +59,7 @@ public class JwtTokenProvider {
           .getBody()
           .getSubject();
     } catch (final JwtException | IllegalArgumentException e) {
-      throw new InvalidTokenException("권한이 없습니다.");
+      throw new InvalidTokenException("유효하지 않은 토큰입니다.");
     }
   }
 
@@ -75,7 +74,7 @@ public class JwtTokenProvider {
           .getExpiration()
           .before(new Date());
     } catch (final JwtException | IllegalArgumentException e) {
-      throw new InvalidTokenException("Invalid token.");
+      throw new InvalidTokenException("유효하지 않은 토큰입니다.");
     }
   }
 

@@ -1,14 +1,18 @@
 package com.project.chamjimayo.controller.dto;
 
 import com.project.chamjimayo.service.dto.IssueTokenDto;
-import com.project.chamjimayo.service.dto.SignUpDto;
+import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 public class IssueTokenRequest {
+
+  @NotBlank
   private String authId;
+
+  @NotBlank
   private String refreshToken;
 
   public IssueTokenDto toDto() {

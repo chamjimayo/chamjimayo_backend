@@ -1,6 +1,6 @@
 package com.project.chamjimayo.security;
 
-import com.project.chamjimayo.exception.AuthException;
+import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.security.dto.AuthTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class AuthTokenFactory {
 
   private void isSame(String refreshToken, String refreshTokenForRenew) {
     if (!refreshToken.equals(refreshTokenForRenew)) {
-      throw new AuthException("토큰이 다릅니다.");
+      throw new InvalidTokenException("토큰이 유효하지 않습니다.");
     }
   }
 
