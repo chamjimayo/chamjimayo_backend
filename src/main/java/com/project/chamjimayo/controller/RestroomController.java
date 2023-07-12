@@ -12,12 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/restroom")
 public class RestroomController {
 
-    RestroomService restroomService;
-
-    @Autowired
-    public RestroomController(RestroomService restroomService) {
-        this.restroomService = restroomService;
-    }
+    private final RestroomService restroomService;
 
     @PostMapping("/import")
     public void importRestroom() throws Exception {

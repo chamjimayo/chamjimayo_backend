@@ -3,15 +3,15 @@ package com.project.chamjimayo.domain.entity;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "restroom")
 @Getter
-@Setter
 @ToString(exclude = "restroomId")
 @NoArgsConstructor
 public class Restroom extends BaseEntity {
@@ -42,12 +42,8 @@ public class Restroom extends BaseEntity {
     private String roadAddress;
 
     // 개방 시간
-    @Column(name = "opening_hour")
-    private String openingHour;
-
-    // 폐쇄 시간
-    @Column(name = "closing_hour")
-    private String closingHour;
+    @Column(name = "operating_hour")
+    private String operatingHour;
 
     // 화장실 대표 사진 url
     @Column(name = "restroom_photo")
@@ -92,4 +88,24 @@ public class Restroom extends BaseEntity {
     @JoinColumn(name = "manager_id")
     private RestroomManager restroomManager;
 
+    @Builder
+    public Restroom(String restroomName, double locationLatitude, double locationLongitude,
+        String roadAddress, String operatingHour, String restroomPhoto,
+        double equipmentExistenceProbability, String publicOrPaid,
+        boolean accessibleToiletExistence, int maleToiletCount, int femaleToiletCount,
+        int availableMaleToiletCount, int availableFemaleToiletCount) {
+        this.restroomName = restroomName;
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
+        this.roadAddress = roadAddress;
+        this.operatingHour = operatingHour;
+        this.restroomPhoto = restroomPhoto;
+        this.equipmentExistenceProbability = equipmentExistenceProbability;
+        this.publicOrPaid = publicOrPaid;
+        this.accessibleToiletExistence = accessibleToiletExistence;
+        this.maleToiletCount = maleToiletCount;
+        this.femaleToiletCount = femaleToiletCount;
+        this.availableMaleToiletCount = availableMaleToiletCount;
+        this.availableFemaleToiletCount = availableFemaleToiletCount;
+    }
 }
