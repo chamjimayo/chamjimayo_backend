@@ -1,11 +1,11 @@
 package com.project.chamjimayo.dto;
 
-public class SearchRequestDTO {
+public class SearchRequestDto {
 
 	private String searchWord;
 	private Integer userId;
 
-	public SearchRequestDTO(String searchWord, Integer userId) {
+	public SearchRequestDto(String searchWord, Integer userId) {
 		this.searchWord = searchWord;
 		this.userId = userId;
 	}
