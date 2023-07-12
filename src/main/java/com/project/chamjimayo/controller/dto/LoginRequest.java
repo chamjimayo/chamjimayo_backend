@@ -1,4 +1,4 @@
-package com.project.chamjimayo.security.dto;
+package com.project.chamjimayo.controller.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,8 +7,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequest {
   private String authId;
-
-  public LoginRequest(String authId) {
-    this.authId = authId;
-  }
 }

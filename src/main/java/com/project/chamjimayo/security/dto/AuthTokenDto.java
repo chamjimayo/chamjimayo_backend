@@ -1,4 +1,4 @@
-package com.project.chamjimayo.service.dto;
+package com.project.chamjimayo.security.dto;
 
 import com.project.chamjimayo.controller.dto.AuthTokenResponse;
 import lombok.Getter;

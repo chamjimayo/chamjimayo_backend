@@ -1,7 +1,5 @@
-package com.project.chamjimayo.security.filter;
+package com.project.chamjimayo.security;
 
-import com.project.chamjimayo.security.AuthTokenFactory;
-import com.project.chamjimayo.security.CustomUserDetailsService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
