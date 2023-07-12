@@ -1,7 +1,7 @@
 package com.project.chamjimayo.security.filter;
 
+import com.project.chamjimayo.security.AuthTokenFactory;
 import com.project.chamjimayo.security.CustomUserDetailsService;
-import com.project.chamjimayo.security.JwtTokenProvider;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,19 +21,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-  private static final String SUBJECT = "id";
 
-  private final JwtTokenProvider tokenProvider;
+  private final AuthTokenFactory authTokenFactory;
   private final CustomUserDetailsService customUserDetailsService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
     try {
-      String jwt = getJwtFromRequest(request);
+      String accessToken = getAccessTokenFromRequest(request);
 
-      if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-        String userId = tokenProvider.getPayload(jwt, SUBJECT);
+      if (StringUtils.hasText(accessToken) && authTokenFactory.validateToken(accessToken)) {
+        String userId = authTokenFactory.extractPayload(accessToken);
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -49,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
-  private String getJwtFromRequest(HttpServletRequest request) {
+  private String getAccessTokenFromRequest(HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7);
