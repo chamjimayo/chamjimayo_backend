@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
-	// 그 외 오류 (해결할 수 없는 서버 오류)
+	// 그 외 오류
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception ex) {
 		log.error("handleException", ex);
