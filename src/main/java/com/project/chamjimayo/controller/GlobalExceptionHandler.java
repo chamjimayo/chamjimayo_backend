@@ -18,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	// 사용자 지정 오류 (ErrorCode에서 관리)
+	// 사용자 지정 오류
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
 		log.error("CustomException", ex);
