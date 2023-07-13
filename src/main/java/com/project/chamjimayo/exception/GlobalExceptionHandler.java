@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
 	}
 
-	// 유효성 검사 오류 (잘못된 파라미터 값)
+	// 유효성 검사 오류 (잘못된 파라미터 형식)
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
 		MethodArgumentTypeMismatchException ex) {
