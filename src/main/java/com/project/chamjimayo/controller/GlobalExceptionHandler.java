@@ -1,5 +1,8 @@
-package com.project.chamjimayo.exception;
+package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.exception.CustomException;
+import com.project.chamjimayo.exception.ErrorCode;
+import com.project.chamjimayo.exception.ErrorResponse;
 import java.nio.file.AccessDeniedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -15,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	// 사용자 지정 오류 (ErrorCode에서 관리)
+	// 사용자 지정 오류
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
 		log.error("CustomException", ex);
@@ -23,7 +26,7 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
 	}
 
-	// 유효성 검사 오류 (잘못된 파라미터 값)
+	// 유효성 검사 오류 (잘못된 파라미터 형식)
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
 		MethodArgumentTypeMismatchException ex) {
