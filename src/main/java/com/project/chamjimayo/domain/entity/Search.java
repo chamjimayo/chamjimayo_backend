@@ -24,7 +24,7 @@ public class Search {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "search_id")
-	private Integer searchId;
+	private Long searchId;
 
 	// 회원 아이디 (해당 검색 기록은 어떤 회원의 기록인가)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -67,6 +67,5 @@ public class Search {
 	public void setClick(int click) {
 		this.click = click;
 	}
-
 }
 

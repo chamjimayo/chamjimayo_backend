@@ -26,7 +26,7 @@ public class Restroom extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "restroom_id")
-	private Integer restroomId;
+	private Long restroomId;
 
 	@Column(name = "restroom_name")
 	private String restroomName;

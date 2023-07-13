@@ -5,10 +5,10 @@ import lombok.Builder;
 public class SearchRequestDto {
 
 	private final String searchWord;
-	private final Integer userId;
+	private final Long userId;
 
 	@Builder
-	public SearchRequestDto(String searchWord, Integer userId) {
+	public SearchRequestDto(String searchWord, Long userId) {
 		this.searchWord = searchWord;
 		this.userId = userId;
 	}
@@ -17,7 +17,7 @@ public class SearchRequestDto {
 		return searchWord;
 	}
 
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 

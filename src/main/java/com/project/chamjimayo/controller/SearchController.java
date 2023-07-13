@@ -33,7 +33,7 @@ public class SearchController {
 	 */
 	@GetMapping("/search")
 	public ResponseEntity<List<SearchResponseDto>> getAddress(
-		@RequestParam("searchWord") String searchWord, @RequestParam("userId") Integer userId) {
+		@RequestParam("searchWord") String searchWord, @RequestParam("userId") Long userId) {
 		SearchRequestDto requestDTO = new SearchRequestDto(searchWord, userId);
 		List<SearchResponseDto> SearchResponseDTOList = searchService.searchAddress(requestDTO);
 		return ResponseEntity.ok(SearchResponseDTOList);
@@ -43,7 +43,7 @@ public class SearchController {
 	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 (도로명 주소, 지번 주소, 이름) 예시: /address/search/recent/{유저 id}
 	 */
 	@GetMapping("/search/recent/{userId}")
-	public ResponseEntity<SearchResponseDto> getRecentAddress(@PathVariable Integer userId) {
+	public ResponseEntity<SearchResponseDto> getRecentAddress(@PathVariable Long userId) {
 		// userId를 통해 최근 검색 기록을 가져옴
 		SearchResponseDto responseDTO = searchService.getRecentRoadAddress(userId);
 
@@ -56,7 +56,7 @@ public class SearchController {
 	 * /address/search/click/{searchId}
 	 */
 	@PostMapping("/search/click/{searchId}")
-	public ResponseEntity<String> clickAddress(@PathVariable Integer searchId) {
+	public ResponseEntity<String> clickAddress(@PathVariable Long searchId) {
 		// searchId를 받아서 클릭 처리
 		return searchService.clickAddress(searchId);
 	}

@@ -1,10 +1,10 @@
 package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
-import com.project.chamjimayo.domain.entity.Search;
-import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.controller.dto.SearchRequestDto;
 import com.project.chamjimayo.controller.dto.SearchResponseDto;
+import com.project.chamjimayo.domain.entity.Search;
+import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.CustomException;
 import com.project.chamjimayo.exception.ErrorCode;
 import com.project.chamjimayo.repository.SearchRepository;
@@ -31,7 +31,7 @@ public class SearchService {
 	private final SearchRepository searchRepository;
 	private final UserRepository userRepository;
 
-	// application.yml에 저장된 t-map AppKey
+	// application-local.yml에 저장된 t-map AppKey
 	@Value("${tmap.appKey}")
 	private String tmapApikey;
 
@@ -48,7 +48,7 @@ public class SearchService {
 		// 검색 결과 가져올 개수와 검색어 설정
 		int count = 5;
 		String searchWord = requestDTO.getSearchWord();
-		Integer userId = requestDTO.getUserId();
+		Long userId = requestDTO.getUserId();
 
 		// Tmap API 호출을 위한 URI 설정
 		URI uri = UriComponentsBuilder.fromUriString("https://apis.openapi.sk.com")
@@ -168,7 +168,7 @@ public class SearchService {
 	/**
 	 * 유저 아이디에 해당하는 사용자의 최근 도로명 주소 가져와서 검색 결과 DTO로 반환
 	 */
-	public SearchResponseDto getRecentRoadAddress(Integer userId) {
+	public SearchResponseDto getRecentRoadAddress(Long userId) {
 		// userRepository 에서 userId를 통해 user 객체를 가져옴
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException("not found user", ErrorCode.USER_NOT_FOUND));
@@ -194,7 +194,7 @@ public class SearchService {
 	/**
 	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리
 	 */
-	public ResponseEntity<String> clickAddress(Integer searchId) {
+	public ResponseEntity<String> clickAddress(Long searchId) {
 		// searchId로 search 를 받아옴
 		Optional<Search> searchOptional = searchRepository.findById(searchId);
 		if (searchOptional.isPresent()) {

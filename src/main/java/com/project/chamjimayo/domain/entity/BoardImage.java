@@ -23,7 +23,7 @@ public class BoardImage extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "image_id")
-	private Integer imageId;
+	private Long imageId;
 
 	// 게시글 아이디 (어떤 게시글의 사진인가)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -33,5 +33,4 @@ public class BoardImage extends BaseEntity {
 	// 사진 url
 	@Column(name = "url")
 	private String url;
-
 }

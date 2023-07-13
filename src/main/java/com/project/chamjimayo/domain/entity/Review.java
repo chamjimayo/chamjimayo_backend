@@ -25,7 +25,7 @@ public class Review extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "review_id")
-	private Integer reviewId;
+	private Long reviewId;
 
 	// 회원 아이디 (해당 리뷰를 어떤 회원이 썼는가)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -46,6 +46,5 @@ public class Review extends BaseEntity {
 	@Max(5)
 	@Column(name = "rating")
 	private Float rating;
-
 }
 
