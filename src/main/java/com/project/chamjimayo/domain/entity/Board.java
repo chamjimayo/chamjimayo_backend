@@ -25,7 +25,7 @@ public class Board extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id")
-	private Integer boardId;
+	private Long boardId;
 
 	// 제목
 	@Column(name = "title")
@@ -53,6 +53,5 @@ public class Board extends BaseEntity {
 
 	@OneToMany(mappedBy = "board")
 	private List<BoardImage> boardImages;
-
 }
 

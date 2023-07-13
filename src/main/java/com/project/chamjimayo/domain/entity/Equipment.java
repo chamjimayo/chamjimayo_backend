@@ -23,7 +23,7 @@ public class Equipment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "equipment_id")
-	private Integer equipmentId;
+	private Long equipmentId;
 
 	// 화장실 아이디 (해당 비품의 화장실)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -41,6 +41,5 @@ public class Equipment {
 	// 화장실 구역 (몇 번째 칸인가?)
 	@Column(name = "restroom_section")
 	private String restroomSection;
-
 }
 
