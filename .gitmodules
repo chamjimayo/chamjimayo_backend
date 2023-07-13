@@ -1,6 +1,3 @@
 [submodule "src/main/resources/config"]
 	path = src/main/resources/config
 	url = https://github.com/chamjimayo/config
-[submodule "config"]
-	path = config
-	url = https://github.com/chamjimayo/config

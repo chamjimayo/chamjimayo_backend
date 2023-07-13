@@ -10,27 +10,27 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+  
+  private final AuthTokenFactory authTokenFactory;
+  private final UserService userService;
+  
+  public AuthTokenDto issueNewToken(SignUpDto dto) {
+    String id = userService.saveUser(dto);
+    return authTokenFactory.createAuthToken(id);
+  }
 
-	private final AuthTokenFactory authTokenFactory;
-	private final UserService userService;
+  public AuthTokenDto issueToken(String authId) {
+    String id = userService.getUserByAuthId(authId);
+    return authTokenFactory.createAuthToken(id);
+  }
 
-	public AuthTokenDto issueNewToken(SignUpDto dto) {
-		String id = userService.saveUser(dto);
-		return authTokenFactory.createAuthToken(id);
-	}
+  public AuthTokenDto refreshToken(IssueTokenDto dto) {
+    if (authTokenFactory.validateToken(dto.getRefreshToken())) {
+      return authTokenFactory.refreshAccessToken(dto.getRefreshToken());
+    }
 
-	public AuthTokenDto issueToken(String authId) {
-		String id = userService.getUserByAuthId(authId);
-		return authTokenFactory.createAuthToken(id);
-	}
+    String userId = userService.getUserByAuthId(dto.getAuthId());
 
-	public AuthTokenDto refreshToken(IssueTokenDto dto) {
-		if (authTokenFactory.validateToken(dto.getRefreshToken())) {
-			return authTokenFactory.refreshAccessToken(dto.getRefreshToken());
-		}
-
-		String userId = userService.getUserByAuthId(dto.getAuthId());
-
-		return authTokenFactory.createAuthToken(userId);
-	}
+    return authTokenFactory.createAuthToken(userId);
+  }
 }

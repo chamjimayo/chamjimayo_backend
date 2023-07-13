@@ -71,7 +71,7 @@ public class User extends BaseEntity {
 
 	@Builder
 	public User(String name, String nickname, Integer point,
-		String gender, Role role, String authId, AuthType authType) {
+			String gender, Role role, String authId, AuthType authType) {
 		this.name = name;
 		this.nickname = nickname;
 		this.point = point;
