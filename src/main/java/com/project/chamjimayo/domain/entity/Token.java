@@ -12,5 +12,7 @@ public class Token {
   @GeneratedValue
   private Long id;
 
+  private String userId;
+
   private String refreshToken;
 }
