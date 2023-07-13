@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,11 +55,10 @@ public class SearchController {
 	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리 예시:
 	 * /address/search/click/{searchId}
 	 */
-	@GetMapping("/search/click/{searchId}")
+	@PostMapping("/search/click/{searchId}")
 	public ResponseEntity<String> clickAddress(@PathVariable Integer searchId) {
-
+		// searchId를 받아서 클릭 처리
 		return searchService.clickAddress(searchId);
-
 	}
 
 }

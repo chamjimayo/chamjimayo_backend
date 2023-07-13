@@ -1,18 +1,20 @@
 package com.project.chamjimayo.exception;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class ErrorResponse {
-	private int status;
-	private String message;
-	private String code;
 
-	public ErrorResponse(ErrorCode errorCode){
+	private final int status;
+	private final String message;
+	private final String code;
+
+	@Builder
+	public ErrorResponse(ErrorCode errorCode) {
 		this.status = errorCode.getStatus();
 		this.message = errorCode.getMessage();
 		this.code = errorCode.getErrorCode();
 	}
+
 }

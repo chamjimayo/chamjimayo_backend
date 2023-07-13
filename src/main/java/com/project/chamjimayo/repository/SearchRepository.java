@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SearchRepository extends JpaRepository<Search, Integer> {
+
 	Optional<Search> findTopByUserAndClickOrderBySearchIdDesc(User user, int i);
+
 }
 
 

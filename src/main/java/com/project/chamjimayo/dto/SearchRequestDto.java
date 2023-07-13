@@ -1,10 +1,13 @@
 package com.project.chamjimayo.dto;
 
+import lombok.Builder;
+
 public class SearchRequestDto {
 
-	private String searchWord;
-	private Integer userId;
+	private final String searchWord;
+	private final Integer userId;
 
+	@Builder
 	public SearchRequestDto(String searchWord, Integer userId) {
 		this.searchWord = searchWord;
 		this.userId = userId;
@@ -17,4 +20,5 @@ public class SearchRequestDto {
 	public Integer getUserId() {
 		return userId;
 	}
+
 }
