@@ -1,4 +1,4 @@
-package com.project.chamjimayo.dto;
+package com.project.chamjimayo.security.dto;
 
 import lombok.Builder;
 

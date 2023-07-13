@@ -1,11 +1,3 @@
-server:
-    port: 8080
-tmap:
-    appKey: 2ZLulLhbKxaBT1TTYtD3u6TxhRn7Sgao4BRuJvwy
 spring:
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        ## hyuntae 라는 스키마를 만들어서 테스트 진행중...
-        url: jdbc:mysql://chamjimayo.cms7bjyoqsch.ap-northeast-2.rds.amazonaws.com:3306/hyuntae?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-        username: admin
-        password: hongchosim9900
+    profiles:
+        active: local
