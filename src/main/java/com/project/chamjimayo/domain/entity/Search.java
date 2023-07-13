@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.PositiveOrZero;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -52,8 +52,9 @@ public class Search {
 	private int click;
 
 
-	// 회원별 검색 기록을 위한 setter
-	public Search(User user, String searchWord, String roadAddress, String lotNumberAddress, String name) {
+	@Builder
+	public Search(User user, String searchWord, String roadAddress, String lotNumberAddress,
+		String name) {
 		this.user = user;
 		this.searchWord = searchWord;
 		this.roadAddress = roadAddress;
@@ -62,9 +63,10 @@ public class Search {
 		this.click = 0; // 초기 상태는 0으로 설정
 	}
 
-	// 클릭 처리를 하기 위한 setter
+	@Builder
 	public void setClick(int click) {
 		this.click = click;
 	}
+
 }
 

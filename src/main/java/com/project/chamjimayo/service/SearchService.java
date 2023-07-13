@@ -1,11 +1,11 @@
 package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
-import com.project.chamjimayo.exception.CustomException;
 import com.project.chamjimayo.domain.entity.Search;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.dto.SearchRequestDto;
 import com.project.chamjimayo.dto.SearchResponseDto;
+import com.project.chamjimayo.exception.CustomException;
 import com.project.chamjimayo.exception.ErrorCode;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserRepository;
@@ -21,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -87,10 +86,9 @@ public class SearchService {
 		List<String> lotNumberAddressList = extractLotNumberAddress(responseEntity.getBody());
 		List<String> nameList = extractName(responseEntity.getBody());
 
-
 		List<SearchResponseDto> searchResponseDTOList = new ArrayList<>();
 
-		// 각 주소를 Search 엔티티로 저장
+		// 검색 리시트를 각 주소마다 분리해서 Search 엔티티로 저장
 		for (int i = 0; i < fullAddressRoadList.size(); i++) {
 			String fullAddressRoad = fullAddressRoadList.get(i);
 			String lotNumberAddress = lotNumberAddressList.get(i);
@@ -99,10 +97,10 @@ public class SearchService {
 			searchRepository.save(search);
 
 			// 검색 결과 DTO 생성 및 추가
-			SearchResponseDto responseDTO = new SearchResponseDto(fullAddressRoad, lotNumberAddress, name);
+			SearchResponseDto responseDTO = new SearchResponseDto(fullAddressRoad, lotNumberAddress,
+				name);
 			searchResponseDTOList.add(responseDTO);
 		}
-
 		return searchResponseDTOList;
 	}
 
@@ -111,8 +109,8 @@ public class SearchService {
 	 * API 응답에서 가게 이름을 추출하여 리스트로 반환
 	 */
 	private List<String> extractName(String responseBody) {
-		return JsonPath.read(responseBody,
-			"$.searchPoiInfo.pois.poi[*].name");
+		// searchPoiInfo의 pois의 poi의 모든 요소 중 name 값 반환
+		return JsonPath.read(responseBody, "$.searchPoiInfo.pois.poi[*].name");
 	}
 
 	/**
@@ -154,10 +152,8 @@ public class SearchService {
 			String secondNo = secondNoList.get(i);
 
 			StringBuilder lotNumberAddress = new StringBuilder();
-			lotNumberAddress.append(upperAddrName).append(" ")
-				.append(middleAddrName).append(" ")
-				.append(lowerAddrName).append(" ")
-				.append(firstNo);
+			lotNumberAddress.append(upperAddrName).append(" ").append(middleAddrName).append(" ")
+				.append(lowerAddrName).append(" ").append(firstNo);
 
 			// secondNo가 없거나 0이면 없이 지번 주소 완성
 			if ((secondNo != null) && (!secondNo.isEmpty()) && (!secondNo.equals("0"))) {
@@ -166,7 +162,6 @@ public class SearchService {
 
 			lotNumberAddressList.add(lotNumberAddress.toString());
 		}
-
 		return lotNumberAddressList;
 	}
 
@@ -179,19 +174,19 @@ public class SearchService {
 			.orElseThrow(() -> new CustomException("not found user", ErrorCode.USER_NOT_FOUND));
 
 		// user 객체를 통해서 가장 최근에 검색된 상태가 1인 search 객체 받아오기
-		Optional<Search> searchOptional = searchRepository.findTopByUserAndClickOrderBySearchIdDesc(user, 1);
+		Optional<Search> searchOptional = searchRepository.findTopByUserAndClickOrderBySearchIdDesc(
+			user, 1);
 
 		// 검색 결과 DTO 생성
 		SearchResponseDto responseDTO;
 		if (searchOptional.isPresent()) {
 			Search search = searchOptional.get();
-			responseDTO = new SearchResponseDto(
-				search.getRoadAddress(), search.getLotNumberAddress(), search.getName());
+			responseDTO = new SearchResponseDto(search.getRoadAddress(),
+				search.getLotNumberAddress(), search.getName());
 		} else {
 			// 빈 문자열 생성
 			responseDTO = new SearchResponseDto("", "", "");
 		}
-
 		return responseDTO;
 	}
 
@@ -211,5 +206,6 @@ public class SearchService {
 			throw new CustomException("not found searchId", ErrorCode.SEARCH_NOT_FOUND);
 		}
 	}
+
 }
 
