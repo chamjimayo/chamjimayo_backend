@@ -1,4 +1,4 @@
-package com.project.chamjimayo.dto;
+package com.project.chamjimayo.controller.dto;
 
 import lombok.Builder;
 import lombok.Getter;

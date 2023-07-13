@@ -1,7 +1,7 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.dto.SearchRequestDto;
-import com.project.chamjimayo.dto.SearchResponseDto;
+import com.project.chamjimayo.controller.dto.SearchRequestDto;
+import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.service.SearchService;
 import java.util.List;
