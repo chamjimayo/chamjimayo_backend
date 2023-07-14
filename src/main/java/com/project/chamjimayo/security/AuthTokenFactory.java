@@ -26,7 +26,9 @@ public class AuthTokenFactory {
         .orElse(null);
 
     if (isNotValid(token)) {
-      return jwtTokenProvider.createRefreshToken(userId);
+      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+      Token savedToken = tokenRepository.save(Token.create(userId, refreshToken));
+      return savedToken.getRefreshToken();
     }
 
     return token.getRefreshToken();
@@ -37,8 +39,6 @@ public class AuthTokenFactory {
   }
 
   public AuthTokenDto refreshAccessToken(final String refreshToken) {
-    jwtTokenProvider.validateToken(refreshToken);
-
     String userId = jwtTokenProvider.getPayload(refreshToken);
 
     String accessTokenForRenew = jwtTokenProvider.createAccessToken(userId);
@@ -55,11 +55,10 @@ public class AuthTokenFactory {
   }
 
   public String extractPayload(final String accessToken) {
-    jwtTokenProvider.validateToken(accessToken);
     return jwtTokenProvider.getPayload(accessToken);
   }
 
   public boolean validateToken(final String token) {
-    return jwtTokenProvider.validateToken(token);
+    return jwtTokenProvider.isValid(token);
   }
 }
