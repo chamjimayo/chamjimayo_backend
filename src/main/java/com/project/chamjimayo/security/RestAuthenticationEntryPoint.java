@@ -8,13 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
-  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   public void commence(HttpServletRequest httpServletRequest,
@@ -25,6 +25,8 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.AUTHENTICATION_EXCEPTION,
         "인증에 실패하였습니다.");
     httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    httpServletResponse.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+    httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    httpServletResponse.setCharacterEncoding("utf-8");
+    httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
   }
 }
