@@ -3,6 +3,7 @@ package com.project.chamjimayo.security.config;
 import com.project.chamjimayo.security.AuthTokenFactory;
 import com.project.chamjimayo.security.CustomUserDetailsService;
 import com.project.chamjimayo.security.JwtAuthenticationFilter;
+import com.project.chamjimayo.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +42,9 @@ public class SecurityConfig {
         );
 
     http.userDetailsService(customUserDetailsService);
+
+    http.exceptionHandling()
+        .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
