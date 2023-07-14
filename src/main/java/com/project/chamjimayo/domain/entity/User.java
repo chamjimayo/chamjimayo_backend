@@ -55,6 +55,7 @@ public class User extends BaseEntity {
 	private String authId;
 
 	@Column(name = "auth_type")
+	@Enumerated(EnumType.STRING)
 	private AuthType authType;
 
 	@OneToMany(mappedBy = "user")
