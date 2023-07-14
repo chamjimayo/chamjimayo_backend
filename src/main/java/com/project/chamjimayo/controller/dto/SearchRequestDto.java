@@ -1,4 +1,4 @@
-package com.project.chamjimayo.security.dto;
+package com.project.chamjimayo.controller.dto;
 
 import lombok.Getter;
 

@@ -1,8 +1,8 @@
 package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.security.CustomUserDetails;
-import com.project.chamjimayo.security.dto.SearchRequestDto;
-import com.project.chamjimayo.security.dto.SearchResponseDto;
+import com.project.chamjimayo.controller.dto.SearchRequestDto;
+import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.service.SearchService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
