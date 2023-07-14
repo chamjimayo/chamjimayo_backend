@@ -12,8 +12,6 @@ public class AuthTokenFactory {
   private final JwtTokenProvider jwtTokenProvider;
 
   public AuthTokenDto createAuthToken(final String userId) {
-    jwtTokenProvider.validateToken(userId);
-
     String accessToken = jwtTokenProvider.createAccessToken(userId);
     String refreshToken = jwtTokenProvider.createRefreshToken(userId);
 
