@@ -1,11 +1,13 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.security.dto.SearchRequestDto;
 import com.project.chamjimayo.security.dto.SearchResponseDto;
 import com.project.chamjimayo.service.SearchService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,25 +23,32 @@ public class SearchController {
 	private final SearchService searchService;
 
 	/**
-	 * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능 예시:
-	 * /address/search?searchWord={검색어}&userId={유저 id}
+	 * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능
+	 * 예시: /address/search?searchWord={검색어}
 	 */
 	@GetMapping("/search")
 	public ResponseEntity<List<SearchResponseDto>> getAddress(
-		@RequestParam("searchWord") String searchWord, @RequestParam("userId") Long userId) {
+		@RequestParam("searchWord") String searchWord,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		// 현재 로그인 한 유저의 userId를 가져옴
+		Long userId = customUserDetails.getId();
 		SearchRequestDto requestDTO = SearchRequestDto.create(searchWord, userId);
-		List<SearchResponseDto> SearchResponseDTOList = searchService.searchAddress(requestDTO);
-		return ResponseEntity.ok(SearchResponseDTOList);
+		List<SearchResponseDto> searchResponseDTOList = searchService.searchAddress(requestDTO);
+		return ResponseEntity.ok(searchResponseDTOList);
 	}
 
-	/**
-	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 (도로명 주소, 지번 주소, 이름) 예시: /address/search/recent/{유저 id}
-	 */
-	@GetMapping("/search/recent/{userId}")
-	public ResponseEntity<SearchResponseDto> getRecentAddress(@PathVariable Long userId) {
-		// userId를 통해 최근 검색 기록을 가져옴
-		SearchResponseDto responseDTO = searchService.getRecentRoadAddress(userId);
 
+	/**
+	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 (도로명 주소, 지번 주소, 이름)
+	 * 예시: /address/search/recent
+	 */
+	@GetMapping("/search/recent")
+	public ResponseEntity<SearchResponseDto> getRecentAddress(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		// 현재 로그인 한 유저의 userId를 가져옴
+		Long userId = customUserDetails.getId();
+		// userId를 통해 최근 검색 기록을 가져옴
+		SearchResponseDto responseDTO = searchService.getRecentRoadAddress(Long.valueOf(userId));
 		// 검색 결과를 ResponseEntity.ok() 메서드를 사용하여 성공적인 응답으로 반환
 		return ResponseEntity.ok(responseDTO);
 	}
