@@ -3,8 +3,10 @@ package com.project.chamjimayo.service;
 import com.jayway.jsonpath.JsonPath;
 import com.project.chamjimayo.domain.entity.Search;
 import com.project.chamjimayo.domain.entity.User;
-import com.project.chamjimayo.exception.CustomException;
-import com.project.chamjimayo.exception.ErrorCode;
+import com.project.chamjimayo.exception.ApiNotFoundException;
+import com.project.chamjimayo.exception.JsonFileNotFoundException;
+import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
+import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserRepository;
 import com.project.chamjimayo.security.dto.SearchRequestDto;
@@ -13,7 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,20 +28,16 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
+@RequiredArgsConstructor
 public class SearchService {
 
-	private final SearchRepository searchRepository;
 	private final UserRepository userRepository;
+	private final SearchRepository searchRepository;
 
 	// application-local.yml에 저장된 t-map AppKey
 	@Value("${tmap.appKey}")
 	private String tmapApikey;
 
-	@Autowired
-	public SearchService(SearchRepository searchRepository, UserRepository userRepository) {
-		this.searchRepository = searchRepository;
-		this.userRepository = userRepository;
-	}
 
 	/**
 	 * 검색어에 대한 도로명 주소 검색을 수행하고, 검색 결과를 반환
@@ -68,17 +66,17 @@ public class SearchService {
 		try {
 			responseEntity = restTemplate.exchange(requestEntity, String.class);
 		} catch (HttpClientErrorException e) {
-			throw new CustomException("not found api response", ErrorCode.API_NOT_FOUND);
+			throw new ApiNotFoundException("Api 응답이 올바르지 않습니다.");
 		}
 
 		// 사용자 정보 가져오기
 		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException("not found user", ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
 
 		// Json 파일이 제대로 도착했는지 확인
 		String responseBody = responseEntity.getBody();
 		if (responseBody == null || responseBody.isEmpty()) {
-			throw new CustomException("incorrect json file", ErrorCode.JSON_NOT_FOUND);
+			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
 		}
 
 		// API 응답에서 주소, 이름 리스트 추출
@@ -171,7 +169,7 @@ public class SearchService {
 	public SearchResponseDto getRecentRoadAddress(Long userId) {
 		// userRepository 에서 userId를 통해 user 객체를 가져옴
 		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException("not found user", ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
 
 		// user 객체를 통해서 가장 최근에 검색된 상태가 1인 search 객체 받아오기
 		Optional<Search> searchOptional = searchRepository.findTopByUserAndClickOrderBySearchIdDesc(
@@ -196,16 +194,13 @@ public class SearchService {
 	 */
 	public ResponseEntity<String> clickAddress(Long searchId) {
 		// searchId로 search 를 받아옴
-		Optional<Search> searchOptional = searchRepository.findById(searchId);
-		if (searchOptional.isPresent()) {
-			Search search = searchOptional.get();
-			search.setClick(1); // 도로명 주소의 상태를 클릭된 상태로 변경
-			searchRepository.save(search);
-			return ResponseEntity.ok("정상적으로 클릭이 되었습니다.");
-		} else {
-			throw new CustomException("not found searchId", ErrorCode.SEARCH_NOT_FOUND);
-		}
-	}
+		Search search = searchRepository.findById(searchId)
+			.orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
 
+		search.changeClick(1); // 도로명 주소의 상태를 클릭된 상태로 변경
+		searchRepository.save(search);
+
+		return ResponseEntity.ok("정상적으로 클릭이 되었습니다.");
+	}
 }
 

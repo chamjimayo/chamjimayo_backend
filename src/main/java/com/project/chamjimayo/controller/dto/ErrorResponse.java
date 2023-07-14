@@ -1,5 +1,8 @@
 package com.project.chamjimayo.controller.dto;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorResponse {
   private final ErrorCode code;
   private final String msg;

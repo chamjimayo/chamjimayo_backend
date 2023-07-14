@@ -1,24 +1,18 @@
 package com.project.chamjimayo.security.dto;
 
-import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class SearchRequestDto {
-
 	private final String searchWord;
 	private final Long userId;
 
-	@Builder
-	public SearchRequestDto(String searchWord, Long userId) {
+	private SearchRequestDto(String searchWord, Long userId) {
 		this.searchWord = searchWord;
 		this.userId = userId;
 	}
 
-	public String getSearchWord() {
-		return searchWord;
+	public static SearchRequestDto create(String searchWord, Long userId) {
+		return new SearchRequestDto(searchWord, userId);
 	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
 }

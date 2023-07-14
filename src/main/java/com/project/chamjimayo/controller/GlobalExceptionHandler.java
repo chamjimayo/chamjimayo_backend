@@ -1,81 +1,72 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.exception.CustomException;
-import com.project.chamjimayo.exception.ErrorCode;
-import com.project.chamjimayo.exception.ErrorResponse;
-import java.nio.file.AccessDeniedException;
+import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorResponse;
+import com.project.chamjimayo.exception.ApiNotFoundException;
+import com.project.chamjimayo.exception.JsonFileNotFoundException;
+import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
-	// 사용자 지정 오류 (ErrorCode에서 관리)
-	@ExceptionHandler(CustomException.class)
-	public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
-		log.error("CustomException", ex);
-		ErrorResponse response = new ErrorResponse(ex.getErrorCode());
-		return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
+	@ExceptionHandler(ApiNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleApiNotFoundException(ApiNotFoundException e) {
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.API_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
-	// 유효성 검사 오류 (잘못된 파라미터 값)
-	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
-		MethodArgumentTypeMismatchException ex) {
-		log.error("MethodArgumentTypeMismatchException", ex);
-		ErrorResponse response = new ErrorResponse(ErrorCode.INVALID_PARAMETER);
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400
-	}
-
-	// 파라미터가 부족한 경우
-	@ExceptionHandler(MissingServletRequestParameterException.class)
-	public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
-		MissingServletRequestParameterException ex) {
-		log.error("MissingServletRequestParameterException", ex);
-		ErrorResponse response = new ErrorResponse(ErrorCode.NEED_MORE_PARAMETER);
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400
-	}
-
-	// 데이터 액세스 오류
 	@ExceptionHandler(DataAccessException.class)
-	public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException ex) {
-		log.error("DataAccessException", ex);
-		ErrorResponse response = new ErrorResponse(ErrorCode.DATABASE_ERROR);
-		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500
+	public ResponseEntity<ErrorResponse> handleDatabaseException(DataAccessException e) {
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.DATABASE_ERROR, "데이터베이스에 오류가 발생했습니다.");
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 	}
 
-	// 권한 거부 오류
-	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
-		log.error("AccessDeniedException", ex);
-		ErrorResponse response = new ErrorResponse(ErrorCode.ACCESS_DENIED);
-		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN); // 405
-	}
-
-	// 지원되지 않는 HTTP 요청 메서드 오류
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
-		HttpRequestMethodNotSupportedException ex) {
-		log.error("HttpRequestMethodNotSupportedException", ex);
-		ErrorResponse response = new ErrorResponse(ErrorCode.INVALID_HTTP_METHOD);
-		return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+	public ResponseEntity<ErrorResponse> HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_HTTP_METHOD, "지원하지 않는 HTTP Method입니다.");
+		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
 	}
 
-	// 그 외 오류 (해결할 수 없는 서버 오류)
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ErrorResponse> MethodArgumentTypeMismatchException(
+		MethodArgumentTypeMismatchException e) {
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_PARAMETER, "올바르지 않은 파라미터 값입니다.");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
+
+	@ExceptionHandler(JsonFileNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidJsonFileNotFoundException(JsonFileNotFoundException e) {
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.JSON_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<ErrorResponse> MissingServletRequestParameterException(
+		MissingServletRequestParameterException e) {
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.NEED_MORE_PARAMETER, "파라미터가 부족합니다.");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
+
+	@ExceptionHandler(SearchHistoryNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidSearchHistoryNotFoundException(SearchHistoryNotFoundException e) {
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.SEARCH_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-		log.error("handleException", ex);
-		ErrorResponse response = new ErrorResponse(ErrorCode.INTER_SERVER_ERROR);
-		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ErrorResponse> handleException(Exception e) {
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INTERNAL_SERVER_ERROR, "서버 오류");
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 	}
-
 }
-

@@ -2,10 +2,9 @@ package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.security.dto.SearchRequestDto;
 import com.project.chamjimayo.security.dto.SearchResponseDto;
-import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.service.SearchService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,16 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/address")
+@RequiredArgsConstructor
 public class SearchController {
 
 	private final SearchService searchService;
-	private final SearchRepository searchRepository;
-
-	@Autowired
-	public SearchController(SearchService searchService, SearchRepository searchRepository) {
-		this.searchService = searchService;
-		this.searchRepository = searchRepository;
-	}
 
 	/**
 	 * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능 예시:
@@ -34,7 +27,7 @@ public class SearchController {
 	@GetMapping("/search")
 	public ResponseEntity<List<SearchResponseDto>> getAddress(
 		@RequestParam("searchWord") String searchWord, @RequestParam("userId") Long userId) {
-		SearchRequestDto requestDTO = new SearchRequestDto(searchWord, userId);
+		SearchRequestDto requestDTO = SearchRequestDto.create(searchWord, userId);
 		List<SearchResponseDto> SearchResponseDTOList = searchService.searchAddress(requestDTO);
 		return ResponseEntity.ok(SearchResponseDTOList);
 	}
@@ -60,7 +53,6 @@ public class SearchController {
 		// searchId를 받아서 클릭 처리
 		return searchService.clickAddress(searchId);
 	}
-
 }
 
 

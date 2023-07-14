@@ -16,6 +16,5 @@ public class SearchResponseDto {
 		this.lotNumberAddress = lotNumberAddress;
 		this.name = name;
 	}
-
 }
 

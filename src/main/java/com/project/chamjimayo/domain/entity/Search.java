@@ -63,8 +63,7 @@ public class Search {
 		this.click = 0; // 초기 상태는 0으로 설정
 	}
 
-	@Builder
-	public void setClick(int click) {
+	public void changeClick(int click) {
 		this.click = click;
 	}
 }
