@@ -16,6 +16,8 @@ public class Token {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String userId;
+
   private String refreshToken;
 
   public Token(String userId, String refreshToken) {
