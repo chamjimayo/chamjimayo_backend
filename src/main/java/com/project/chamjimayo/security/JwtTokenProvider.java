@@ -23,11 +23,10 @@ public class JwtTokenProvider {
   private final long refreshTokenValidityInMilliseconds;
   private final TokenRepository tokenRepository;
 
-  public JwtTokenProvider(JwtProperties jwtProperties, TokenRepository tokenRepository) {
+  public JwtTokenProvider(JwtProperties jwtProperties) {
     this.key = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
     this.accessTokenValidityInMilliseconds = jwtProperties.getAccessTokenValidityInMilliseconds();
     this.refreshTokenValidityInMilliseconds = jwtProperties.getRefreshTokenValidityInMilliseconds();
-    this.tokenRepository = tokenRepository;
   }
 
   public String createAccessToken(final String payload) {
