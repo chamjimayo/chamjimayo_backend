@@ -26,11 +26,18 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
-	@ExceptionHandler(DataAccessException.class)
-	public ResponseEntity<ErrorResponse> handleDatabaseException(DataAccessException e) {
-		log.error("데이터베이스에 오류가 발생했습니다.");
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.DATABASE_ERROR, "데이터베이스에 오류가 발생했습니다.");
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	@ExceptionHandler(JsonFileNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidJsonFileNotFoundException(JsonFileNotFoundException e) {
+		log.error( e.getMessage());
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.JSON_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
+	@ExceptionHandler(SearchHistoryNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidSearchHistoryNotFoundException(SearchHistoryNotFoundException e) {
+		log.error( e.getMessage());
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.SEARCH_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -48,14 +55,6 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
-	@ExceptionHandler(JsonFileNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleInvalidJsonFileNotFoundException(JsonFileNotFoundException e) {
-		log.error( e.getMessage());
-		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.JSON_NOT_FOUND, e.getMessage());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-	}
-
-
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public ResponseEntity<ErrorResponse> MissingServletRequestParameterException(
 		MissingServletRequestParameterException e) {
@@ -64,11 +63,11 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
-	@ExceptionHandler(SearchHistoryNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleInvalidSearchHistoryNotFoundException(SearchHistoryNotFoundException e) {
-		log.error( e.getMessage());
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.SEARCH_NOT_FOUND, e.getMessage());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	@ExceptionHandler(DataAccessException.class)
+	public ResponseEntity<ErrorResponse> handleDatabaseException(DataAccessException e) {
+		log.error("데이터베이스에 오류가 발생했습니다.");
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.DATABASE_ERROR, "데이터베이스에 오류가 발생했습니다.");
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 	}
 
 	@ExceptionHandler(Exception.class)
