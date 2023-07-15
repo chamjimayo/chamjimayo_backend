@@ -6,6 +6,7 @@ import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+@Tag(name = "search", description = "주소 검색 API")
 @RequiredArgsConstructor
 @RequestMapping("/address")
 @RestController
