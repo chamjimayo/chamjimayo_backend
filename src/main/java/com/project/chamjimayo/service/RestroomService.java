@@ -9,6 +9,7 @@ import com.project.chamjimayo.controller.dto.ErrorCode;
 import com.project.chamjimayo.controller.dto.RestroomDetail;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomNearByResponse;
+import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
 import com.project.chamjimayo.repository.RestroomRepository;
 import java.io.IOException;
@@ -102,6 +103,7 @@ public class RestroomService {
             return false;
         }
     }
+
     /*apiUrl을 받아서 geocoding 결과를 반환해주는 func*/
     public ArrayList<Map> geocoding(String apiUrl) {
         RestTemplate restTemplate = new RestTemplate();
@@ -121,14 +123,13 @@ public class RestroomService {
     }
 
     /* 공공 화장실 데이터 저장 */
-    public List<String> importRestroom() throws BaseException {
+    public List<RestroomResponse> importRestroom() throws BaseException {
         ArrayList<Map> restroomList = null;
         restroomList = readJson();
-        List<String> restroomsName = new ArrayList<>();
+        List<RestroomResponse> response = new ArrayList<>();
         for (Map restroom_info : restroomList) {
             try {
                 //Map restroom_info = restroomList.get(51); // test
-                restroomsName.add((String) restroom_info.get("화장실명")); // 반환값을 위해 저장
                 double[] longNLat = getLongNLat(
                     (String) restroom_info.get("소재지주소")); // 소재지 주소를 통해 위도 경도 검색
                 Restroom restroom = Restroom.builder()
@@ -150,16 +151,20 @@ public class RestroomService {
                     .availableFemaleToiletCount(Integer.parseInt(
                         (String) restroom_info.get("여성용-대변기수"))) // default를 전체 대변기 수로 설정
                     .build();
-                restroomRepository.save(restroom); // 데이터베이스에 화장실 정보 저장
+                RestroomResponse restroomResponse = new RestroomResponse(
+                    restroomRepository.save(restroom).getRestroomId(),
+                    restroom.getRestroomName()); // 데이터베이스에 화장실 정보 저장
+                response.add(restroomResponse);
             } catch (Exception e) {
                 throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
             }
         }
-        return restroomsName;
+        return response;
     }
 
     /* 유료 화장실 등록 */
-    public String enrollRestroom(EnrollRestroomRequest enrollRestroomRequest) throws BaseException {
+    public RestroomResponse enrollRestroom(EnrollRestroomRequest enrollRestroomRequest)
+        throws BaseException {
         try {
             double[] longNLat = getLongNLat(enrollRestroomRequest.getAddress());
             Restroom restroom = Restroom.builder()
@@ -180,8 +185,9 @@ public class RestroomService {
                 .availableFemaleToiletCount(enrollRestroomRequest.getFemaleToiletCount())
                 .availableMaleToiletCount(enrollRestroomRequest.getMaleToiletCount())
                 .build();
-            restroomRepository.save(restroom);
-            return restroom.getRestroomName();
+            RestroomResponse response = new RestroomResponse(
+                restroomRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
+            return response;
         } catch (Exception e) {
             throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
         }
