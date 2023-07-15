@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleDatabaseException(DataAccessException e) {
 		log.error("데이터베이스에 오류가 발생했습니다.");
 		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.DATABASE_ERROR, "데이터베이스에 오류가 발생했습니다.");
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		return ResponseEntity.status(501).body(errorResponse);
 	}
 
 	@ExceptionHandler(Exception.class)
