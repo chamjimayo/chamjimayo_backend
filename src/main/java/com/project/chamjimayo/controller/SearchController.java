@@ -46,7 +46,7 @@ public class SearchController {
 	})
 	@GetMapping("/search")
 	public ResponseEntity<List<SearchResponseDto>> getAddress(
-		@Parameter(description = "검색어", required = true, example = "스타벅스신림역")
+		@Parameter(description = "검색어", required = true, example = "신림역스타벅스")
 		@RequestParam("searchWord") String searchWord,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
@@ -91,7 +91,7 @@ public class SearchController {
 	})
 	@PostMapping("/search/click/{searchId}")
 	public ResponseEntity<String> clickAddress(
-		@Parameter(description = "검색 기록 ID", required = true, example = "1")
+		@Parameter(description = "검색 기록 ID", required = true, example = "1 (Long)")
 		@PathVariable Long searchId) {
 		// searchId를 받아서 클릭 처리
 		return searchService.clickAddress(searchId);
