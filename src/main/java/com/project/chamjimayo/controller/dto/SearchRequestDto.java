@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class SearchRequestDto {
-	@Schema(description = "검색어")
+	@Schema(type = "string", example = "검색어")
 	private final String searchWord;
-	@Schema(description = "사용자 식별 아이디")
+	@Schema(type = "Long", example = "사용자 식별 아이디")
 	private final Long userId;
 
 	private SearchRequestDto(String searchWord, Long userId) {
