@@ -39,9 +39,9 @@ public class SearchController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "검색 결과 반환",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
-		@ApiResponse(responseCode = "400", description = "파라미터가 부족합니다. or 올바르지 않은 파라미터 값입니다.",
+		@ApiResponse(responseCode = "400", description = "1. 파라미터가 부족합니다. \t\n2. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-		@ApiResponse(responseCode = "404", description = "Api 응답이 올바르지 않습니다. or Json 파일이 올바르지 않습니다. or 유저를 찾지 못했습니다.",
+		@ApiResponse(responseCode = "404", description = "1. Api 응답이 올바르지 않습니다. \t\n2.Json 파일이 올바르지 않습니다. \t\n3.유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
 	})
 	@GetMapping("/search")
@@ -84,7 +84,7 @@ public class SearchController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다.",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
-		@ApiResponse(responseCode = "400", description = "파라미터가 부족합니다. or 올바르지 않은 파라미터 값입니다.",
+		@ApiResponse(responseCode = "400", description = "1. 파라미터가 부족합니다. \t\n2. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
 		@ApiResponse(responseCode = "404", description = "검색 기록을 찾을 수 없습니다.",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
