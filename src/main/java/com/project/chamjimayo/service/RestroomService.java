@@ -3,14 +3,20 @@ package com.project.chamjimayo.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.chamjimayo.controller.dto.BaseException;
+import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
+import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.RestroomDetail;
+import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
+import com.project.chamjimayo.controller.dto.RestroomNearByResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
 import com.project.chamjimayo.repository.RestroomRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -18,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -27,13 +34,20 @@ public class RestroomService {
     private final RestroomRepository restroomRepository;
     private final Environment env;
 
-    public ArrayList<Map> readJson() throws Exception {
-        /* local에 있는 파일 사용
-        Reader reader = new FileReader("/Users/kick_sim/Downloads/seoulRestroom.json");
-        JSONParser parser = new JSONParser(reader);
-        ArrayList<Map> restroomList = (ArrayList<Map>) parser.parse();
-        return restroomList;
-         */
+    /*공공화장실 데이터가 담긴 json 파일 읽어오기*/
+    public ArrayList<Map> readJson() throws BaseException {
+        /*//local에 있는 파일 사용
+        Reader reader = null;
+        try {
+            reader = new FileReader("/Users/kick_sim/Downloads/seoulRestroom.json");
+            JSONParser parser = new JSONParser(reader);
+            ArrayList<Map> restroomList = (ArrayList<Map>) parser.parse();
+            return restroomList;
+        } catch (FileNotFoundException | ParseException e) {
+            throw new BaseException(ErrorCode.FILE_NOT_FOUND);
+        }
+        */
+
         /* 구글 드라이브에 공유된 파일 사용*/
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Resource> response = restTemplate.exchange(
@@ -55,14 +69,41 @@ public class RestroomService {
                 });
             return dataObject;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BaseException(ErrorCode.IOEXCEPTION);
         }
-        return null;
     }
 
+    /*특정 주소의 좌표를 검색*/
     public double[] getLongNLat(String address) {
         String apiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="
             + address; //네이버 cloud platform GeoCoding 사용
+        ArrayList<Map> responseArrayList = geocoding(apiUrl);
+        Map responseMap = responseArrayList.get(0);
+        double longAndLat[] = {Double.parseDouble((String) responseMap.get("x")),
+            Double.parseDouble((String) responseMap.get("y"))};
+        return longAndLat;
+    }
+
+    /*남여공용 화장실인지 확인*/
+    public boolean checkSex(Map restroom) {
+        if (Integer.parseInt((String) restroom.get("남성용-대변기수")) > 0
+            && Integer.parseInt((String) restroom.get("여성용-대변기수")) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*남여공용 화장실인지 확인*/
+    public boolean checkSex(int maleToiletCount, int femaleToiletCount) {
+        if (maleToiletCount > 0 && femaleToiletCount > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /*apiUrl을 받아서 geocoding 결과를 반환해주는 func*/
+    public ArrayList<Map> geocoding(String apiUrl) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         String client_Id = env.getProperty("naver.client-id");
@@ -76,38 +117,124 @@ public class RestroomService {
             Map.class
         );
         ArrayList<Map> responseArrayList = (ArrayList<Map>) response.getBody().get("addresses");
-        Map responseMap = responseArrayList.get(0);
-        double longAndLat[] = {Double.parseDouble((String) responseMap.get("x")),
-            Double.parseDouble((String) responseMap.get("y"))};
-        return longAndLat;
+        return responseArrayList;
     }
 
-    public void importRestroom() throws Exception {
-        ArrayList<Map> restroomList = readJson();
+    /* 공공 화장실 데이터 저장 */
+    public List<String> importRestroom() throws BaseException {
+        ArrayList<Map> restroomList = null;
+        restroomList = readJson();
+        List<String> restroomsName = new ArrayList<>();
         for (Map restroom_info : restroomList) {
-            //Map restroom_info = restroomList.get(1000); // TEST
-            double[] longNLat = getLongNLat(
-                (String) restroom_info.get("소재지주소")); // 소재지 주소를 통해 위도 경도 검색
+            try {
+                //Map restroom_info = restroomList.get(51); // test
+                restroomsName.add((String) restroom_info.get("화장실명")); // 반환값을 위해 저장
+                double[] longNLat = getLongNLat(
+                    (String) restroom_info.get("소재지주소")); // 소재지 주소를 통해 위도 경도 검색
+                Restroom restroom = Restroom.builder()
+                    .restroomName((String) restroom_info.get("화장실명"))
+                    .locationLatitude(longNLat[1])
+                    .locationLongitude(longNLat[0])
+                    .unisex(checkSex(restroom_info)) // 남여공용이면 true 아니면 false
+                    //restroomManager 차후개발
+                    .address((String) restroom_info.get("소재지주소"))
+                    .operatingHour((String) restroom_info.get("개방시간"))
+                    .restroomPhoto("이미지 URL") // 차후개발
+                    .equipmentExistenceProbability(0)//차후개발
+                    .publicOrPaid("public")
+                    .accessibleToiletExistence(true) // 이용 가능 상태 default로 true
+                    .maleToiletCount(Integer.parseInt((String) restroom_info.get("남성용-대변기수")))
+                    .femaleToiletCount(Integer.parseInt((String) restroom_info.get("여성용-대변기수")))
+                    .availableMaleToiletCount(Integer.parseInt(
+                        (String) restroom_info.get("남성용-대변기수")))// default를 전체 대변기 수로 설정)
+                    .availableFemaleToiletCount(Integer.parseInt(
+                        (String) restroom_info.get("여성용-대변기수"))) // default를 전체 대변기 수로 설정
+                    .build();
+                restroomRepository.save(restroom); // 데이터베이스에 화장실 정보 저장
+            } catch (Exception e) {
+                throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+            }
+        }
+        return restroomsName;
+    }
+
+    /* 유료 화장실 등록 */
+    public String enrollRestroom(EnrollRestroomRequest enrollRestroomRequest) throws BaseException {
+        try {
+            double[] longNLat = getLongNLat(enrollRestroomRequest.getAddress());
             Restroom restroom = Restroom.builder()
-                .restroomName((String) restroom_info.get("화장실명"))
+                .restroomName(enrollRestroomRequest.getRestroomName())
                 .locationLatitude(longNLat[1])
                 .locationLongitude(longNLat[0])
-                //unisex() 차후개발
-                .roadAddress((String) restroom_info.get("소재지주소"))
-                .operatingHour((String) restroom_info.get("개방시간"))
-                .restroomPhoto("이미지 URL") // 차후개발
-                .equipmentExistenceProbability(0)//차후개발
-                .publicOrPaid("public")
-                .accessibleToiletExistence(true) // 이용 가능 상태 default로 true
-                .maleToiletCount(Integer.parseInt((String) restroom_info.get("남성용-대변기수")))
-                .femaleToiletCount(Integer.parseInt((String) restroom_info.get("여성용-대변기수")))
-                .availableMaleToiletCount(Integer.parseInt(
-                    (String) restroom_info.get("남성용-대변기수")))// default를 전체 대변기 수로 설정)
-                .availableFemaleToiletCount(Integer.parseInt(
-                    (String) restroom_info.get("여성용-대변기수"))) // default를 전체 대변기 수로 설정
+                .unisex(checkSex(enrollRestroomRequest.getMaleToiletCount(),
+                    enrollRestroomRequest.getFemaleToiletCount())) // 남여공용이면 true 아니면 false
+                //restroomManager 차후개발
+                .address(enrollRestroomRequest.getAddress())
+                .operatingHour(enrollRestroomRequest.getOperatingHour())
+                .restroomPhoto(enrollRestroomRequest.getRestroomPhoto())
+                .equipmentExistenceProbability(0)
+                .publicOrPaid(enrollRestroomRequest.getPublicOrPaid())
+                .accessibleToiletExistence(true)
+                .maleToiletCount(enrollRestroomRequest.getMaleToiletCount())
+                .femaleToiletCount(enrollRestroomRequest.getFemaleToiletCount())
+                .availableFemaleToiletCount(enrollRestroomRequest.getFemaleToiletCount())
+                .availableMaleToiletCount(enrollRestroomRequest.getMaleToiletCount())
                 .build();
-            //restroomRepository.save(restroom); // 데이터베이스에 화장실 정보 저장
-            System.out.println(restroom); //테스트
+            restroomRepository.save(restroom);
+            return restroom.getRestroomName();
+        } catch (Exception e) {
+            throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+        }
+    }
+
+    /* 주어진 distance안에 있는 화장실인지 아닌지 판별 */
+    public boolean isNearBy(RestroomNearByRequest request, String address) {
+        String apiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="
+            + address + "&coordinate=" + request.getLongitude() + ","
+            + request.getLatitude(); //네이버 cloud platform GeoCoding 사용
+        ArrayList<Map> responseArrayList = geocoding(apiUrl);
+        Map responseMap = responseArrayList.get(0);
+        if (request.getDistance() >= (double) responseMap.get("distance")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
+    @Transactional(readOnly = true)
+    public List<RestroomNearByResponse> nearBy(RestroomNearByRequest request) throws BaseException {
+        try {
+            List<Restroom> restroomList = restroomRepository.findPublicOrPaid(
+                request.getPublicOrPaid());
+            List<RestroomNearByResponse> nearByList = new ArrayList<>();
+            for (Restroom restroom : restroomList) {
+                if (isNearBy(request, restroom.getAddress())) {
+                    restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
+                    RestroomNearByResponse responseDto = new RestroomNearByResponse();
+                    responseDto = responseDto.makeDto(restroom);
+                    nearByList.add(responseDto);
+                }
+            }
+            return nearByList;
+        } catch (Exception e) {
+            throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+        }
+
+    }
+
+    /* 화장실 Id를 통해 화장실 세부 정보 검색 */
+    @Transactional(readOnly = true)
+    public RestroomDetail restroomDetail(long restroomId) throws BaseException {
+        try {
+            Restroom restroom = restroomRepository.getReferenceById(restroomId);
+            restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
+            restroom.getEquipments().size(); // lazy initialize 문제 때문에 추가
+            RestroomDetail responseDto = new RestroomDetail();
+            responseDto = responseDto.makeDto(restroom);
+            return responseDto;
+        } catch (Exception e) {
+            throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.project.chamjimayo.domain.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -19,7 +20,7 @@ public class Restroom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "restroom_id")
-    private Integer restroomId;
+    private Long restroomId;
 
     @Column(name = "restroom_name")
     private String restroomName;
@@ -34,12 +35,11 @@ public class Restroom extends BaseEntity {
 
     // 남여 공용 화장실인가?
     @Column(name = "unisex")
-    @Pattern(regexp = "[01]")
     private Boolean unisex;
 
     // 도로명 주소
-    @Column(name = "road_address")
-    private String roadAddress;
+    @Column(name = "address")
+    private String address;
 
     // 개방 시간
     @Column(name = "operating_hour")
@@ -59,7 +59,6 @@ public class Restroom extends BaseEntity {
 
     // 이용가능한 상태인가?
     @Column(name = "accessible_toilet_existence")
-    @Pattern(regexp = "[01]")
     private Boolean accessibleToiletExistence;
 
     // 남자 대변기 수
@@ -90,14 +89,15 @@ public class Restroom extends BaseEntity {
 
     @Builder
     public Restroom(String restroomName, double locationLatitude, double locationLongitude,
-        String roadAddress, String operatingHour, String restroomPhoto,
+        String address, String operatingHour, String restroomPhoto,
         double equipmentExistenceProbability, String publicOrPaid,
         boolean accessibleToiletExistence, int maleToiletCount, int femaleToiletCount,
-        int availableMaleToiletCount, int availableFemaleToiletCount) {
+        int availableMaleToiletCount, int availableFemaleToiletCount, boolean unisex) {
+        super();
         this.restroomName = restroomName;
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
-        this.roadAddress = roadAddress;
+        this.address = address;
         this.operatingHour = operatingHour;
         this.restroomPhoto = restroomPhoto;
         this.equipmentExistenceProbability = equipmentExistenceProbability;
@@ -107,5 +107,6 @@ public class Restroom extends BaseEntity {
         this.femaleToiletCount = femaleToiletCount;
         this.availableMaleToiletCount = availableMaleToiletCount;
         this.availableFemaleToiletCount = availableFemaleToiletCount;
+        this.unisex = unisex;
     }
 }
