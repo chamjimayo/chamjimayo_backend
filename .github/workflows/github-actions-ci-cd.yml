@@ -1,0 +1,64 @@
+name: CI/CD
+
+#develop 브랜치에 push 됐을 때
+on:
+  push:
+    branches:
+      - develop
+
+#job 단위로 작업
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    #github에서 코드 가져오기, with 하단의 부분은 submodule 불러오기 위함(액세스 토큰 필요)
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'corretto'
+          cache: gradle
+
+      - name: grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build -Djooq.codegen.jdbc.driver=${{ secrets.JDBC_DRIVER }} -Djooq.codegen.jdbc.url=${{ secrets.JDBC_URL }} -Djooq.codegen.jdbc.user=${{ secrets.JDBC_USER }} -Djooq.codegen.jdbc.password=${{ secrets.JDBC_PASSWORD }}
+
+      #도커 허브에 이미지 배포
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dev-repo:latest
+
+      - name: Connect ec2 and Run Docker Container
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker stop $(docker ps -a -q) 
+            docker rm $(docker ps -a -q) 
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dev-repo
+            docker run -d -p 8080:8080 --name chamjimayo-api ${{ secrets.DOCKERHUB_USERNAME }}/dev-repo

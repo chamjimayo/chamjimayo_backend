@@ -39,4 +39,8 @@ public class UserService {
 
     return String.valueOf(user.getUserId());
   }
+
+  public boolean isNicknameDuplicate(String nickname) {
+    return userRepository.existsUserByNickname(nickname);
+  }
 }
