@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleApiNotFoundException(ApiNotFoundException e) {
 		log.error( e.getMessage());
 		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.API_NOT_FOUND, e.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 	}
 
 	@ExceptionHandler(JsonFileNotFoundException.class)
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<ErrorResponse> HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 		log.error("지원하지 않는 HTTP Method입니다.");
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_HTTP_METHOD, "지원하지 않는 HTTP Method입니다.");
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION, "지원하지 않는 HTTP Method입니다.");
 		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
 	}
 

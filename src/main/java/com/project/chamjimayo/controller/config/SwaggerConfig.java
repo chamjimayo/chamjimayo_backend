@@ -58,25 +58,57 @@ public class SwaggerConfig {
 	@Bean
 	public GlobalOpenApiCustomizer openApiCustomizer() {
 		return openApi -> {
-			Schema<ErrorCode> codeSchema = new Schema<>();
-			codeSchema.type("enum");
-			codeSchema._enum(List.of(ErrorCode.values()));
-
-			Schema<ErrorResponse> errorResponseSchema = new Schema<>();
-			errorResponseSchema.type("object");
-			errorResponseSchema.addProperty("code", codeSchema);
-			errorResponseSchema.addProperty("msg", new Schema<>().type("string"));
-			errorResponseSchema.example(ErrorResponse.create(ErrorCode.AUTHENTICATION_EXCEPTION,
-				"인증 오류입니다."));
-
 			for (PathItem p : openApi.getPaths().values()) {
 				for (Operation o : p.readOperations()) {
 					ApiResponses responses = o.getResponses();
+					responses.addApiResponse("400",
+						createApiResponse("Bad Request", createErrorResponseSchema(ErrorCode.BAD_REQUEST)));
 					responses.addApiResponse("401",
-						createApiResponse("Unauthorized", errorResponseSchema));
+						createApiResponse("Unauthorized", createErrorResponseSchema(ErrorCode.AUTHENTICATION_EXCEPTION)));
+					responses.addApiResponse("403",
+						createApiResponse("Forbidden", createErrorResponseSchema(ErrorCode.FORBIDDEN_EXCEPTION)));
+					responses.addApiResponse("404",
+						createApiResponse("Not Found", createErrorResponseSchema(ErrorCode.NOT_FOUND_EXCEPTION)));
+					responses.addApiResponse("405",
+						createApiResponse("Method Not Allowed", createErrorResponseSchema(ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION)));
+					responses.addApiResponse("500",
+						createApiResponse("Internal Server Error", createErrorResponseSchema(ErrorCode.INTERNAL_SERVER_ERROR)));
 				}
 			}
 		};
+	}
+
+	private Schema<ErrorResponse> createErrorResponseSchema(ErrorCode errorCode) {
+		Schema<ErrorCode> codeSchema = new Schema<>();
+		codeSchema.type("enum");
+		codeSchema._enum(List.of(errorCode));
+
+		Schema<ErrorResponse> errorResponseSchema = new Schema<>();
+		errorResponseSchema.type("object");
+		errorResponseSchema.addProperty("code", codeSchema);
+		errorResponseSchema.addProperty("msg", new Schema<>().type("string"));
+		errorResponseSchema.example(ErrorResponse.create(errorCode, getErrorMessage(errorCode)));
+
+		return errorResponseSchema;
+	}
+
+	private String getErrorMessage(ErrorCode errorCode) {
+		switch (errorCode) {
+			case BAD_REQUEST:
+				return "잘못된 요청입니다.";
+			case AUTHENTICATION_EXCEPTION:
+				return "인증 오류입니다.";
+			case FORBIDDEN_EXCEPTION:
+				return "권한이 없습니다.";
+			case NOT_FOUND_EXCEPTION:
+				return "___을 찾을 수 없습니다.";
+			case METHOD_NOT_ALLOWED_EXCEPTION:
+				return "지원하지 않는 HTTP Method입니다.";
+			case INTERNAL_SERVER_ERROR:
+				return "예상치 못한 서버 오류입니다.";
+			default:
+				return "";
+		}
 	}
 
 	private ApiResponse createApiResponse(String message, Schema<ErrorResponse> schema) {
