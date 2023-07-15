@@ -10,6 +10,7 @@ import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.service.RestroomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,9 +36,10 @@ public class RestroomController {
 
     @Operation(summary = "공공화장실 데이터 입력", description = "공공화장실 데이터를 가져와 DB에 저장")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "데이터 입력 성공"),
-        @ApiResponse(responseCode = "400", description = "요청 변수 에러",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+        @ApiResponse(responseCode = "200", description = "공공화장실 데이터 입력"),
+        @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @PostMapping("/import")
     public ResponseEntity<List<RestroomResponse>> importRestroom() throws BaseException {
@@ -46,9 +48,13 @@ public class RestroomController {
 
     @Operation(summary = "유료화장실 등록", description = "받은 유료화장실 정보로 화장실 객체 생성 후 DB에 저장")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "데이터 입력 성공"),
+        @ApiResponse(responseCode = "200", description = "유료화장실 등록 성공"),
         @ApiResponse(responseCode = "400", description = "요청 변수 에러",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                examples = @ExampleObject(value = "{ \"code\": \"REQUEST_ERROR\", \"msg\": \"매개변수 오류입니다. 입력하신 값을 확인해주세요\" }"))),
+        @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @PostMapping("/enroll")
     public ResponseEntity<RestroomResponse> enrollRestroom(
@@ -61,7 +67,11 @@ public class RestroomController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "주변 화장실 리스트 검색 성공"),
         @ApiResponse(responseCode = "400", description = "요청 변수 에러",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+            examples = @ExampleObject(value = "{ \"code\": \"REQUEST_ERROR\", \"msg\": \"매개변수 오류입니다. 입력하신 값을 확인해주세요\" }"))),
+        @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @GetMapping("/nearby/{publicOrPaid}")
     public ResponseEntity<List<RestroomNearByResponse>> restroomNearBy(
@@ -77,9 +87,13 @@ public class RestroomController {
     }
     @Operation(summary = "화장실 세부 정보", description = "받은 화장실Id로 화장실 세부 정보를 검색 및 반환")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "화장실 세부정보 검색 성공"),
+        @ApiResponse(responseCode = "200", description = "주변 화장실 세부 정보 조회 성공"),
         @ApiResponse(responseCode = "400", description = "요청 변수 에러",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                examples = @ExampleObject(value = "{ \"code\": \"REQUEST_ERROR\", \"msg\": \"매개변수 오류입니다. 입력하신 값을 확인해주세요\" }"))),
+        @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @GetMapping("detail")
     public ResponseEntity<RestroomDetail> restroomDetail(@RequestParam Long restroomId)
