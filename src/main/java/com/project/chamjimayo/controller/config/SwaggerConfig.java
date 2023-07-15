@@ -61,18 +61,14 @@ public class SwaggerConfig {
 			for (PathItem p : openApi.getPaths().values()) {
 				for (Operation o : p.readOperations()) {
 					ApiResponses responses = o.getResponses();
-					responses.addApiResponse("400",
-						createApiResponse("Bad Request", createErrorResponseSchema(ErrorCode.BAD_REQUEST)));
 					responses.addApiResponse("401",
 						createApiResponse("Unauthorized", createErrorResponseSchema(ErrorCode.AUTHENTICATION_EXCEPTION)));
-					responses.addApiResponse("403",
-						createApiResponse("Forbidden", createErrorResponseSchema(ErrorCode.FORBIDDEN_EXCEPTION)));
-					responses.addApiResponse("404",
-						createApiResponse("Not Found", createErrorResponseSchema(ErrorCode.NOT_FOUND_EXCEPTION)));
 					responses.addApiResponse("405",
 						createApiResponse("Method Not Allowed", createErrorResponseSchema(ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION)));
 					responses.addApiResponse("500",
 						createApiResponse("Internal Server Error", createErrorResponseSchema(ErrorCode.INTERNAL_SERVER_ERROR)));
+					responses.addApiResponse("501",
+						createApiResponse("Database Error", createErrorResponseSchema(ErrorCode.DATABASE_ERROR)));
 				}
 			}
 		};
@@ -94,18 +90,14 @@ public class SwaggerConfig {
 
 	private String getErrorMessage(ErrorCode errorCode) {
 		switch (errorCode) {
-			case BAD_REQUEST:
-				return "잘못된 요청입니다.";
 			case AUTHENTICATION_EXCEPTION:
 				return "인증 오류입니다.";
-			case FORBIDDEN_EXCEPTION:
-				return "권한이 없습니다.";
-			case NOT_FOUND_EXCEPTION:
-				return "___을 찾을 수 없습니다.";
 			case METHOD_NOT_ALLOWED_EXCEPTION:
 				return "지원하지 않는 HTTP Method입니다.";
 			case INTERNAL_SERVER_ERROR:
 				return "예상치 못한 서버 오류입니다.";
+			case DATABASE_ERROR:
+				return "데이터베이스에 오류가 발생했습니다.";
 			default:
 				return "";
 		}
