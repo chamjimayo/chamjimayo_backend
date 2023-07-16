@@ -1,7 +1,8 @@
 package com.project.chamjimayo.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,16 +18,17 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
   @Override
-  public void commence(HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse,
+  public void commence(HttpServletRequest request,
+      HttpServletResponse response,
       AuthenticationException e) throws IOException {
     LOGGER.info("Responding with unauthorized error. Message - {}", e.getMessage());
 
-    ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.AUTHENTICATION_EXCEPTION,
+    ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.AUTHENTICATION_EXCEPTION,
         "인증에 실패하였습니다.");
-    httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    httpServletResponse.setCharacterEncoding("utf-8");
-    httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+    ApiStandardResponse<ErrorResponse> apiResponse = ApiStandardResponse.fail(errorResponse);
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setCharacterEncoding("utf-8");
+    response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
   }
 }

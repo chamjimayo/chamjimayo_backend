@@ -1,5 +1,6 @@
 package com.project.chamjimayo.security;
 
+import com.project.chamjimayo.service.AuthTokenService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final AuthTokenFactory authTokenFactory;
+  private final AuthTokenService authTokenService;
   private final CustomUserDetailsService customUserDetailsService;
 
   @Override
@@ -26,11 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     String accessToken = getAccessTokenFromRequest(request);
 
-    if (!StringUtils.hasText(accessToken) && !authTokenFactory.validateToken(accessToken)) {
+    if (!StringUtils.hasText(accessToken) && !authTokenService.validateToken(accessToken)) {
       throw new BadCredentialsException("jwt 토큰이 유효하지 않습니다.");
     }
 
-    String userId = authTokenFactory.extractPayload(accessToken);
+    String userId = authTokenService.extractPayload(accessToken);
 
     UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -42,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private String getAccessTokenFromRequest(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Authorization");
+    String bearerToken = request.getHeader("Bearer-Token");
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7);
     }
