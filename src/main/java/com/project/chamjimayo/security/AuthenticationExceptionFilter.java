@@ -1,6 +1,7 @@
 package com.project.chamjimayo.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorCode;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.exception.InvalidTokenException;
@@ -22,12 +23,13 @@ public class JwtAuthenticationExceptionFilter extends OncePerRequestFilter {
     try {
       filterChain.doFilter(request, response);
     } catch (InvalidTokenException e) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_TOKEN_EXCEPTION,
           "유효한 토큰이 아닙니다.");
+      ApiStandardResponse<ErrorResponse> apiResponse = ApiStandardResponse.fail(errorResponse);
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setCharacterEncoding("utf-8");
-      response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+      response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
     }
   }
 }
