@@ -8,6 +8,7 @@ import com.project.chamjimayo.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -40,9 +41,11 @@ public class SearchController {
 		@ApiResponse(responseCode = "200", description = "검색 결과 반환",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
 		@ApiResponse(responseCode = "400", description = "1. 파라미터가 부족합니다. \t\n2. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
+			examples = @ExampleObject(value = "{ \"code\": \"NEED_MORE_PARAMETER\", \"msg\": \"파라미터가 부족합니다.\" }"))),
 		@ApiResponse(responseCode = "404", description = "1. Api 응답이 올바르지 않습니다. \t\n2.Json 파일이 올바르지 않습니다. \t\n3.유저를 찾지 못했습니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"API_NOT_FOUND\", \"msg\": \" Api 응답이 올바르지 않습니다.\" }")))
 	})
 	@GetMapping("/search")
 	public ResponseEntity<List<SearchResponseDto>> getAddress(
@@ -64,6 +67,10 @@ public class SearchController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "최근 검색 기록 반환",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
+		@ApiResponse(responseCode = "404", description = "유저를 찾지 못했습니다.",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"USER_NOT_FOUND_EXCEPTION\", \"msg\": \"유저를 찾지 못했습니다.\" }")))
+
 	})
 	@GetMapping("/search/recent")
 	public ResponseEntity<SearchResponseDto> getRecentAddress(
@@ -85,9 +92,11 @@ public class SearchController {
 		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다.",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
 		@ApiResponse(responseCode = "400", description = "1. 파라미터가 부족합니다. \t\n2. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"NEED_MORE_PARAMETER\", \"msg\": \"파라미터가 부족합니다.\" }"))),
 		@ApiResponse(responseCode = "404", description = "검색 기록을 찾을 수 없습니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"SEARCH_NOT_FOUND\", \"msg\": \"검색 기록을 찾을 수 없습니다.\" }")))
 	})
 	@PostMapping("/search/click/{searchId}")
 	public ResponseEntity<String> clickAddress(
