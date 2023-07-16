@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-  //400 BAD_REQUEST 잘못된 요청
+  // 400 BAD_REQUEST 잘못된 요청
   INVALID_PARAMETER,
   NEED_MORE_PARAMETER,
   USER_DUPLICATE_EXCEPTION,
@@ -17,7 +17,7 @@ public enum ErrorCode {
 
   // 403 Forbidden 권한 없음
 
-  //404 NOT_FOUND 잘못된 리소스 접근
+  // 404 NOT_FOUND 잘못된 리소스 접근
   USER_NOT_FOUND_EXCEPTION,
   SEARCH_NOT_FOUND,
   API_NOT_FOUND,
@@ -27,9 +27,9 @@ public enum ErrorCode {
   METHOD_NOT_ALLOWED_EXCEPTION,
   METHOD_ARGUMENT_NOT_VALID_EXCEPTION,
 
-  //500 INTERNAL SERVER ERROR 서버 오류
+  // 500 INTERNAL SERVER ERROR 서버 오류
   INTERNAL_SERVER_ERROR,
 
-  //501 DATABASE ERROR 데이터베이스 오류 (서버 오류)
+  // 501 DATABASE ERROR 데이터베이스 오류 (서버 오류)
   DATABASE_ERROR
 }
