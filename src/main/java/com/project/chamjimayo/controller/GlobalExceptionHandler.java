@@ -18,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
+/*
 	@ExceptionHandler(ApiNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleApiNotFoundException(ApiNotFoundException e) {
 		log.error( e.getMessage());
@@ -75,5 +75,5 @@ public class GlobalExceptionHandler {
 		log.error("예상치 못한 서버 오류가 발생했습니다.");
 		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-	}
+	}*/
 }

@@ -1,5 +1,6 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ValidationNicknameResponse;
 import com.project.chamjimayo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,9 +27,9 @@ public class UserController {
       @ApiResponse(responseCode = "200", description = "중복 체크 성공")
   })
   @GetMapping("/check-nickname/{nickname}")
-  public ResponseEntity<ValidationNicknameResponse> nicknameCheckDuplication(
+  public ResponseEntity<ApiStandardResponse<ValidationNicknameResponse>> nicknameCheckDuplication(
       @PathVariable("nickname") String nickname) {
-    return ResponseEntity.ok(ValidationNicknameResponse.create(
-        userService.isNicknameDuplicate(nickname)));
+    return ResponseEntity.ok(ApiStandardResponse.success(ValidationNicknameResponse.create(
+        userService.isNicknameDuplicate(nickname))));
   }
 }
