@@ -1,6 +1,6 @@
 package com.project.chamjimayo.exception;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class ApiNotFoundException extends RuntimeException {
 
@@ -8,7 +8,7 @@ public class ApiNotFoundException extends RuntimeException {
 		super(msg);
 	}
 
-	public ErrorCode toErrorCode() {
-		return ErrorCode.API_NOT_FOUND;
+	public ErrorStatus toErrorCode() {
+		return ErrorStatus.API_NOT_FOUND;
 	}
 }
