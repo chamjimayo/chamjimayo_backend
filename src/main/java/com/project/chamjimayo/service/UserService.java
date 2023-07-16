@@ -5,6 +5,7 @@ import com.project.chamjimayo.exception.UserDuplicateException;
 import com.project.chamjimayo.exception.UserNickNameDuplicateException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.UserRepository;
+import com.project.chamjimayo.service.dto.DuplicateCheckDto;
 import com.project.chamjimayo.service.dto.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,12 +36,12 @@ public class UserService {
   @Transactional(readOnly = true)
   public String getUserByAuthId(String authId) {
     User user = userRepository.findUserByAuthId(authId)
-        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
+        .orElseThrow(() -> new UserNotFoundException("사용자를 찾지 못했습니다."));
 
     return String.valueOf(user.getUserId());
   }
 
-  public boolean isNicknameDuplicate(String nickname) {
-    return userRepository.existsUserByNickname(nickname);
+  public DuplicateCheckDto isNicknameDuplicate(String nickname) {
+    return DuplicateCheckDto.create(userRepository.existsUserByNickname(nickname));
   }
 }
