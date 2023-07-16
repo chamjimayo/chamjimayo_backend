@@ -4,6 +4,8 @@ import com.project.chamjimayo.controller.dto.ErrorCode;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.exception.ApiNotFoundException;
 import com.project.chamjimayo.exception.JsonFileNotFoundException;
+import com.project.chamjimayo.exception.RestroomNotFoundException;
+import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -37,6 +39,20 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleInvalidSearchHistoryNotFoundException(SearchHistoryNotFoundException e) {
 		log.error( e.getMessage());
 		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.SEARCH_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
+	@ExceptionHandler(ReviewNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleReviewNotFoundException(ReviewNotFoundException e) {
+		log.error( e.getMessage());
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.REVIEW_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
+	@ExceptionHandler(RestroomNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleRestroomNotFoundException(RestroomNotFoundException e) {
+		log.error( e.getMessage());
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.RESTROOM_NOT_FOUND, e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 	}
 

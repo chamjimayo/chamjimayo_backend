@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -46,5 +47,19 @@ public class Review extends BaseEntity {
 	@Max(5)
 	@Column(name = "rating")
 	private Float rating;
+
+	@Builder
+	public Review(User user, Restroom restroom, String reviewContent, Float rating) {
+		this.user = user;
+		this.restroom = restroom;
+		this.reviewContent = reviewContent;
+		this.rating = rating;
+	}
+
+	// 리뷰 수정을 위한 setter
+	public void UpdateReview(String reviewContent, Float rating) {
+		this.reviewContent = reviewContent;
+		this.rating = rating;
+	}
 }
 
