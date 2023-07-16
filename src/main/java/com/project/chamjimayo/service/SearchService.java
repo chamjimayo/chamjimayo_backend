@@ -1,6 +1,8 @@
 package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
+import com.project.chamjimayo.controller.dto.SearchRequestDto;
+import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.domain.entity.Search;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.ApiNotFoundException;
@@ -9,8 +11,6 @@ import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserRepository;
-import com.project.chamjimayo.controller.dto.SearchRequestDto;
-import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,15 +102,6 @@ public class SearchService {
 		return searchResponseDTOList;
 	}
 
-
-	/**
-	 * API 응답에서 가게 이름을 추출하여 리스트로 반환
-	 */
-	private List<String> extractName(String responseBody) {
-		// searchPoiInfo의 pois의 poi의 모든 요소 중 name 값 반환
-		return JsonPath.read(responseBody, "$.searchPoiInfo.pois.poi[*].name");
-	}
-
 	/**
 	 * API 응답에서 도로명 주소를 추출하여 리스트로 반환
 	 */
@@ -161,6 +152,14 @@ public class SearchService {
 			lotNumberAddressList.add(lotNumberAddress.toString());
 		}
 		return lotNumberAddressList;
+	}
+
+	/**
+	 * API 응답에서 가게 이름을 추출하여 리스트로 반환
+	 */
+	private List<String> extractName(String responseBody) {
+		// searchPoiInfo의 pois의 poi의 모든 요소 중 name 값 반환
+		return JsonPath.read(responseBody, "$.searchPoiInfo.pois.poi[*].name");
 	}
 
 	/**
