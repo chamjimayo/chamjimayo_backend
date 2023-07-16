@@ -2,6 +2,7 @@ package com.project.chamjimayo.controller.config;
 
 import com.project.chamjimayo.controller.dto.ErrorCode;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import io.swagger.v3.oas.models.servers.Server;
 import java.util.List;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
@@ -45,7 +47,7 @@ public class SwaggerConfig {
 		SecurityRequirement securityRequirement = new SecurityRequirement()
 			.addList("api key");
 
-		return new OpenAPI()
+		return new OpenAPI().addServersItem(new Server().url("dev.chamjimayo.site"))
 			.components(new Components().addSecuritySchemes("api key", securityScheme))
 			.addSecurityItem(securityRequirement)
 			.info(new Info().title("Chamjimayo project")
