@@ -95,7 +95,7 @@ public class SwaggerConfig {
 			case METHOD_NOT_ALLOWED_EXCEPTION:
 				return "지원하지 않는 HTTP Method입니다.";
 			case INTERNAL_SERVER_ERROR:
-				return "예상치 못한 서버 오류입니다.";
+				return "서버 내부 오류가 발생했습니다.";
 			case DATABASE_ERROR:
 				return "데이터베이스에 오류가 발생했습니다.";
 			default:
