@@ -1,5 +1,6 @@
 name: CI/CD
 
+#github action은 가상머신을 제공
 #develop 브랜치에 push 됐을 때
 on:
   push:
@@ -29,6 +30,21 @@ jobs:
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Get Github action IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      #ec2에 github action 가상머신 ip 추가
+      #ssh 관련 작업하기 위함
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_EC2_SG_ID }} --group-name ${{secrets.AWS_EC2_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+
       - name: Build with Gradle
         run: ./gradlew build
 
@@ -50,6 +66,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dev-repo:latest
 
+      #ec2에 도커 이미지 실행
       - name: Connect ec2 and Run Docker Container
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -62,3 +79,13 @@ jobs:
             docker rm $(docker ps -a -q) 
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dev-repo
             docker run -d -p 8080:8080 --name chamjimayo-api ${{ secrets.DOCKERHUB_USERNAME }}/dev-repo
+
+      #ec2 시큐리티 그룹에서 github action ip 제거
+      - name: Remove Github Actions IP from security group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_SG_ID }} --group-name ${{secrets.AWS_EC2_SG_NAME}} --protocol ssh --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
