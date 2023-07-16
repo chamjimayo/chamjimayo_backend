@@ -75,7 +75,7 @@ public class SearchController {
 
   })
   @Parameters({
-      @Parameter(name = "Authorization", description = "jwt token",
+      @Parameter(name = "Bearer-Token", description = "jwt token",
           in = ParameterIn.HEADER, schema = @Schema(type = "string"))
   })
   @GetMapping("/search/recent")

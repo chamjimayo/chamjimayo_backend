@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class ApiStandardResponse<T> {
   @Schema(description = "response code")
-  private final int code;
+  private final String code;
 
   @Schema(description = "response message")
   private final String msg;
@@ -14,17 +14,17 @@ public class ApiStandardResponse<T> {
   @Schema(description = "response data")
   private final T data;
 
-  private ApiStandardResponse(int code, String msg, T data) {
+  private ApiStandardResponse(String code, String msg, T data) {
     this.code = code;
     this.msg = msg;
     this.data = data;
   }
 
   public static <T> ApiStandardResponse<T> success(T data) {
-    return new ApiStandardResponse<>(200, "success", data);
+    return new ApiStandardResponse<>("00", "success", data);
   }
 
-  public static <T> ApiStandardResponse<T> fail(T data, int code) {
-    return new ApiStandardResponse<>(code, "fail", data);
+  public static <T extends ErrorResponse> ApiStandardResponse<T> fail(T data) {
+    return new ApiStandardResponse<>(data.getStatus().toString(), "fail", data);
   }
 }

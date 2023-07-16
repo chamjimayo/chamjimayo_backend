@@ -1,7 +1,7 @@
 package com.project.chamjimayo.controller.config;
 
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -25,7 +25,6 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 
 @Configuration
 @OpenAPIDefinition(servers = {
@@ -68,27 +67,25 @@ public class SwaggerConfig {
       for (PathItem p : openApi.getPaths().values()) {
         for (Operation o : p.readOperations()) {
           ApiResponses responses = o.getResponses();
-          responses.addApiResponse("401",
-              createApiResponse("Unauthorized",
-                  createErrorResponseSchema(ErrorCode.AUTHENTICATION_EXCEPTION)));
           responses.addApiResponse("405",
               createApiResponse("Method Not Allowed",
-                  createErrorResponseSchema(ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION)));
+                  createErrorResponseSchema(ErrorStatus.METHOD_NOT_ALLOWED_EXCEPTION)));
           responses.addApiResponse("500",
               createApiResponse("Internal Server Error",
-                  createErrorResponseSchema(ErrorCode.INTERNAL_SERVER_ERROR)));
+                  createErrorResponseSchema(ErrorStatus.INTERNAL_SERVER_ERROR)));
           responses.addApiResponse("501",
               createApiResponse("Database Error",
-                  createErrorResponseSchema(ErrorCode.DATABASE_ERROR)));
+                  createErrorResponseSchema(ErrorStatus.DATABASE_ERROR)));
         }
       }
     };
   }
 
-  private Schema<ApiStandardResponse<ErrorResponse>> createErrorResponseSchema(ErrorCode errorCode) {
-    Schema<ErrorCode> codeSchema = new Schema<>();
+  private Schema<ApiStandardResponse<ErrorResponse>> createErrorResponseSchema(
+      ErrorStatus errorStatus) {
+    Schema<ErrorStatus> codeSchema = new Schema<>();
     codeSchema.type("enum");
-    codeSchema._enum(List.of(errorCode));
+    codeSchema._enum(List.of(errorStatus));
 
     Schema<ErrorResponse> errorResponseSchema = new Schema<>();
     errorResponseSchema.type("object");
@@ -102,13 +99,12 @@ public class SwaggerConfig {
     apiStandardResponseSchema.addProperty("data", errorResponseSchema);
 
     apiStandardResponseSchema.example(
-        ApiStandardResponse.fail(ErrorResponse.create(errorCode, getErrorMessage(errorCode)),
-            HttpStatus.BAD_REQUEST.value()));
+        ApiStandardResponse.fail(ErrorResponse.create(errorStatus, getErrorMessage(errorStatus))));
     return apiStandardResponseSchema;
   }
 
-  private String getErrorMessage(ErrorCode errorCode) {
-    switch (errorCode) {
+  private String getErrorMessage(ErrorStatus errorStatus) {
+    switch (errorStatus) {
       case AUTHENTICATION_EXCEPTION:
         return "인증 오류입니다.";
       case METHOD_NOT_ALLOWED_EXCEPTION:

@@ -1,19 +1,7 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.exception.ApiNotFoundException;
-import com.project.chamjimayo.exception.JsonFileNotFoundException;
-import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @ControllerAdvice

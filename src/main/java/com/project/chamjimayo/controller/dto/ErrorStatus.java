@@ -1,6 +1,6 @@
 package com.project.chamjimayo.controller.dto;
 
-public enum ErrorCode {
+public enum ErrorStatus {
   //400 BAD_REQUEST 잘못된 요청
   INVALID_PARAMETER("01"),
   NEED_MORE_PARAMETER("02"),
@@ -32,7 +32,7 @@ public enum ErrorCode {
 
   private final String code;
 
-  ErrorCode(String code) {
+  ErrorStatus(String code) {
     this.code = code;
   }
 
