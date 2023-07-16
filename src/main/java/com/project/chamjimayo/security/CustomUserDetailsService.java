@@ -23,6 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             new UsernameNotFoundException("유저를 찾을 수 없습니다. id: " + id)
         );
 
-    return CustomUserDetails.create(String.valueOf(user.getUserId()), user.getRole());
+    return CustomUserDetails.create(user.getUserId(), user.getRole());
   }
 }

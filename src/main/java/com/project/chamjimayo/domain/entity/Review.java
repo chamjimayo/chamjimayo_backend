@@ -1,7 +1,16 @@
 package com.project.chamjimayo.domain.entity;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,7 +25,7 @@ public class Review extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "review_id")
-	private Integer reviewId;
+	private Long reviewId;
 
 	// 회원 아이디 (해당 리뷰를 어떤 회원이 썼는가)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +46,5 @@ public class Review extends BaseEntity {
 	@Max(5)
 	@Column(name = "rating")
 	private Float rating;
-
 }
 

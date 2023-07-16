@@ -27,8 +27,13 @@ dependencies {
 
 	// security 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	// JWT를 위한 의존성
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'org.springdoc:springdoc-openapi-core:1.1.49'
+	implementation 'org.springdoc:springdoc-openapi:2.0.4'
+	implementation 'org.springdoc:springdoc-openapi:2.0.4'
+	implementation 'org.springdoc:springdoc-openapi:2.0.4'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
@@ -40,8 +45,21 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
 	// validation 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// json path 의존성
+	implementation 'com.jayway.jsonpath:json-path:2.6.0'
+
+	// security 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// JWT를 위한 의존성
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
 }
 
 tasks.named('test') {

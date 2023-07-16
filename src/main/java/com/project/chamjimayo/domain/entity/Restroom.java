@@ -16,10 +16,10 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Restroom extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "restroom_id")
-    private Integer restroomId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "restroom_id")
+	private Long restroomId;
 
     @Column(name = "restroom_name")
     private String restroomName;

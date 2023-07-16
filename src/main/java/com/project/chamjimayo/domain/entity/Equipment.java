@@ -1,6 +1,14 @@
 package com.project.chamjimayo.domain.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,7 +23,7 @@ public class Equipment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "equipment_id")
-	private Integer equipmentId;
+	private Long equipmentId;
 
 	// 화장실 아이디 (해당 비품의 화장실)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -33,6 +41,5 @@ public class Equipment {
 	// 화장실 구역 (몇 번째 칸인가?)
 	@Column(name = "restroom_section")
 	private String restroomSection;
-
 }
 

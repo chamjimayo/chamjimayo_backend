@@ -1,7 +1,16 @@
 package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,7 +25,7 @@ public class Board extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id")
-	private Integer boardId;
+	private Long boardId;
 
 	// 제목
 	@Column(name = "title")
@@ -44,6 +53,5 @@ public class Board extends BaseEntity {
 
 	@OneToMany(mappedBy = "board")
 	private List<BoardImage> boardImages;
-
 }
 

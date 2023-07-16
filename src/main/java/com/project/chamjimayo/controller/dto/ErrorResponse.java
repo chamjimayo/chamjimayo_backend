@@ -5,11 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class ErrorResponse {
-
-  @Schema(type = "enum", example = "INVALID_TOKEN_EXCEPTION")
+  @Schema(type = "enum", example = "오류에 대한 코드")
   private final ErrorCode code;
 
-  @Schema(type = "string", example = "매개변수 오류입니다. 입력하신 값을 확인해주세요")
+  @Schema(type = "string", example = "오류에 대한 간단한 메세지")
   private final String msg;
 
   public ErrorResponse(ErrorCode code, String msg) {
