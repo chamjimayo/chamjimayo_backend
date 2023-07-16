@@ -1,4 +1,4 @@
-package com.project.chamjimayo.security.dto;
+package com.project.chamjimayo.service.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

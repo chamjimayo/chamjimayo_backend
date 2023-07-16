@@ -1,9 +1,10 @@
-package com.project.chamjimayo.security;
+package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.domain.entity.Token;
 import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.repository.TokenRepository;
-import com.project.chamjimayo.security.dto.AuthTokenDto;
+import com.project.chamjimayo.security.JwtTokenProvider;
+import com.project.chamjimayo.service.dto.AuthTokenDto;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class AuthTokenFactory {
+public class AuthTokenService {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final TokenRepository tokenRepository;
