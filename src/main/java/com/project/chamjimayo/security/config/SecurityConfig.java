@@ -33,7 +33,6 @@ public class SecurityConfig {
     return new JwtAuthenticationExceptionFilter();
   }
 
-  @Bean
   public ApiKeyAuthenticationFilter apiKeyAuthenticationFilter() {
     ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
         apiProperties.getHeaderName());
@@ -70,9 +69,10 @@ public class SecurityConfig {
     http.exceptionHandling()
         .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
-    http.addFilter(apiKeyAuthenticationFilter());
     http
-        .antMatcher("/address/search/**")
+        .addFilter(apiKeyAuthenticationFilter());
+
+    http
         .antMatcher("/api/users")
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtAuthenticationExceptionFilter(), JwtAuthenticationFilter.class);
