@@ -4,13 +4,12 @@ package com.project.chamjimayo.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.domain.entity.Restroom;
-import com.project.chamjimayo.repository.RestroomRepository;
+import com.project.chamjimayo.repository.RestroomJpaRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -24,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestroomService {
 
-    private final RestroomRepository restroomRepository;
+    private final RestroomJpaRepository restroomJpaRepository;
     private final Environment env;
 
     public ArrayList<Map> readJson() throws Exception {
