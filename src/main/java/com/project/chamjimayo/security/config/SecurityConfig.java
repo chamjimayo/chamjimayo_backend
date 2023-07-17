@@ -1,14 +1,15 @@
 package com.project.chamjimayo.security.config;
 
 import com.project.chamjimayo.security.ApiKeyAuthenticationFilter;
-import com.project.chamjimayo.security.AuthTokenFactory;
+import com.project.chamjimayo.service.AuthTokenService;
 import com.project.chamjimayo.security.CustomUserDetailsService;
-import com.project.chamjimayo.security.JwtAuthenticationExceptionFilter;
+import com.project.chamjimayo.security.AuthenticationExceptionFilter;
 import com.project.chamjimayo.security.JwtAuthenticationFilter;
 import com.project.chamjimayo.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,18 +23,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   private final CustomUserDetailsService customUserDetailsService;
-  private final AuthTokenFactory authTokenFactory;
+  private final AuthTokenService authTokenService;
   private final ApiProperties apiProperties;
 
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(authTokenFactory, customUserDetailsService);
+    return new JwtAuthenticationFilter(authTokenService, customUserDetailsService);
   }
 
-  public JwtAuthenticationExceptionFilter jwtAuthenticationExceptionFilter() {
-    return new JwtAuthenticationExceptionFilter();
+  public AuthenticationExceptionFilter authenticationExceptionFilter() {
+    return new AuthenticationExceptionFilter();
   }
 
-  @Bean
   public ApiKeyAuthenticationFilter apiKeyAuthenticationFilter() {
     ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
         apiProperties.getHeaderName());
@@ -52,7 +52,35 @@ public class SecurityConfig {
   }
 
   @Bean
+  @Order(1)
   public SecurityFilterChain filterChainWithJwt(HttpSecurity http) throws Exception {
+    getSecurityChain(http);
+
+    http
+        .antMatcher("/api/address/search")
+        .antMatcher("/api/address/search/recent")
+        .addFilter(apiKeyAuthenticationFilter())
+        .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
+        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(authenticationExceptionFilter(), JwtAuthenticationFilter.class);
+
+    return http.build();
+  }
+
+  @Bean
+  @Order(2)
+  public SecurityFilterChain filterChainWithoutJwt(HttpSecurity http) throws Exception {
+    getSecurityChain(http);
+
+    http
+        .antMatcher("/api/**")
+        .addFilter(apiKeyAuthenticationFilter())
+        .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class);
+
+    return http.build();
+  }
+
+  private void getSecurityChain(HttpSecurity http) throws Exception {
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .csrf().disable()
@@ -69,14 +97,5 @@ public class SecurityConfig {
 
     http.exceptionHandling()
         .authenticationEntryPoint(new RestAuthenticationEntryPoint());
-
-    http.addFilter(apiKeyAuthenticationFilter());
-    http
-        .antMatcher("/api/auth/**")
-        .antMatcher("/address/search/**")
-        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtAuthenticationExceptionFilter(), JwtAuthenticationFilter.class);
-
-    return http.build();
   }
 }

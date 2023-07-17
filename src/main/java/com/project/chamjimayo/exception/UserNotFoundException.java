@@ -1,6 +1,6 @@
 package com.project.chamjimayo.exception;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class UserNotFoundException extends RuntimeException{
 
@@ -8,7 +8,7 @@ public class UserNotFoundException extends RuntimeException{
     super(msg);
   }
 
-  public ErrorCode toErrorCode() {
-    return ErrorCode.USER_NOT_FOUND_EXCEPTION;
+  public ErrorStatus toErrorCode() {
+    return ErrorStatus.USER_NOT_FOUND_EXCEPTION;
   }
 }

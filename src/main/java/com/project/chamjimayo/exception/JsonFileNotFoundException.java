@@ -1,6 +1,6 @@
 package com.project.chamjimayo.exception;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class JsonFileNotFoundException extends RuntimeException {
 
@@ -8,7 +8,7 @@ public class JsonFileNotFoundException extends RuntimeException {
 		super(msg);
 	}
 
-	public ErrorCode toErrorCode() {
-		return ErrorCode.JSON_NOT_FOUND;
+	public ErrorStatus toErrorCode() {
+		return ErrorStatus.JSON_NOT_FOUND;
 	}
 }
