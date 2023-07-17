@@ -26,7 +26,7 @@ public class RestroomQueryRepository {
   public RestroomSummaryDto findUsingRestRoomDtoByUserId(Long id) {
     RestroomSummaryDto dto = jpaQueryFactory.select(
             Projections.constructor(RestroomSummaryDto.class,
-                restroom.restroomId, restroom.restroomName, restroom.roadAddress,
+                restroom.restroomId, restroom.restroomName, restroom.address,
                 restroom.reviews.size(), restroom.operatingHour))
         .from(restroom)
         .innerJoin(user).on(restroom.restroomId.eq(user.usingRestroomId))
@@ -44,7 +44,7 @@ public class RestroomQueryRepository {
       (Long id, Pageable pageable) {
     List<RestroomSummaryDto> dtos = jpaQueryFactory.select(
             Projections.constructor(RestroomSummaryDto.class,
-                restroom.restroomId, restroom.restroomName, restroom.roadAddress,
+                restroom.restroomId, restroom.restroomName, restroom.address,
                 restroom.reviews.size(), restroom.operatingHour))
         .from(restroom)
         .innerJoin(usedRestroom).on(restroom.restroomId.eq(usedRestroom.restroomId))
