@@ -6,6 +6,7 @@ import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.exception.ApiNotFoundException;
 import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
+import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,14 @@ public class GlobalExceptionHandler {
 		MissingServletRequestParameterException e) {
 		log.error("파라미터가 부족합니다.");
 		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.NEED_MORE_PARAMETER, "파라미터가 부족합니다.");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(ApiStandardResponse.fail(errorResponse));
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleValidationException(ValidationException e) {
+		log.error("유효성 검사에 실패했습니다.");
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_PARAMETER, "제약에 맞는 올바른 파라미터를 입력하세요.");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(ApiStandardResponse.fail(errorResponse));
 	}
