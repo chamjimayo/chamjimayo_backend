@@ -5,6 +5,8 @@ import com.project.chamjimayo.controller.dto.ErrorCode;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.exception.ApiNotFoundException;
 import com.project.chamjimayo.exception.JsonFileNotFoundException;
+import com.project.chamjimayo.exception.RestroomNotFoundException;
+import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,24 @@ public class GlobalExceptionHandler {
 		JsonFileNotFoundException e) {
 		log.error(e.getMessage());
 		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.JSON_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(ApiStandardResponse.fail(errorResponse));
+	}
+
+	@ExceptionHandler(ReviewNotFoundException.class)
+	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleReviewNotFoundException(
+		ReviewNotFoundException e) {
+		log.error(e.getMessage());
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.REVIEW_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(ApiStandardResponse.fail(errorResponse));
+	}
+
+	@ExceptionHandler(RestroomNotFoundException.class)
+	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleRestroomNotFoundException(
+		RestroomNotFoundException e) {
+		log.error(e.getMessage());
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.RESTROOM_NOT_FOUND, e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
 			.body(ApiStandardResponse.fail(errorResponse));
 	}
