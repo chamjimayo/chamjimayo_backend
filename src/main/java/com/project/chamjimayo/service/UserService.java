@@ -1,5 +1,6 @@
 package com.project.chamjimayo.service;
 
+import com.project.chamjimayo.controller.dto.PointChargeDto;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.UserDuplicateException;
 import com.project.chamjimayo.exception.UserNickNameDuplicateException;
@@ -43,5 +44,23 @@ public class UserService {
 
   public DuplicateCheckDto isNicknameDuplicate(String nickname) {
     return DuplicateCheckDto.create(userRepository.existsUserByNickname(nickname));
+  }
+
+  public PointChargeDto chargePoints(PointChargeDto requestDTO) {
+    Long userId = requestDTO.getUserId();
+    Integer Point = requestDTO.getPoint();
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
+
+    int currentPoint = user.getPoint() != null ? user.getPoint() : 0;
+    int newPoint = requestDTO.getPoint();
+    int totalPoint = newPoint + currentPoint;
+    user.changePoint(totalPoint);
+
+    userRepository.save(user);
+
+    PointChargeDto responseDTO = PointChargeDto.create(userId, Point);
+
+    return responseDTO;
   }
 }

@@ -81,5 +81,10 @@ public class User extends BaseEntity {
 		this.authId = authId;
 		this.authType = authType;
 	}
+
+	// 포인트 충전을 위한 setter
+	public void changePoint(Integer point) {
+		this.point = point;
+	}
 }
 
