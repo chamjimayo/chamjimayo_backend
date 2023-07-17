@@ -131,7 +131,7 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"SEARCH_NOT_FOUND\", "
 					+ "\"msg\":\"검색 기록을 찾을 수 없습니다.\"} }")))})
-	@PostMapping("/search/click/{searchId}")
+	@PostMapping("/click/{searchId}")
 	public ResponseEntity<ApiStandardResponse<String>> clickAddress(
 		@Parameter(description = "검색 기록 ID", required = true, example = "1 (Long)")
 		@PathVariable Long searchId) {
