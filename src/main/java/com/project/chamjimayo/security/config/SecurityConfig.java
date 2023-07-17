@@ -57,7 +57,10 @@ public class SecurityConfig {
     getSecurityChain(http);
 
     http
-        .antMatcher("/api/**")
+        .antMatcher("/api/address/search/**")
+        .antMatcher("/api/reveiew/write")
+        .antMatcher("/api/review/delete")
+        .antMatcher("api/review/update")
         .addFilter(apiKeyAuthenticationFilter())
         .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
