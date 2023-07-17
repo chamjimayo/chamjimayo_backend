@@ -67,15 +67,15 @@ public class SwaggerConfig {
       for (PathItem p : openApi.getPaths().values()) {
         for (Operation o : p.readOperations()) {
           ApiResponses responses = o.getResponses();
+          responses.addApiResponse("401",
+              createApiResponse("Api 키 오류",
+                  createErrorResponseSchema(ErrorStatus.AUTHENTICATION_EXCEPTION)));
           responses.addApiResponse("405",
               createApiResponse("Method Not Allowed",
                   createErrorResponseSchema(ErrorStatus.METHOD_NOT_ALLOWED_EXCEPTION)));
           responses.addApiResponse("500",
               createApiResponse("Internal Server Error",
                   createErrorResponseSchema(ErrorStatus.INTERNAL_SERVER_ERROR)));
-          responses.addApiResponse("501",
-              createApiResponse("Database Error",
-                  createErrorResponseSchema(ErrorStatus.DATABASE_ERROR)));
         }
       }
     };
@@ -106,13 +106,11 @@ public class SwaggerConfig {
   private String getErrorMessage(ErrorStatus errorStatus) {
     switch (errorStatus) {
       case AUTHENTICATION_EXCEPTION:
-        return "인증 오류입니다.";
+        return "Api 키가 올바르지 않습니다.";
       case METHOD_NOT_ALLOWED_EXCEPTION:
         return "지원하지 않는 HTTP Method입니다.";
       case INTERNAL_SERVER_ERROR:
         return "서버 내부 오류가 발생했습니다.";
-      case DATABASE_ERROR:
-        return "데이터베이스에 오류가 발생했습니다.";
       default:
         return "";
     }

@@ -1,5 +1,6 @@
 package com.project.chamjimayo.security;
 
+import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.service.AuthTokenService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -28,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String accessToken = getAccessTokenFromRequest(request);
 
     if (!StringUtils.hasText(accessToken) && !authTokenService.validateToken(accessToken)) {
-      throw new BadCredentialsException("jwt 토큰이 유효하지 않습니다.");
+      throw new InvalidTokenException("jwt 토큰이 유효하지 않습니다.");
     }
 
     String userId = authTokenService.extractPayload(accessToken);

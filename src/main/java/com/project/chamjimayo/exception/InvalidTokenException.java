@@ -1,9 +1,8 @@
 package com.project.chamjimayo.exception;
 
 import com.project.chamjimayo.controller.dto.ErrorStatus;
-import org.springframework.security.core.AuthenticationException;
 
-public class InvalidTokenException extends AuthenticationException {
+public class InvalidTokenException extends RuntimeException {
 
   public InvalidTokenException(final String message) {
     super(message);
