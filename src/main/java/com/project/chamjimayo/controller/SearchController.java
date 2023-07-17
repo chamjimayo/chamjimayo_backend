@@ -29,11 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "search_address", description = "주소 검색 API")
 @RequiredArgsConstructor
-@RequestMapping("/address")
+@RequestMapping("/api/address")
 @RestController
 public class SearchController {
 
-	private final SearchService searchService;
+  private final SearchService searchService;
 
 	/**
 	 * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능 예시:
@@ -41,15 +41,25 @@ public class SearchController {
 	 */
 	@Operation(summary = "검색", description = "검색어를 받고 검색 결과를 제공합니다.")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "검색 결과 반환",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
-		@ApiResponse(responseCode = "400", description = "1. 유효한 토큰이 아닙니다. \t\n2. 파라미터가 부족합니다. \t\n3. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
-			examples = @ExampleObject(value = "{ \"code\": \"INVALID_TOKEN_EXCEPTION\", \"msg\": \"유효한 토큰이 아닙니다.\" }"))),
-		@ApiResponse(responseCode = "404", description = "1. Api 응답이 올바르지 않습니다. \t\n2.Json 파일이 올바르지 않습니다. \t\n3.유저를 찾지 못했습니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"API_NOT_FOUND\", \"msg\": \" Api 응답이 올바르지 않습니다.\" }")))
-	})
+		@ApiResponse(responseCode = "200", description = "검색 결과 반환"),
+		@ApiResponse(responseCode = "400",
+			description = "1. 유효한 토큰이 아닙니다. \t\n"
+				+ "2. 파라미터가 부족합니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"06\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"INVALID_TOKEN_EXCEPTION\", "
+					+ "\"msg\":\"유효한 토큰이 아닙니다.\"} }"))),
+		@ApiResponse(responseCode = "404",
+			description = "1. Api 응답이 올바르지 않습니다. \t\n"
+				+ "2. Json 파일이 올바르지 않습니다. \t\n"
+				+ "3. 유저를 찾지 못했습니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"10\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"API_NOT_FOUND\", "
+					+ "\"msg\":\"Api 응답이 올바르지 않습니다.\"} }")))})
 	@Parameters ({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
@@ -72,16 +82,19 @@ public class SearchController {
 	 */
 	@Operation(summary = "최근 검색 기록", description = "최근 검색 기록을 반환합니다.")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "최근 검색 기록 반환",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
-		@ApiResponse(responseCode = "400", description = "유효한 토큰이 아닙니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"INVALID_TOKEN_EXCEPTION\", \"msg\": \"유효한 토큰이 아닙니다.\" }"))),
-		@ApiResponse(responseCode = "404", description = "유저를 찾지 못했습니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"USER_NOT_FOUND_EXCEPTION\", \"msg\": \"유저를 찾지 못했습니다.\" }")))
-
-	})
+		@ApiResponse(responseCode = "200", description = "최근 검색 기록 반환"),
+		@ApiResponse(responseCode = "400", description = "1. 유효한 토큰이 아닙니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"06\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"INVALID_TOKEN_EXCEPTION\", "
+					+ "\"msg\":\"유효한 토큰이 아닙니다.\"} }"))),
+		@ApiResponse(responseCode = "404", description = "1. 유저를 찾지 못했습니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
+					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
 	@Parameters ({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
@@ -102,15 +115,22 @@ public class SearchController {
 	 */
 	@Operation(summary = "클릭", description = "검색 기록을 클릭 처리합니다.(최근 검색 기록을 반환하기 위한 처리)")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
-		@ApiResponse(responseCode = "400", description = "1. 파라미터가 부족합니다. \t\n2. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"NEED_MORE_PARAMETER\", \"msg\": \"파라미터가 부족합니다.\" }"))),
-		@ApiResponse(responseCode = "404", description = "검색 기록을 찾을 수 없습니다.",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"SEARCH_NOT_FOUND\", \"msg\": \"검색 기록을 찾을 수 없습니다.\" }")))
-	})
+		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다."),
+		@ApiResponse(responseCode = "400",
+			description = "1. 파라미터가 부족합니다. \t\n"
+				+ "2. 올바르지 않은 파라미터 값입니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
+					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
+		@ApiResponse(responseCode = "404",
+			description = "1. 검색 기록을 찾을 수 없습니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"SEARCH_NOT_FOUND\", "
+					+ "\"msg\":\"검색 기록을 찾을 수 없습니다.\"} }")))})
 	@PostMapping("/search/click/{searchId}")
 	public ResponseEntity<ApiStandardResponse<String>> clickAddress(
 		@Parameter(description = "검색 기록 ID", required = true, example = "1 (Long)")

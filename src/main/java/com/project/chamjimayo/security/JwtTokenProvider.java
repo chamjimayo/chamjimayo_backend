@@ -61,16 +61,14 @@ public class JwtTokenProvider {
 
   public boolean isValid(final String token) {
     try {
-      Jws<Claims> claims = Jwts.parserBuilder()
+      Jwts.parserBuilder()
           .setSigningKey(key)
           .build()
           .parseClaimsJws(token);
 
-      return claims.getBody()
-          .getExpiration()
-          .after(new Date());
+      return true;
     } catch (final JwtException | IllegalArgumentException e) {
-      throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+      return false;
     }
   }
 }

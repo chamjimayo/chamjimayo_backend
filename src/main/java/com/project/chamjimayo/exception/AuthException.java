@@ -1,13 +1,13 @@
 package com.project.chamjimayo.exception;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class AuthException extends RuntimeException {
   public AuthException(String msg) {
     super(msg);
   }
 
-  public ErrorCode toErrorCode() {
-    return ErrorCode.AUTH_EXCEPTION;
+  public ErrorStatus toErrorCode() {
+    return ErrorStatus.AUTH_EXCEPTION;
   }
 }

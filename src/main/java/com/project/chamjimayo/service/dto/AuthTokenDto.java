@@ -1,11 +1,15 @@
-package com.project.chamjimayo.security.dto;
+package com.project.chamjimayo.service.dto;
 
-import com.project.chamjimayo.controller.dto.AuthTokenResponse;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
 public class AuthTokenDto {
+
+  @Schema(description = "access token", example = "jwt token")
   private final String accessToken;
+
+  @Schema(description = "refresh token", example = "jwt token")
   private final String refreshToken;
 
   private AuthTokenDto(String accessToken, String refreshToken) {
@@ -15,9 +19,5 @@ public class AuthTokenDto {
 
   public static AuthTokenDto create(String accessToken, String refreshToken) {
     return new AuthTokenDto(accessToken, refreshToken);
-  }
-
-  public AuthTokenResponse toResponse() {
-    return AuthTokenResponse.create(accessToken, refreshToken);
   }
 }
