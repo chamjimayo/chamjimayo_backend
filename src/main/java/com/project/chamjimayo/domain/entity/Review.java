@@ -57,7 +57,7 @@ public class Review extends BaseEntity {
 	}
 
 	// 리뷰 수정을 위한 setter
-	public void UpdateReview(String reviewContent, Float rating) {
+	public void updateReview(String reviewContent, Float rating) {
 		this.reviewContent = reviewContent;
 		this.rating = rating;
 	}

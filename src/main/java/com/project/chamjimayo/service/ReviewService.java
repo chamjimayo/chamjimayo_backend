@@ -63,7 +63,7 @@ public class ReviewService {
 
 		String reviewContent = reviewDto.getReviewContent();
 		Float rating = reviewDto.getRating();
-		review.UpdateReview(reviewContent, rating);
+		review.updateReview(reviewContent, rating);
 		reviewRepository.save(review);
 
 		return ReviewDto.fromEntity(review);
