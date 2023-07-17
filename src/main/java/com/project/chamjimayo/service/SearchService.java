@@ -191,15 +191,13 @@ public class SearchService {
 	/**
 	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리
 	 */
-	public ResponseEntity<String> clickAddress(Long searchId) {
+	public void clickAddress(Long searchId) {
 		// searchId로 search 를 받아옴
 		Search search = searchRepository.findById(searchId)
 			.orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
 
 		search.changeClick(1); // 도로명 주소의 상태를 클릭된 상태로 변경
 		searchRepository.save(search);
-
-		return ResponseEntity.ok("정상적으로 클릭이 되었습니다.");
 	}
 }
 

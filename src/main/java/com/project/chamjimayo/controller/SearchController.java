@@ -1,5 +1,6 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.SearchRequestDto;
 import com.project.chamjimayo.controller.dto.SearchResponseDto;
@@ -52,7 +53,7 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"API_NOT_FOUND\", \"msg\": \" Api 응답이 올바르지 않습니다.\" }")))
 	})
 	@GetMapping("/search")
-	public ResponseEntity<List<SearchResponseDto>> getAddress(
+	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
 		@Parameter(description = "검색어", required = true, example = "신림역스타벅스")
 		@RequestParam("searchWord") String searchWord,
 		@Parameter(name = "Authorization", in = ParameterIn.HEADER, description = "JWT Token", required = true, schema = @Schema(type = "string"))
@@ -61,7 +62,8 @@ public class SearchController {
 		Long userId = customUserDetails.getId();
 		SearchRequestDto requestDTO = SearchRequestDto.create(searchWord, userId);
 		List<SearchResponseDto> searchResponseDTOList = searchService.searchAddress(requestDTO);
-		return ResponseEntity.ok(searchResponseDTOList);
+		ApiStandardResponse<List<SearchResponseDto>> apiStandardResponse = ApiStandardResponse.success(searchResponseDTOList);
+		return ResponseEntity.ok(apiStandardResponse);
 	}
 
 
@@ -84,15 +86,15 @@ public class SearchController {
 
 	})
 	@GetMapping("/search/recent")
-	public ResponseEntity<SearchResponseDto> getRecentAddress(
+	public ResponseEntity<ApiStandardResponse<SearchResponseDto>> getRecentAddress(
 		@Parameter(name = "Authorization", in = ParameterIn.HEADER, description = "JWT Token", required = true, schema = @Schema(type = "string"))
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
 		Long userId = customUserDetails.getId();
 		// userId를 통해 최근 검색 기록을 가져옴
 		SearchResponseDto responseDTO = searchService.getRecentRoadAddress(userId);
-		// 검색 결과를 ResponseEntity.ok() 메서드를 사용하여 성공적인 응답으로 반환
-		return ResponseEntity.ok(responseDTO);
+		ApiStandardResponse<SearchResponseDto> apistandardresponse = ApiStandardResponse.success(responseDTO);
+		return ResponseEntity.ok(apistandardresponse);
 	}
 
 	/**
@@ -111,11 +113,13 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"SEARCH_NOT_FOUND\", \"msg\": \"검색 기록을 찾을 수 없습니다.\" }")))
 	})
 	@PostMapping("/search/click/{searchId}")
-	public ResponseEntity<String> clickAddress(
+	public ResponseEntity<ApiStandardResponse<String>> clickAddress(
 		@Parameter(description = "검색 기록 ID", required = true, example = "1 (Long)")
 		@PathVariable Long searchId) {
+		searchService.clickAddress(searchId);
 		// searchId를 받아서 클릭 처리
-		return searchService.clickAddress(searchId);
+		ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success("정상적으로 클릭이 되었습니다.");
+		return ResponseEntity.ok(apiStandardResponse);
 	}
 }
 
