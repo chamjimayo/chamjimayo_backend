@@ -8,7 +8,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +71,13 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user")
 	private List<Search> searches;
+
+	@OneToOne
+	@JoinColumn(name="user")
+	private Restroom usingRestroom;
+
+	@OneToMany(mappedBy = "usedUser")
+	private List<Restroom> usedRestroom;
 
 	@Builder
 	public User(String name, String nickname, Integer point,
