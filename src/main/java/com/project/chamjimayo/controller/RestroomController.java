@@ -4,9 +4,8 @@ import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.service.dto.RestroomDetail;
+import com.project.chamjimayo.controller.dto.RestroomDetail;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
-import com.project.chamjimayo.controller.dto.RestroomNearByResponse;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.service.RestroomService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,7 +70,7 @@ public class RestroomController {
                     + "\"msg\":\"주변에 화장실이 존재하지 않습니다.\"} }")))
     })
     @GetMapping("/nearby/{publicOrPaid}")
-    public ResponseEntity<ApiStandardResponse<List<RestroomNearByResponse>>> restroomNearBy(
+    public ResponseEntity<ApiStandardResponse<List<RestroomDetail>>> restroomNearBy(
         @PathVariable(value = "publicOrPaid", required = true) String publicOrPaid,
         @RequestParam(value = "distance", required = false) Double distance,
         @RequestParam double longitude, double latitude) throws BaseException {

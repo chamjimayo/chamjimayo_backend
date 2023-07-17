@@ -4,9 +4,8 @@ package com.project.chamjimayo.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
-import com.project.chamjimayo.service.dto.RestroomDetail;
+import com.project.chamjimayo.controller.dto.RestroomDetail;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
-import com.project.chamjimayo.controller.dto.RestroomNearByResponse;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
 import com.project.chamjimayo.exception.AddressNotFoundException;
@@ -246,17 +245,17 @@ public class RestroomService {
 
     /* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
     @Transactional(readOnly = true)
-    public List<RestroomNearByResponse> nearBy(RestroomNearByRequest request) {
+    public List<RestroomDetail> nearBy(RestroomNearByRequest request) {
         Optional<List<Restroom>> restroomList = restroomRepository.findPublicOrPaid(
             request.getPublicOrPaid());
-        List<RestroomNearByResponse> nearByList = new ArrayList<>();
+        List<RestroomDetail> nearByList = new ArrayList<>();
         if(restroomList.isEmpty()){
             throw new RestroomNotFoundException("근처 화장실을 찾을 수 없습니다");
         }
         for (Restroom restroom : restroomList.get()) {
             if (calculateDistance(request, restroom)) {
                 restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
-                RestroomNearByResponse responseDto = new RestroomNearByResponse();
+                RestroomDetail responseDto = new RestroomDetail();
                 responseDto = responseDto.makeDto(restroom);
                 nearByList.add(responseDto);
             }
