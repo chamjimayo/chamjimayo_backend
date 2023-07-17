@@ -1,6 +1,5 @@
 package com.project.chamjimayo.controller.dto;
 
-
 public enum ErrorStatus {
   // 400 BAD_REQUEST 잘못된 요청
   // 401 Unauthorized 인증되지 않음
@@ -24,7 +23,11 @@ public enum ErrorStatus {
   INTERNAL_SERVER_ERROR("14"),
   DATABASE_ERROR("15"),
   REVIEW_NOT_FOUND("16"),
-  RESTROOM_NOT_FOUND("17");
+  RESTROOM_NOT_FOUND("17"),
+  FILE_NOT_FOUND("18"),
+  IOEXCEPTION("19"),
+  RESTROOM_NAME_DUPLICATE_EXCEPTION("20"),
+  ADDRESS_NOT_FOUND("21");
 
   private final String code;
 

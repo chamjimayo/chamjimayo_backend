@@ -2,13 +2,12 @@ package com.project.chamjimayo.exception;
 
 import com.project.chamjimayo.controller.dto.ErrorStatus;
 
-public class RestroomNotFoundException extends RuntimeException{
-
-    public RestroomNotFoundException(String msg) {
+public class AddressNotFoundException extends RuntimeException{
+    public AddressNotFoundException(String msg) {
         super(msg);
     }
 
     public ErrorStatus toErrorCode() {
-        return ErrorStatus.RESTROOM_NOT_FOUND;
+        return ErrorStatus.ADDRESS_NOT_FOUND;
     }
 }
