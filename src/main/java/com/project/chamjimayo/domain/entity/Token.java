@@ -28,4 +28,8 @@ public class Token {
   public static Token create(String userId, String refreshToken) {
     return new Token(userId, refreshToken);
   }
+
+  public void changeRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
 }

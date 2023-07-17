@@ -26,6 +26,7 @@ public abstract class BaseEntity {
 	private LocalDateTime updatedDate;
 
 	// 상태
+	// 0 = 사용 불가, 1 = 사용 가능
 	@Column(name = "status")
 	private boolean status;
 

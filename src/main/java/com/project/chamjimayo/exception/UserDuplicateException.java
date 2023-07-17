@@ -1,6 +1,6 @@
 package com.project.chamjimayo.exception;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class UserDuplicateException extends RuntimeException {
 
@@ -8,7 +8,7 @@ public class UserDuplicateException extends RuntimeException {
     super(message);
   }
 
-  public ErrorCode toErrorCode() {
-    return ErrorCode.USER_DUPLICATE_EXCEPTION;
+  public ErrorStatus toErrorCode() {
+    return ErrorStatus.USER_DUPLICATE_EXCEPTION;
   }
 }

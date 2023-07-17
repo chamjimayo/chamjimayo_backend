@@ -10,19 +10,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
 
-  private final String id;
+  private final Long id;
   private final Collection<GrantedAuthority> authorities = new ArrayList<>();
   
-  private CustomUserDetails(String id, Role role) {
+  private CustomUserDetails(Long id, Role role) {
     this.id = id;
     authorities.add(new SimpleGrantedAuthority(role.toString()));
   }
 
-  public static CustomUserDetails create(String id, Role role) {
+  public static CustomUserDetails create(Long id, Role role) {
     return new CustomUserDetails(id, role);
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 

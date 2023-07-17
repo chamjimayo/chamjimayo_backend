@@ -6,5 +6,5 @@ import lombok.Setter;
 
 @AllArgsConstructor
 public class BaseException extends Exception {
-    private ErrorCode status; //BaseResoinseStatus 객체에 매핑
+    private ErrorStatus status; //BaseResoinseStatus 객체에 매핑
 }

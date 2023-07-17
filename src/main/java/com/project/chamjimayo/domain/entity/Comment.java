@@ -1,6 +1,14 @@
 package com.project.chamjimayo.domain.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,7 +23,7 @@ public class Comment extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "comment_id")
-	private Integer commentId;
+	private Long commentId;
 
 	// 게시글 아이디 (댓글이 달린 게시글)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +42,5 @@ public class Comment extends BaseEntity {
 	// 추천 수
 	@Column(name = "like_count")
 	private Integer likeCount;
-
 }
 

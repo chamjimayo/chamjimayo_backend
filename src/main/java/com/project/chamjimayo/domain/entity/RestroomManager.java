@@ -1,7 +1,13 @@
 package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,7 +22,7 @@ public class RestroomManager extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "manager_id")
-	private Integer managerId;
+	private Long managerId;
 
 	// 화장실 아이디 (어느 화장실을 관리하는지)
 	@OneToMany(mappedBy = "restroomManager")
@@ -33,5 +39,4 @@ public class RestroomManager extends BaseEntity {
 	// 이메일
 	@Column(name = "email")
 	private String email;
-
 }

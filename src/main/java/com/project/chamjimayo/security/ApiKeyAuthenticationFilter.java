@@ -1,11 +1,8 @@
 package com.project.chamjimayo.security;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 @RequiredArgsConstructor
@@ -15,7 +12,12 @@ public class ApiKeyAuthenticationFilter extends AbstractPreAuthenticatedProcessi
 
   @Override
   protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-    return request.getHeader(principalRequestHeader);
+    String key = request.getHeader(principalRequestHeader);
+    if (key == null) {
+      throw new BadCredentialsException("Api 키가 올바르지 않습니다.");
+    }
+
+    return key;
   }
 
   @Override

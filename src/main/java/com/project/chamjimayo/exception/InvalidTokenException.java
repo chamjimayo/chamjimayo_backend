@@ -1,6 +1,6 @@
 package com.project.chamjimayo.exception;
 
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class InvalidTokenException extends RuntimeException {
 
@@ -8,7 +8,7 @@ public class InvalidTokenException extends RuntimeException {
     super(message);
   }
 
-  public ErrorCode toErrorCode() {
-    return ErrorCode.INVALID_TOKEN_EXCEPTION;
+  public ErrorStatus toErrorCode() {
+    return ErrorStatus.INVALID_TOKEN_EXCEPTION;
   }
 }

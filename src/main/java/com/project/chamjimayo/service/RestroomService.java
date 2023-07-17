@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
-import com.project.chamjimayo.controller.dto.ErrorCode;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.controller.dto.RestroomDetail;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomNearByResponse;
@@ -70,7 +70,7 @@ public class RestroomService {
                 });
             return dataObject;
         } catch (IOException e) {
-            throw new BaseException(ErrorCode.IOEXCEPTION);
+            throw new BaseException(ErrorStatus.IOEXCEPTION);
         }
     }
 
@@ -156,7 +156,7 @@ public class RestroomService {
                     restroom.getRestroomName()); // 데이터베이스에 화장실 정보 저장
                 response.add(restroomResponse);
             } catch (Exception e) {
-                throw new BaseException(ErrorCode.DATABASE_ERROR);
+                throw new BaseException(ErrorStatus.DATABASE_ERROR);
             }
         }
         return response;
@@ -189,7 +189,7 @@ public class RestroomService {
                 restroomRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
             return response;
         } catch (Exception e) {
-            throw new BaseException(ErrorCode.DATABASE_ERROR);
+            throw new BaseException(ErrorStatus.DATABASE_ERROR);
         }
     }
 
@@ -250,7 +250,7 @@ public class RestroomService {
             }
             return nearByList;
         } catch (Exception e) {
-            throw new BaseException(ErrorCode.DATABASE_ERROR);
+            throw new BaseException(ErrorStatus.DATABASE_ERROR);
         }
 
     }
@@ -266,7 +266,7 @@ public class RestroomService {
             responseDto = responseDto.makeDto(restroom);
             return responseDto;
         } catch (Exception e) {
-            throw new BaseException(ErrorCode.DATABASE_ERROR);
+            throw new BaseException(ErrorStatus.DATABASE_ERROR);
         }
     }
 }
