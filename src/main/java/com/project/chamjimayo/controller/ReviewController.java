@@ -46,7 +46,7 @@ public class ReviewController {
 	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@PostMapping
+	@PostMapping("/write")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> createReview(
 		@RequestBody ReviewRequestDto reviewRequestDto,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -74,7 +74,7 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"REVIEW_NOT_FOUND\", "
 					+ "\"msg\":\"리뷰를 찾을 수 없습니다.\"} }")))})
-	@GetMapping("/{reviewId}")
+	@GetMapping("/view/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> getReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId) {
@@ -111,7 +111,7 @@ public class ReviewController {
 	@Parameters ({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@PatchMapping("/{reviewId}")
+	@PatchMapping("/update/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> updateReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId,
@@ -154,7 +154,7 @@ public class ReviewController {
 	@Parameters ({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@DeleteMapping("/{reviewId}")
+	@DeleteMapping("/delete/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<String>> deleteReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId,
