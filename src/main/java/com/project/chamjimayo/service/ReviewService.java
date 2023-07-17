@@ -1,7 +1,7 @@
 package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.controller.dto.ReviewDto;
-import com.project.chamjimayo.controller.dto.UpdateReviewDto;
+import com.project.chamjimayo.controller.dto.ReviewRequestDto;
 import com.project.chamjimayo.domain.entity.Restroom;
 import com.project.chamjimayo.domain.entity.Review;
 import com.project.chamjimayo.domain.entity.User;
@@ -12,69 +12,69 @@ import com.project.chamjimayo.repository.RestroomRepository;
 import com.project.chamjimayo.repository.ReviewRepository;
 import com.project.chamjimayo.repository.UserRepository;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+
 	private final ReviewRepository reviewRepository;
 	private final RestroomRepository restroomRepository;
 	private final UserRepository userRepository;
 
 	/**
-	 * review 작성
+	 * 리뷰 등록
 	 */
-	public ReviewDto createReview(ReviewDto reviewDto) {
-		Long userId = reviewDto.getUserId();
-		Long restroomId = reviewDto.getRestroomId();
-
+	public ReviewDto createReview(Long userId, ReviewRequestDto reviewRequestDto) {
+		Long restroomId = reviewRequestDto.getRestroomId();
+		String reviewContent = reviewRequestDto.getReviewContent();
+		Float rating = reviewRequestDto.getRating();
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 		Restroom restroom = restroomRepository.findById(restroomId)
-			.orElseThrow(() -> new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId));
+			.orElseThrow(
+				() -> new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId));
 
-		Review review = new Review(user, restroom, reviewDto.getReviewContent(), reviewDto.getRating());
-		Review savedReview = reviewRepository.save(review);
-		return ReviewDto.create(savedReview.getUser().getUserId(), savedReview.getRestroom().getRestroomId(),
-			savedReview.getReviewContent(), savedReview.getRating());
+		Review review = new Review(user, restroom, reviewContent, rating);
+		reviewRepository.save(review);
+
+		return ReviewDto.fromEntity(review);
 	}
 
 	/**
-	 * review 조회
+	 * 해당 리뷰 조회
 	 */
 	public ReviewDto getReview(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
-
-		return ReviewDto.create(review.getUser().getUserId(), review.getRestroom().getRestroomId(),
-			review.getReviewContent(), review.getRating());
+		return ReviewDto.fromEntity(review);
 	}
 
 	/**
-	 * review 수정 (유저 id, 화장실 id는 수정 불가)
+	 * 리뷰 수정
 	 */
-	public ReviewDto updateReview(Long reviewId, UpdateReviewDto updateReviewDto) {
+	public ReviewDto updateReview(Long reviewId, ReviewDto reviewDto) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
 
-		review.UpdateReview(updateReviewDto.getReviewContent(), updateReviewDto.getRating());
-		Review updatedReview = reviewRepository.save(review);
+		String reviewContent = reviewDto.getReviewContent();
+		Float rating = reviewDto.getRating();
+		review.UpdateReview(reviewContent, rating);
+		reviewRepository.save(review);
 
-		return ReviewDto.create(updatedReview.getUser().getUserId(), updatedReview.getRestroom().getRestroomId(),
-			updatedReview.getReviewContent(), updatedReview.getRating());
+		return ReviewDto.fromEntity(review);
 	}
 
 	/**
-	 * review 제거
+	 * 리뷰 삭제
 	 */
 	public void deleteReview(Long reviewId) {
-		boolean reviewExist = reviewRepository.existsById(reviewId);
-		if (!reviewExist) {
+		boolean reviewExists = reviewRepository.existsById(reviewId);
+		if (!reviewExists) {
 			throw new ReviewNotFoundException("리뷰를 찾을 수 없습니다. ID: " + reviewId);
 		}
 		reviewRepository.deleteById(reviewId);
@@ -90,7 +90,8 @@ public class ReviewService {
 		}
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		return allReviews.stream()
-			.map(review -> ReviewDto.create(review.getUser().getUserId(), review.getRestroom().getRestroomId(),
+			.map(review -> ReviewDto.create(review.getUser().getUserId(),
+				review.getRestroom().getRestroomId(),
 				review.getReviewContent(), review.getRating()))
 			.collect(Collectors.toList());
 	}
@@ -105,7 +106,8 @@ public class ReviewService {
 		}
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		return allReviews.stream()
-			.map(review -> ReviewDto.create(review.getUser().getUserId(), review.getRestroom().getRestroomId(),
+			.map(review -> ReviewDto.create(review.getUser().getUserId(),
+				review.getRestroom().getRestroomId(),
 				review.getReviewContent(), review.getRating()))
 			.sorted(Comparator.comparing(ReviewDto::getRating).reversed())
 			.collect(Collectors.toList());
@@ -121,15 +123,15 @@ public class ReviewService {
 		}
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		return allReviews.stream()
-			.map(review -> ReviewDto.create(review.getUser().getUserId(), review.getRestroom().getRestroomId(),
+			.map(review -> ReviewDto.create(review.getUser().getUserId(),
+				review.getRestroom().getRestroomId(),
 				review.getReviewContent(), review.getRating()))
 			.sorted(Comparator.comparing(ReviewDto::getRating))
 			.collect(Collectors.toList());
 	}
 
 	/**
-	 * 해당 화장실의 평균 평점 계산
-	 * 화장실이 없다면 0점 반환
+	 * 해당 화장실의 평균 평점 계산 화장실이 없다면 0점 반환
 	 */
 	public Float averageRating(Long restroomId) {
 		Optional<Restroom> restroom = restroomRepository.findById(restroomId);

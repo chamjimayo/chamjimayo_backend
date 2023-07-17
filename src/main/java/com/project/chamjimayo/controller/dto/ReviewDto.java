@@ -1,5 +1,6 @@
 package com.project.chamjimayo.controller.dto;
 
+import com.project.chamjimayo.domain.entity.Review;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -10,9 +11,9 @@ public class ReviewDto {
 	@Schema(type = "Long", example = "1")
 	private final Long restroomId;
 	@Schema(type = "string", example = "깔끔해요!")
-	private final String reviewContent;
+	private String reviewContent;
 	@Schema(type = "Float", example = "4.3")
-	private final Float rating;
+	private Float rating;
 
 	private ReviewDto(Long userId, Long restroomId, String reviewContent, Float rating) {
 		this.userId = userId;
@@ -23,6 +24,10 @@ public class ReviewDto {
 
 	public static ReviewDto create(Long userId, Long restroomId, String reviewContent, Float rating) {
 		return new ReviewDto(userId, restroomId, reviewContent, rating);
+	}
+
+	public static ReviewDto fromEntity(Review review) {
+		return new ReviewDto(review.getUser().getUserId(), review.getRestroom().getRestroomId(), review.getReviewContent(), review.getRating());
 	}
 
 }

@@ -73,8 +73,8 @@ public class SecurityConfig {
     http.addFilter(apiKeyAuthenticationFilter());
     http
         .antMatcher("/api/auth/**")
-        .antMatcher("/address/search/test/**")
-        .antMatcher("/review/test/**")
+        .antMatcher("/address/search/**")
+        .antMatcher("/review/**")
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtAuthenticationExceptionFilter(), JwtAuthenticationFilter.class);
 

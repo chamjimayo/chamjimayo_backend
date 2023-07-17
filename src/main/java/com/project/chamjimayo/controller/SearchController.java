@@ -8,6 +8,7 @@ import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -38,10 +39,7 @@ public class SearchController {
 	 * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능 예시:
 	 * /address/search?searchWord={검색어}
 	 */
-	@Operation(summary = "검색", description = "검색어를 받고 검색 결과를 제공합니다.",
-		parameters = {
-		@Parameter(name = "Authorization", hidden = true)
-	})
+	@Operation(summary = "검색", description = "검색어를 받고 검색 결과를 제공합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "검색 결과 반환",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
@@ -52,12 +50,14 @@ public class SearchController {
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"API_NOT_FOUND\", \"msg\": \" Api 응답이 올바르지 않습니다.\" }")))
 	})
+	@Parameters ({
+		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
+	})
 	@GetMapping("/search")
 	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
 		@Parameter(description = "검색어", required = true, example = "신림역스타벅스")
 		@RequestParam("searchWord") String searchWord,
-		@Parameter(name = "Authorization", in = ParameterIn.HEADER, description = "JWT Token", required = true, schema = @Schema(type = "string"))
-		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
 		Long userId = customUserDetails.getId();
 		SearchRequestDto requestDTO = SearchRequestDto.create(searchWord, userId);
@@ -70,10 +70,7 @@ public class SearchController {
 	/**
 	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 (도로명 주소, 지번 주소, 이름) 예시: /address/search/recent
 	 */
-	@Operation(summary = "최근 검색 기록", description = "최근 검색 기록을 반환합니다.",
-		parameters = {
-			@Parameter(name = "Authorization", hidden = true)
-		})
+	@Operation(summary = "최근 검색 기록", description = "최근 검색 기록을 반환합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "최근 검색 기록 반환",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponseDto.class))),
@@ -85,10 +82,12 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"USER_NOT_FOUND_EXCEPTION\", \"msg\": \"유저를 찾지 못했습니다.\" }")))
 
 	})
+	@Parameters ({
+		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
+	})
 	@GetMapping("/search/recent")
 	public ResponseEntity<ApiStandardResponse<SearchResponseDto>> getRecentAddress(
-		@Parameter(name = "Authorization", in = ParameterIn.HEADER, description = "JWT Token", required = true, schema = @Schema(type = "string"))
-		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
 		Long userId = customUserDetails.getId();
 		// userId를 통해 최근 검색 기록을 가져옴
