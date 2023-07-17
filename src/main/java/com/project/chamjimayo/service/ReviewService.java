@@ -131,7 +131,7 @@ public class ReviewService {
 	}
 
 	/**
-	 * 해당 화장실의 평균 평점 계산 화장실이 없다면 0점 반환
+	 * 해당 화장실의 평균 평점 계산 (화장실이 없다면 0점 반환)
 	 */
 	public Float averageRating(Long restroomId) {
 		Optional<Restroom> restroom = restroomRepository.findById(restroomId);

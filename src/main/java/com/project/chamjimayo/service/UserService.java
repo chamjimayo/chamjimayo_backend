@@ -46,6 +46,9 @@ public class UserService {
     return DuplicateCheckDto.create(userRepository.existsUserByNickname(nickname));
   }
 
+  /**
+   * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 합산 포인트)
+   */
   public PointChargeDto chargePoints(PointChargeDto requestDTO) {
     Long userId = requestDTO.getUserId();
     Integer Point = requestDTO.getPoint();
