@@ -156,7 +156,7 @@ public class RestroomService {
                     restroom.getRestroomName()); // 데이터베이스에 화장실 정보 저장
                 response.add(restroomResponse);
             } catch (Exception e) {
-                throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+                throw new BaseException(ErrorCode.DATABASE_ERROR);
             }
         }
         return response;
@@ -189,7 +189,7 @@ public class RestroomService {
                 restroomRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
             return response;
         } catch (Exception e) {
-            throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+            throw new BaseException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -207,6 +207,32 @@ public class RestroomService {
         }
     }
 
+    public boolean calculateDistance(RestroomNearByRequest req, Restroom restroom) {
+        final double EARTH_RADIUS_KM = 6371.0;
+        double lat1 = req.getLatitude();
+        double lon1 = req.getLongitude();
+        double lat2 = restroom.getLocationLatitude();
+        double lon2 = restroom.getLocationLongitude();
+        // 각도를 라디안으로 변환
+        double lat1Rad = Math.toRadians(lat1);
+        double lon1Rad = Math.toRadians(lon1);
+        double lat2Rad = Math.toRadians(lat2);
+        double lon2Rad = Math.toRadians(lon2);
+
+        // 위도 및 경도의 차이 계산
+        double deltaLat = lat2Rad - lat1Rad;
+        double deltaLon = lon2Rad - lon1Rad;
+
+        // Haversine 공식 계산
+        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+            Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+                Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = EARTH_RADIUS_KM * c;
+
+        return distance * 1000 <= req.getDistance();
+    }
+
     /* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
     @Transactional(readOnly = true)
     public List<RestroomNearByResponse> nearBy(RestroomNearByRequest request) throws BaseException {
@@ -215,7 +241,7 @@ public class RestroomService {
                 request.getPublicOrPaid());
             List<RestroomNearByResponse> nearByList = new ArrayList<>();
             for (Restroom restroom : restroomList) {
-                if (isNearBy(request, restroom.getAddress())) {
+                if (calculateDistance(request, restroom)) {
                     restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
                     RestroomNearByResponse responseDto = new RestroomNearByResponse();
                     responseDto = responseDto.makeDto(restroom);
@@ -224,7 +250,7 @@ public class RestroomService {
             }
             return nearByList;
         } catch (Exception e) {
-            throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+            throw new BaseException(ErrorCode.DATABASE_ERROR);
         }
 
     }
@@ -240,7 +266,7 @@ public class RestroomService {
             responseDto = responseDto.makeDto(restroom);
             return responseDto;
         } catch (Exception e) {
-            throw new BaseException(ErrorCode.DATABASE_EXCEPTION);
+            throw new BaseException(ErrorCode.DATABASE_ERROR);
         }
     }
 }

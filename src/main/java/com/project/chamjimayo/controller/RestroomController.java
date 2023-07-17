@@ -1,5 +1,6 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
@@ -42,8 +43,8 @@ public class RestroomController {
                 examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @PostMapping("/import")
-    public ResponseEntity<List<RestroomResponse>> importRestroom() throws BaseException {
-        return ResponseEntity.ok(restroomService.importRestroom());
+    public ResponseEntity<ApiStandardResponse<List<RestroomResponse>>> importRestroom() throws BaseException {
+        return ResponseEntity.ok(ApiStandardResponse.success(restroomService.importRestroom()));
     }
 
     @Operation(summary = "유료화장실 등록", description = "받은 유료화장실 정보로 화장실 객체 생성 후 DB에 저장")
@@ -57,9 +58,9 @@ public class RestroomController {
                 examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @PostMapping("/enroll")
-    public ResponseEntity<RestroomResponse> enrollRestroom(
+    public ResponseEntity<ApiStandardResponse<RestroomResponse>> enrollRestroom(
         @RequestBody EnrollRestroomRequest enrollRestroomRequest) throws BaseException {
-        return ResponseEntity.ok(restroomService.enrollRestroom(enrollRestroomRequest));
+        return ResponseEntity.ok(ApiStandardResponse.success(restroomService.enrollRestroom(enrollRestroomRequest)));
     }
 
     @Operation(summary = "주변 유/무료 화장실리스트",
@@ -74,16 +75,16 @@ public class RestroomController {
                 examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
     @GetMapping("/nearby/{publicOrPaid}")
-    public ResponseEntity<List<RestroomNearByResponse>> restroomNearBy(
+    public ResponseEntity<ApiStandardResponse<List<RestroomNearByResponse>>> restroomNearBy(
         @PathVariable(value = "publicOrPaid", required = true) String publicOrPaid,
         @RequestParam(value = "distance", required = false) Double distance,
-        @RequestParam String longitude, String latitude) throws BaseException {
+        @RequestParam double longitude, double latitude) throws BaseException {
         if (distance == null) {
             distance = 1000.0;
         }
         RestroomNearByRequest restroomNearByRequest = new RestroomNearByRequest(longitude,
             latitude, publicOrPaid, distance);
-        return ResponseEntity.ok(restroomService.nearBy(restroomNearByRequest));
+        return ResponseEntity.ok(ApiStandardResponse.success(restroomService.nearBy(restroomNearByRequest)));
     }
     @Operation(summary = "화장실 세부 정보", description = "받은 화장실Id로 화장실 세부 정보를 검색 및 반환")
     @ApiResponses({
@@ -95,9 +96,9 @@ public class RestroomController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class),
                 examples = @ExampleObject(value = "{ \"code\": \"INTERNAL_SERVER_ERROR\", \"msg\": \"서버 내부 오류가 발생했습니다.\" }")))
     })
-    @GetMapping("detail")
-    public ResponseEntity<RestroomDetail> restroomDetail(@RequestParam Long restroomId)
+    @GetMapping("/detail")
+    public ResponseEntity<ApiStandardResponse<RestroomDetail>> restroomDetail(@RequestParam Long restroomId)
         throws BaseException {
-        return ResponseEntity.ok(restroomService.restroomDetail(restroomId));
+        return ResponseEntity.ok(ApiStandardResponse.success(restroomService.restroomDetail(restroomId)));
     }
 }
