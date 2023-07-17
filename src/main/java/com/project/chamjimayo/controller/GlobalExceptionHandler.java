@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(501).body(errorResponse);
 	}
 
-//	// 너무 많은 오류를 처리해서 test 단계에서는 일단 주석 처리하겠습니다.
+//	// 너무 많은 오류를 처리해서 자세한 오류를 알 수가 없어서 test 단계에서는 일단 주석 처리하겠습니다.
 //	@ExceptionHandler(Exception.class)
 //	public ResponseEntity<ErrorResponse> handleException(Exception e) {
 //		log.error("서버 내부 오류가 발생했습니다.");
