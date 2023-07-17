@@ -21,6 +21,15 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+	@ExceptionHandler(SearchHistoryNotFoundException.class)
+	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleInvalidSearchHistoryNotFoundException(
+		SearchHistoryNotFoundException e) {
+		log.error(e.getMessage());
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.SEARCH_NOT_FOUND, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(ApiStandardResponse.fail(errorResponse));
+	}
+
 	@ExceptionHandler(ApiNotFoundException.class)
 	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleApiNotFoundException(ApiNotFoundException e) {
 		log.error(e.getMessage());
@@ -38,21 +47,20 @@ public class GlobalExceptionHandler {
 			.body(ApiStandardResponse.fail(errorResponse));
 	}
 
-	@ExceptionHandler(SearchHistoryNotFoundException.class)
-	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleInvalidSearchHistoryNotFoundException(
-		SearchHistoryNotFoundException e) {
-		log.error(e.getMessage());
-		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.SEARCH_NOT_FOUND, e.getMessage());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-			.body(ApiStandardResponse.fail(errorResponse));
-	}
-
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<ApiStandardResponse<ErrorResponse>> HttpRequestMethodNotSupportedException(
 		HttpRequestMethodNotSupportedException e) {
 		log.error("지원하지 않는 HTTP Method입니다.");
 		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION, "지원하지 않는 HTTP Method입니다.");
 		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+			.body(ApiStandardResponse.fail(errorResponse));
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleValidationException(ValidationException e) {
+		log.error("유효성 검사에 실패했습니다.");
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_PARAMETER, "올바른 파라미터를 입력하세요.");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(ApiStandardResponse.fail(errorResponse));
 	}
 
@@ -70,14 +78,6 @@ public class GlobalExceptionHandler {
 		MissingServletRequestParameterException e) {
 		log.error("파라미터가 부족합니다.");
 		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.NEED_MORE_PARAMETER, "파라미터가 부족합니다.");
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(ApiStandardResponse.fail(errorResponse));
-	}
-
-	@ExceptionHandler(ValidationException.class)
-	public ResponseEntity<ApiStandardResponse<ErrorResponse>> handleValidationException(ValidationException e) {
-		log.error("유효성 검사에 실패했습니다.");
-		ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INVALID_PARAMETER, "제약에 맞는 올바른 파라미터를 입력하세요.");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(ApiStandardResponse.fail(errorResponse));
 	}
