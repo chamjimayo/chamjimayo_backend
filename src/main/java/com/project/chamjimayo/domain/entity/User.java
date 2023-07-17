@@ -2,6 +2,7 @@ package com.project.chamjimayo.domain.entity;
 
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -72,12 +73,11 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private List<Search> searches;
 
-	@OneToOne
-	@JoinColumn(name="user")
-	private Restroom usingRestroom;
+	@ElementCollection
+	private List<Long> usedRestroomIds;
 
-	@OneToMany(mappedBy = "usedUser")
-	private List<Restroom> usedRestroom;
+	@Column(name = "using_restroom_id")
+	private Long usingRestroomId;
 
 	@Builder
 	public User(String name, String nickname, Integer point,

@@ -87,9 +87,6 @@ public class Restroom extends BaseEntity {
     @JoinColumn(name = "manager_id")
     private RestroomManager restroomManager;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User usedUser;
 
     @Builder
     public Restroom(String restroomName, double locationLatitude, double locationLongitude,

@@ -3,10 +3,8 @@ package com.project.chamjimayo.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
-import com.project.chamjimayo.controller.dto.ErrorStatus;
-import com.project.chamjimayo.controller.dto.RestroomDetail;
+import com.project.chamjimayo.service.dto.RestroomDetail;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomNearByResponse;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
@@ -16,7 +14,7 @@ import com.project.chamjimayo.exception.FileNotFoundException;
 import com.project.chamjimayo.exception.IoException;
 import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
-import com.project.chamjimayo.exception.UserNotFoundException;
+import com.project.chamjimayo.repository.RestroomManagerRepository;
 import com.project.chamjimayo.repository.RestroomRepository;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestroomService {
 
     private final RestroomRepository restroomRepository;
+    private final RestroomManagerRepository restroomManagerRepository;
     private final Environment env;
 
     /*공공화장실 데이터가 담긴 json 파일 읽어오기*/
@@ -131,6 +130,9 @@ public class RestroomService {
             Map.class
         );
         ArrayList<Map> responseArrayList = (ArrayList<Map>) response.getBody().get("addresses");
+        if(responseArrayList.isEmpty()){
+            throw new AddressNotFoundException("유효하지 않은 주소입니다 다시 확인해주세요!");
+        }
         return responseArrayList;
     }
 
@@ -184,7 +186,8 @@ public class RestroomService {
             .locationLongitude(longNLat[0])
             .unisex(checkSex(enrollRestroomRequest.getMaleToiletCount(),
                 enrollRestroomRequest.getFemaleToiletCount())) // 남여공용이면 true 아니면 false
-            //restroomManager 차후개발
+//            .restroomManager(restroomManagerRepository.getReferenceById(
+//                enrollRestroomRequest.getRestroomManagerId())) //restroomManager 차후개발
             .address(enrollRestroomRequest.getAddress())
             .operatingHour(enrollRestroomRequest.getOperatingHour())
             .restroomPhoto(enrollRestroomRequest.getRestroomPhoto())
@@ -244,10 +247,13 @@ public class RestroomService {
     /* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
     @Transactional(readOnly = true)
     public List<RestroomNearByResponse> nearBy(RestroomNearByRequest request) {
-        List<Restroom> restroomList = restroomRepository.findPublicOrPaid(
+        Optional<List<Restroom>> restroomList = restroomRepository.findPublicOrPaid(
             request.getPublicOrPaid());
         List<RestroomNearByResponse> nearByList = new ArrayList<>();
-        for (Restroom restroom : restroomList) {
+        if(restroomList.isEmpty()){
+            throw new RestroomNotFoundException("근처 화장실을 찾을 수 없습니다");
+        }
+        for (Restroom restroom : restroomList.get()) {
             if (calculateDistance(request, restroom)) {
                 restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
                 RestroomNearByResponse responseDto = new RestroomNearByResponse();
@@ -261,13 +267,14 @@ public class RestroomService {
     /* 화장실 Id를 통해 화장실 세부 정보 검색 */
     @Transactional(readOnly = true)
     public RestroomDetail restroomDetail(long restroomId) {
-        Optional<Restroom> restroom = Optional.ofNullable(
+        Optional<Restroom> restroomOp = Optional.ofNullable(
             restroomRepository.findRestroomByRestroomId(restroomId)
                 .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
-        restroom.get().getReviews().size(); // lazy initialize 문제 때문에 추가
-        restroom.get().getEquipments().size(); // lazy initialize 문제 때문에 추가
+        Restroom restrooms = restroomOp.get();
+        restroomOp.get().getReviews().size(); // lazy initialize 문제 때문에 추가
+        restroomOp.get().getEquipments().size(); // lazy initialize 문제 때문에 추가
         RestroomDetail responseDto = new RestroomDetail();
-        responseDto = responseDto.makeDto(restroom.get());
+        responseDto = responseDto.makeDto(restrooms);
         return responseDto;
     }
 }

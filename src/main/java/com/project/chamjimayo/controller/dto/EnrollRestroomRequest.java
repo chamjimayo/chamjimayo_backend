@@ -31,4 +31,6 @@ public class EnrollRestroomRequest {
     //유로 무료
     private String publicOrPaid;
 
+    private long restroomManagerId = 0;
+
 }

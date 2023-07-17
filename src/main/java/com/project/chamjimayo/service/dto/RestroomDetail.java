@@ -1,14 +1,13 @@
-package com.project.chamjimayo.controller.dto;
+package com.project.chamjimayo.service.dto;
 
-import com.project.chamjimayo.domain.entity.Equipment;
 import com.project.chamjimayo.domain.entity.Restroom;
-import com.project.chamjimayo.domain.entity.RestroomManager;
-import com.project.chamjimayo.domain.entity.Review;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
 public class RestroomDetail {
+
     private String restroomName;
     private double longitude;
     private double latitude;
@@ -35,12 +34,14 @@ public class RestroomDetail {
     // 여자 이용 가능 대변기 수
     private Integer availableFemaleToiletCount;
 
-    private List<Equipment> equipments;
+    private List<EquipmentNameNId> equipments;
 
-    private List<Review> reviews;
+    private List<ReviewContentNId> reviews;
 
-    private RestroomManager restroomManager;
-    public RestroomDetail makeDto(Restroom restroom){
+    private RestroomManagerNameNId restroomManager;
+
+
+    public RestroomDetail makeDto(Restroom restroom) {
         this.restroomName = restroom.getRestroomName();
         this.longitude = restroom.getLocationLongitude();
         this.latitude = restroom.getLocationLatitude();
@@ -55,9 +56,21 @@ public class RestroomDetail {
         this.femaleToiletCount = restroom.getFemaleToiletCount();
         this.availableMaleToiletCount = restroom.getAvailableMaleToiletCount();
         this.availableFemaleToiletCount = restroom.getAvailableFemaleToiletCount();
-        this.equipments = restroom.getEquipments();
-        this.reviews = restroom.getReviews();
-        this.restroomManager = restroom.getRestroomManager();
+        this.equipments = restroom.getEquipments()
+            .stream().map(equipment -> new EquipmentNameNId(equipment.getEquipmentName(),
+                equipment.getEquipmentId()))
+            .collect(Collectors.toList());
+        this.reviews = restroom.getReviews()
+            .stream()
+            .map(review -> new ReviewContentNId(review.getReviewContent(), review.getReviewId()))
+            .collect(Collectors.toList());
+        if(restroom.getRestroomManager() == null){
+            this.restroomManager = null;
+        }else {
+            this.restroomManager = new RestroomManagerNameNId(
+                restroom.getRestroomManager().getName(),
+                restroom.getRestroomManager().getManagerId());
+        }
         return this;
     }
 }
