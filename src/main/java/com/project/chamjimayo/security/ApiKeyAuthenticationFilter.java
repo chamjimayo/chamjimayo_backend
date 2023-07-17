@@ -24,4 +24,6 @@ public class ApiKeyAuthenticationFilter extends AbstractPreAuthenticatedProcessi
   protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
     return "N/A";
   }
+
+
 }
