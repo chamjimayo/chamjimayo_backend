@@ -8,6 +8,7 @@ import com.project.chamjimayo.controller.dto.RestroomDetail;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
+<<<<<<< HEAD
 import com.project.chamjimayo.exception.AddressNotFoundException;
 import com.project.chamjimayo.exception.FileNotFoundException;
 import com.project.chamjimayo.exception.IoException;
@@ -15,6 +16,9 @@ import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.repository.RestroomManagerRepository;
 import com.project.chamjimayo.repository.RestroomRepository;
+=======
+import com.project.chamjimayo.repository.RestroomJpaRepository;
+>>>>>>> feat-user
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,8 +40,12 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestroomService {
 
+<<<<<<< HEAD
     private final RestroomRepository restroomRepository;
     private final RestroomManagerRepository restroomManagerRepository;
+=======
+    private final RestroomJpaRepository restroomJpaRepository;
+>>>>>>> feat-user
     private final Environment env;
 
     /*공공화장실 데이터가 담긴 json 파일 읽어오기*/
