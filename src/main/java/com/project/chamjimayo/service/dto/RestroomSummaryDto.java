@@ -1,5 +1,6 @@
 package com.project.chamjimayo.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
@@ -20,6 +21,7 @@ public class RestroomSummaryDto {
     this.operatingHour = operatingHour;
   }
 
+  @Schema(name = "RestroomSummaryDto.Response")
   @Getter
   public static class Response {
 

@@ -1,5 +1,6 @@
 package com.project.chamjimayo.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
@@ -14,6 +15,7 @@ public class DuplicateCheckDto {
     return new DuplicateCheckDto(isDuplicate);
   }
 
+  @Schema(name = "DuplicateCheckDto.Response")
   @Getter
   public static class Response {
 

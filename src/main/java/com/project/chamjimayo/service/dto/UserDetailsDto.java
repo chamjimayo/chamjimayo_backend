@@ -1,5 +1,6 @@
 package com.project.chamjimayo.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
@@ -17,6 +18,7 @@ public class UserDetailsDto {
     this.point = point;
   }
 
+  @Schema(name = "UserDetailsDto.Response")
   @Getter
   public static class Response {
     private final String name;
