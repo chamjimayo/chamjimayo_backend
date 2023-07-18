@@ -88,7 +88,7 @@ public class Restroom extends BaseEntity {
     private RestroomManager restroomManager;
 
     @Column(name = "average_rating")
-    private Float averageRating;
+    private Float averageRating = (float) 0;
 
 
     @Builder
