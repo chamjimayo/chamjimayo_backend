@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -40,8 +41,9 @@ public class SearchService {
 
 
 	/**
-	 * 검색어에 대한 도로명 주소 검색을 수행하고, 검색 결과를 반환
+	 * 검색어에 대한 도로명 주소 검색을 수행하고, 검색 결과를 저장 후 반환
 	 */
+	@Transactional
 	public List<SearchResponseDto> searchAddress(SearchRequestDto requestDTO) {
 		// 검색 결과 가져올 개수와 검색어 설정
 		int count = 5;
@@ -191,6 +193,7 @@ public class SearchService {
 	/**
 	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리
 	 */
+	@Transactional
 	public void clickAddress(Long searchId) {
 		// searchId로 search 를 받아옴
 		Search search = searchRepository.findById(searchId)

@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class ReviewService {
 	/**
 	 * 리뷰 등록
 	 */
+	@Transactional
 	public ReviewDto createReview(Long userId, ReviewRequestDto reviewRequestDto) {
 		Long restroomId = reviewRequestDto.getRestroomId();
 		String reviewContent = reviewRequestDto.getReviewContent();
@@ -59,6 +61,7 @@ public class ReviewService {
 	/**
 	 * 리뷰 수정
 	 */
+	@Transactional
 	public ReviewDto updateReview(Long reviewId, ReviewDto reviewDto) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
@@ -76,6 +79,7 @@ public class ReviewService {
 	/**
 	 * 리뷰 삭제
 	 */
+	@Transactional
 	public void deleteReview(Long reviewId) {
 		boolean reviewExists = reviewRepository.existsById(reviewId);
 		if (!reviewExists) {
@@ -149,7 +153,7 @@ public class ReviewService {
 		// restroomId에 해당하는 review 리스트 반환
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		float totalRating = 0;
-		int count = 0;
+		float count = 0;
 
 		// 평균 평점 계산
 		for (Review review : allReviews) {
