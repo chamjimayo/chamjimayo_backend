@@ -42,6 +42,8 @@ public class ReviewService {
 		Review review = new Review(user, restroom, reviewContent, rating);
 		reviewRepository.save(review);
 
+		averageRating(review.getRestroom().getRestroomId());
+
 		return ReviewDto.fromEntity(review);
 	}
 
@@ -66,6 +68,8 @@ public class ReviewService {
 		review.updateReview(reviewContent, rating);
 		reviewRepository.save(review);
 
+		averageRating(review.getRestroom().getRestroomId());
+
 		return ReviewDto.fromEntity(review);
 	}
 
@@ -78,6 +82,10 @@ public class ReviewService {
 			throw new ReviewNotFoundException("리뷰를 찾을 수 없습니다. ID: " + reviewId);
 		}
 		reviewRepository.deleteById(reviewId);
+
+		Optional<Review> review = reviewRepository.findById(reviewId);
+		Long restroomId = review.get().getRestroom().getRestroomId();
+		averageRating(restroomId);
 	}
 
 	/**
@@ -133,7 +141,7 @@ public class ReviewService {
 	/**
 	 * 해당 화장실의 평균 평점 계산 (화장실이 없다면 0점 반환)
 	 */
-	public Float averageRating(Long restroomId) {
+	public void averageRating(Long restroomId) {
 		Optional<Restroom> restroom = restroomRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
 			throw new ReviewNotFoundException("해당 화장실을 찾지 못했습니다. ID: " + restroomId);
@@ -143,11 +151,15 @@ public class ReviewService {
 		float totalRating = 0;
 		int count = 0;
 
+		// 평균 평점 계산
 		for (Review review : allReviews) {
 			totalRating += review.getRating();
 			count++;
 		}
+		float averageRating = count > 0 ? totalRating / count : 0;
 
-		return count > 0 ? totalRating / count : 0;
+		// 해당 restroom의 averageRating에 업데이트
+		Restroom updateRestroom = restroom.get();
+		updateRestroom.updateRating(averageRating);
 	}
 }

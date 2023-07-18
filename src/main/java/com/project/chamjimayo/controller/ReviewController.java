@@ -52,7 +52,8 @@ public class ReviewController {
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Long userId = customUserDetails.getId();
 		ReviewDto createdReview = reviewService.createReview(userId, reviewRequestDto);
-		ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(createdReview);
+		ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(
+			createdReview);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
@@ -108,7 +109,7 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"REVIEW_NOT_FOUND\", "
 					+ "\"msg\":\"리뷰를 찾을 수 없습니다.\"} }")))})
-	@Parameters ({
+	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
 	@PatchMapping("/update/{reviewId}")
@@ -119,7 +120,8 @@ public class ReviewController {
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		if (reviewDto.getUserId().equals(customUserDetails.getId())) {
 			ReviewDto updatedReview = reviewService.updateReview(reviewId, reviewDto);
-			ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(updatedReview);
+			ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(
+				updatedReview);
 			return ResponseEntity.ok(apiStandardResponse);
 		} else {
 			throw new AuthException("권한이 없습니다.");
@@ -151,7 +153,7 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"REVIEW_NOT_FOUND\", "
 					+ "\"msg\":\"리뷰를 찾을 수 없습니다.\"} }")))})
-	@Parameters ({
+	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
 	@DeleteMapping("/delete/{reviewId}")
@@ -162,7 +164,8 @@ public class ReviewController {
 		ReviewDto existingReview = reviewService.getReview(reviewId);
 		if (existingReview.getUserId().equals(customUserDetails.getId())) {
 			reviewService.deleteReview(reviewId);
-			ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success("리뷰 삭제 성공");
+			ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success(
+				"리뷰 삭제 성공");
 			return ResponseEntity.ok(apiStandardResponse);
 		} else {
 			throw new AuthException("권한이 없습니다.");
@@ -192,7 +195,8 @@ public class ReviewController {
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
 		@PathVariable Long restroomId) {
 		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomId(restroomId);
-		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(reviewDtoList);
+		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(
+			reviewDtoList);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
@@ -218,8 +222,10 @@ public class ReviewController {
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomIdOrderByHighRating(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
 		@PathVariable Long restroomId) {
-		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomIdOrderByHighRating(restroomId);
-		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(reviewDtoList);
+		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomIdOrderByHighRating(
+			restroomId);
+		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(
+			reviewDtoList);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
@@ -245,35 +251,10 @@ public class ReviewController {
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomIdOrderByLowRating(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
 		@PathVariable Long restroomId) {
-		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomIdOrderByLowRating(restroomId);
-		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(reviewDtoList);
-		return ResponseEntity.ok(apiStandardResponse);
-	}
-
-	@Operation(summary = "해당 화장실의 평균 평점", description = "해당 화장실의 평균 평점을 조회합니다.")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "평균 평점 조회 성공"),
-		@ApiResponse(responseCode = "400",
-			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
-					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
-		@ApiResponse(responseCode = "404",
-			description = "1. 화장실을 찾을 수 없습니다. \t\n",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
-					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
-	@GetMapping("/rating/{restroomId}")
-	public ResponseEntity<ApiStandardResponse<Float>> averageRating(
-		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
-		@PathVariable Long restroomId) {
-		Float averageRating = reviewService.averageRating(restroomId);
-		ApiStandardResponse<Float> apiStandardResponse = ApiStandardResponse.success(averageRating);
+		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomIdOrderByLowRating(
+			restroomId);
+		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(
+			reviewDtoList);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 }

@@ -87,6 +87,9 @@ public class Restroom extends BaseEntity {
     @JoinColumn(name = "manager_id")
     private RestroomManager restroomManager;
 
+    @Column(name = "average_rating")
+    private Float averageRating;
+
 
     @Builder
     public Restroom(String restroomName, double locationLatitude, double locationLongitude,
@@ -109,5 +112,9 @@ public class Restroom extends BaseEntity {
         this.availableMaleToiletCount = availableMaleToiletCount;
         this.availableFemaleToiletCount = availableFemaleToiletCount;
         this.unisex = unisex;
+    }
+
+    public void updateRating(Float averageRating) {
+        this.averageRating = averageRating;
     }
 }
