@@ -54,14 +54,27 @@ public class SecurityConfig {
   @Bean
   @Order(1)
   public SecurityFilterChain filterChainWithJwt(HttpSecurity http) throws Exception {
-    getSecurityChain(http);
+    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .csrf().disable()
+        .headers().frameOptions().disable()
+        .and()
+        .httpBasic().disable()
+        .formLogin().disable();
 
-    http
-        .antMatcher("/api/**")
+    http.userDetailsService(customUserDetailsService);
+
+    http.exceptionHandling()
+        .authenticationEntryPoint(new RestAuthenticationEntryPoint());
+
+    http.requestMatchers(request ->
+            request.antMatchers("/api/users/me/**", "/api/address/search/**", "api/review/write", "api/review/update", "api/review/delete")
+        .and()
         .addFilter(apiKeyAuthenticationFilter())
         .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(authenticationExceptionFilter(), JwtAuthenticationFilter.class);
+        .addFilterBefore(authenticationExceptionFilter(), JwtAuthenticationFilter.class))
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
     return http.build();
   }
