@@ -10,7 +10,7 @@ import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.RestroomRepository;
 import com.project.chamjimayo.repository.ReviewRepository;
-import com.project.chamjimayo.repository.UserRepository;
+import com.project.chamjimayo.repository.UserJpaRepository;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
 	private final RestroomRepository restroomRepository;
-	private final UserRepository userRepository;
+	private final UserJpaRepository userJpaRepository;
 
 	/**
 	 * 리뷰 등록
@@ -35,7 +35,7 @@ public class ReviewService {
 		Long restroomId = reviewRequestDto.getRestroomId();
 		String reviewContent = reviewRequestDto.getReviewContent();
 		Float rating = reviewRequestDto.getRating();
-		User user = userRepository.findById(userId)
+		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 		Restroom restroom = restroomRepository.findById(restroomId)
 			.orElseThrow(

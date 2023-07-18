@@ -10,7 +10,7 @@ import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
-import com.project.chamjimayo.repository.UserRepository;
+import com.project.chamjimayo.repository.UserJpaRepository;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class SearchService {
 
-	private final UserRepository userRepository;
+	private final UserJpaRepository userJpaRepository;
 	private final SearchRepository searchRepository;
 
 	// application-local.yml에 저장된 t-map AppKey
@@ -72,7 +72,7 @@ public class SearchService {
 		}
 
 		// 사용자 정보 가져오기
-		User user = userRepository.findById(userId)
+		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
 
 		// Json 파일이 제대로 도착했는지 확인
@@ -169,7 +169,7 @@ public class SearchService {
 	 */
 	public SearchResponseDto getRecentRoadAddress(Long userId) {
 		// userRepository 에서 userId를 통해 user 객체를 가져옴
-		User user = userRepository.findById(userId)
+		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
 
 		// user 객체를 통해서 가장 최근에 검색된 상태가 1인 search 객체 받아오기
