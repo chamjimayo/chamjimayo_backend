@@ -57,8 +57,7 @@ public class UserService {
 
     int currentPoint = user.getPoint() != null ? user.getPoint() : 0;
     int newPoint = requestDTO.getPoint();
-    int totalPoint = newPoint + currentPoint;
-    user.changePoint(totalPoint);
+    user.addPoint(currentPoint, newPoint);
 
     userRepository.save(user);
 
