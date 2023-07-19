@@ -66,7 +66,7 @@ public class UserController {
 	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@PostMapping("/charge-points")
+	@PostMapping("/point/charge")
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
 		@RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -81,6 +81,13 @@ public class UserController {
 	@Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "포인트 차감 성공."),
+		@ApiResponse(responseCode = "400",
+			description = "1. 포인트가 부족합니다. \t\n",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"22\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"POINT_NOT_ENOUGH\", "
+					+ "\"msg\":\"포인트가 부족합니다.\"} }"))),
 		@ApiResponse(responseCode = "403",
 			description = "1. 권한이 없습니다. \t\n",
 			content = @Content(mediaType = "application/json",
@@ -98,7 +105,7 @@ public class UserController {
 	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@PostMapping("/deduct-points")
+	@PostMapping("/point/deduct")
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
 		@RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {

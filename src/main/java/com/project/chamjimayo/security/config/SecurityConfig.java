@@ -69,7 +69,7 @@ public class SecurityConfig {
     http.exceptionHandling()
         .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
-    http.requestMatchers(request -> request.antMatchers("/api/users/me/**", "/api/address/search/**", "/api/review/write", "/api/review/update/**", "/api/review/delete/**", "/api/users/charge-points")
+    http.requestMatchers(request -> request.antMatchers("/api/users/me/**", "/api/address/search/**", "/api/review/write", "/api/review/update/**", "/api/review/delete/**", "/api/users/point/**")
             .and()
             .addFilter(apiKeyAuthenticationFilter())
             .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
