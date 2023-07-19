@@ -27,7 +27,8 @@ public enum ErrorStatus {
   FILE_NOT_FOUND("18"),
   IOEXCEPTION("19"),
   RESTROOM_NAME_DUPLICATE_EXCEPTION("20"),
-  ADDRESS_NOT_FOUND("21");
+  ADDRESS_NOT_FOUND("21"),
+  POINT_NOT_ENOUGH("22");
 
   private final String code;
 

@@ -3,6 +3,7 @@ package com.project.chamjimayo.controller;
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.PointChargeDto;
+import com.project.chamjimayo.controller.dto.PointDeductionDto;
 import com.project.chamjimayo.exception.AuthException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
@@ -72,6 +73,38 @@ public class UserController {
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		if (requestDTO.getUserId().equals(customUserDetails.getId())) {
 			PointChargeDto responseDTO = userService.chargePoints(requestDTO);
+			return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
+		} else {
+			throw new AuthException("권한이 없습니다.");
+		}
+	}
+
+	@Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "포인트 차감 성공."),
+		@ApiResponse(responseCode = "403",
+			description = "1. 권한이 없습니다. \t\n",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"05\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
+					+ "\"msg\":\"권한이 없습니다.\"} }"))),
+		@ApiResponse(responseCode = "404",
+			description = "1. 유저를 찾지 못했습니다. \t\n",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"8\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
+					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
+	@Parameters({
+		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
+	})
+	@PostMapping("/deduct-points")
+	public ResponseEntity<ApiStandardResponse<PointDeductionDto>> deductPoints(
+		@RequestBody PointDeductionDto requestDTO,
+		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		if (requestDTO.getUserId().equals(customUserDetails.getId())) {
+			PointDeductionDto responseDTO = userService.deductPoints(requestDTO);
 			return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
 		} else {
 			throw new AuthException("권한이 없습니다.");

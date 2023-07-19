@@ -95,5 +95,10 @@ public class User extends BaseEntity {
 	public void addPoint(Integer newPoint, Integer currentPoint) {
 		this.point = newPoint + currentPoint;
 	}
+
+	// 포인트 차감을 위한 로직
+	public void deductPoint(Integer currentPoint, Integer deductionPoint) {
+		this.point = currentPoint - deductionPoint;
+	}
 }
 
