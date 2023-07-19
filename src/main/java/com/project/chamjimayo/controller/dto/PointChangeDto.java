@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
-public class PointChargeDto {
+public class PointChangeDto {
 
 	@Schema(type = "Long", example = "1")
 	private Long userId;
@@ -12,12 +12,12 @@ public class PointChargeDto {
 	@Schema(type = "Integer", example = "2000")
 	private Integer point;
 
-	private PointChargeDto(Long userId, Integer point) {
+	private PointChangeDto(Long userId, Integer point) {
 		this.userId = userId;
 		this.point = point;
 	}
 
-	public static PointChargeDto create(Long userId, Integer point) {
-		return new PointChargeDto(userId, point);
+	public static PointChangeDto create(Long userId, Integer point) {
+		return new PointChangeDto(userId, point);
 	}
 }

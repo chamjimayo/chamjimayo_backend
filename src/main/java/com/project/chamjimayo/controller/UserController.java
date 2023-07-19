@@ -2,8 +2,7 @@ package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.PointChargeDto;
-import com.project.chamjimayo.controller.dto.PointDeductionDto;
+import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.exception.AuthException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
@@ -68,11 +67,11 @@ public class UserController {
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
 	@PostMapping("/charge-points")
-	public ResponseEntity<ApiStandardResponse<PointChargeDto>> chargePoints(
-		@RequestBody PointChargeDto requestDTO,
+	public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
+		@RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-			PointChargeDto responseDTO = userService.chargePoints(requestDTO);
+			PointChangeDto responseDTO = userService.chargePoints(requestDTO);
 			return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
 		} else {
 			throw new AuthException("권한이 없습니다.");
@@ -100,11 +99,11 @@ public class UserController {
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
 	@PostMapping("/deduct-points")
-	public ResponseEntity<ApiStandardResponse<PointDeductionDto>> deductPoints(
-		@RequestBody PointDeductionDto requestDTO,
+	public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
+		@RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-			PointDeductionDto responseDTO = userService.deductPoints(requestDTO);
+			PointChangeDto responseDTO = userService.deductPoints(requestDTO);
 			return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
 		} else {
 			throw new AuthException("권한이 없습니다.");

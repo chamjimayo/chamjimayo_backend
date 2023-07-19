@@ -1,7 +1,6 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.PointChargeDto;
-import com.project.chamjimayo.controller.dto.PointDeductionDto;
+import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.PointLackException;
 import com.project.chamjimayo.exception.UserDuplicateException;
@@ -52,7 +51,7 @@ public class UserService {
    * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 합산 포인트)
    */
   @Transactional
-  public PointChargeDto chargePoints(PointChargeDto requestDTO) {
+  public PointChangeDto chargePoints(PointChangeDto requestDTO) {
     Long userId = requestDTO.getUserId();
     Integer Point = requestDTO.getPoint();
     User user = userJpaRepository.findById(userId)
@@ -64,7 +63,7 @@ public class UserService {
 
     userJpaRepository.save(user);
 
-    PointChargeDto responseDTO = PointChargeDto.create(userId, Point);
+    PointChangeDto responseDTO = PointChangeDto.create(userId, Point);
 
     return responseDTO;
   }
@@ -73,7 +72,7 @@ public class UserService {
    * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 포인트)
    */
   @Transactional
-  public PointDeductionDto deductPoints(PointDeductionDto requestDTO) {
+  public PointChangeDto deductPoints(PointChangeDto requestDTO) {
     Long userId = requestDTO.getUserId();
     Integer point = requestDTO.getPoint();
     User user = userJpaRepository.findById(userId)
@@ -88,7 +87,7 @@ public class UserService {
 
     userJpaRepository.save(user);
 
-    PointDeductionDto responseDTO = PointDeductionDto.create(userId, point);
+    PointChangeDto responseDTO = PointChangeDto.create(userId, point);
 
     return responseDTO;
   }
