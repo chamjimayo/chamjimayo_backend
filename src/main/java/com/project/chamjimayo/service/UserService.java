@@ -48,12 +48,11 @@ public class UserService {
   }
 
   /**
-   * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 합산 포인트)
+   * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 충전 후 포인트)
    */
   @Transactional
   public PointChangeDto chargePoints(PointChangeDto requestDTO) {
     Long userId = requestDTO.getUserId();
-    Integer Point = requestDTO.getPoint();
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 
@@ -63,18 +62,17 @@ public class UserService {
 
     userJpaRepository.save(user);
 
-    PointChangeDto responseDTO = PointChangeDto.create(userId, Point);
+    PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
 
     return responseDTO;
   }
 
   /**
-   * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 포인트)
+   * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 후 포인트)
    */
   @Transactional
   public PointChangeDto deductPoints(PointChangeDto requestDTO) {
     Long userId = requestDTO.getUserId();
-    Integer point = requestDTO.getPoint();
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 
@@ -87,7 +85,7 @@ public class UserService {
 
     userJpaRepository.save(user);
 
-    PointChangeDto responseDTO = PointChangeDto.create(userId, point);
+    PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
 
     return responseDTO;
   }
