@@ -11,6 +11,7 @@ import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.RestroomRepository;
 import com.project.chamjimayo.repository.ReviewRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -93,19 +94,26 @@ public class ReviewService {
 	}
 
 	/**
-	 * 해당 화장실의 모든 리뷰 조회
+	 * 해당 화장실의 모든 리뷰 조회 (최신순)
 	 */
 	public List<ReviewDto> getReviewsByRestroomId(Long restroomId) {
 		Optional<Restroom> restroom = restroomRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
 			throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
 		}
+
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
-		return allReviews.stream()
-			.map(review -> ReviewDto.create(review.getUser().getUserId(),
+		List<ReviewDto> reversedReviews = allReviews.stream()
+			.map(review -> ReviewDto.create(
+				review.getUser().getUserId(),
 				review.getRestroom().getRestroomId(),
-				review.getReviewContent(), review.getRating()))
+				review.getReviewContent(),
+				review.getRating()
+			))
 			.collect(Collectors.toList());
+
+		Collections.reverse(reversedReviews);
+		return reversedReviews;
 	}
 
 	/**

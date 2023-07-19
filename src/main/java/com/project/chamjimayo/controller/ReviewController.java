@@ -172,7 +172,7 @@ public class ReviewController {
 		}
 	}
 
-	@Operation(summary = "해당 화장실의 모든 리뷰 조회 (기본)", description = "특정 화장실에 해당하는 모든 리뷰를 조회합니다.")
+	@Operation(summary = "해당 화장실의 모든 리뷰 조회 (최신순)", description = "특정 화장실에 해당하는 모든 리뷰를 조회합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
 		@ApiResponse(responseCode = "400",
