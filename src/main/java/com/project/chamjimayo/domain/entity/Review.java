@@ -1,5 +1,6 @@
 package com.project.chamjimayo.domain.entity;
 
+import com.project.chamjimayo.controller.dto.SearchRequestDto;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,12 +49,15 @@ public class Review extends BaseEntity {
 	@Column(name = "rating")
 	private Float rating;
 
-	@Builder
-	public Review(User user, Restroom restroom, String reviewContent, Float rating) {
+	private Review(User user, Restroom restroom, String reviewContent, Float rating) {
 		this.user = user;
 		this.restroom = restroom;
 		this.reviewContent = reviewContent;
 		this.rating = rating;
+	}
+
+	public static Review create(User user, Restroom restroom, String reviewContent, Float rating) {
+		return new Review(user, restroom, reviewContent, rating);
 	}
 
 	// 리뷰 수정을 위한 setter

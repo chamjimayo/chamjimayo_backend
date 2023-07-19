@@ -32,31 +32,6 @@ public class ReviewController {
 
 	private final ReviewService reviewService;
 
-	@Operation(summary = "리뷰 작성", description = "새로운 리뷰를 작성합니다.")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "리뷰 작성 성공."),
-		@ApiResponse(responseCode = "404",
-			description = "1. 화장실을 찾을 수 없습니다. \t\n"
-				+ "2. 유저를 찾지 못했습니다 \t\n",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
-					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
-	@PostMapping("/write")
-	public ResponseEntity<ApiStandardResponse<ReviewDto>> createReview(
-		@RequestBody ReviewRequestDto reviewRequestDto,
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		Long userId = customUserDetails.getId();
-		ReviewDto createdReview = reviewService.createReview(userId, reviewRequestDto);
-		ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(
-			createdReview);
-		return ResponseEntity.ok(apiStandardResponse);
-	}
-
 	@Operation(summary = "리뷰 조회", description = "특정 리뷰를 조회합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
@@ -75,12 +50,37 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"REVIEW_NOT_FOUND\", "
 					+ "\"msg\":\"리뷰를 찾을 수 없습니다.\"} }")))})
-	@GetMapping("/view/{reviewId}")
+	@GetMapping("/get/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> getReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId) {
 		ReviewDto reviewDto = reviewService.getReview(reviewId);
 		ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(reviewDto);
+		return ResponseEntity.ok(apiStandardResponse);
+	}
+
+	@Operation(summary = "리뷰 작성", description = "새로운 리뷰를 작성합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "리뷰 작성 성공."),
+		@ApiResponse(responseCode = "404",
+			description = "1. 화장실을 찾을 수 없습니다. \t\n"
+				+ "2. 유저를 찾지 못했습니다 \t\n",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
+					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
+	@Parameters({
+		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
+	})
+	@PostMapping()
+	public ResponseEntity<ApiStandardResponse<ReviewDto>> createReview(
+		@RequestBody ReviewRequestDto reviewRequestDto,
+		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		Long userId = customUserDetails.getId();
+		ReviewDto createdReview = reviewService.createReview(userId, reviewRequestDto);
+		ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(
+			createdReview);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
@@ -112,7 +112,7 @@ public class ReviewController {
 	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@PatchMapping("/update/{reviewId}")
+	@PatchMapping("/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> updateReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId,
@@ -156,7 +156,7 @@ public class ReviewController {
 	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@DeleteMapping("/delete/{reviewId}")
+	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<String>> deleteReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId,

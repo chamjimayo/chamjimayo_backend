@@ -42,7 +42,7 @@ public class ReviewService {
 			.orElseThrow(
 				() -> new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId));
 
-		Review review = new Review(user, restroom, reviewContent, rating);
+		Review review = Review.create(user, restroom, reviewContent, rating);
 		reviewRepository.save(review);
 
 		averageRating(review.getRestroom().getRestroomId());
