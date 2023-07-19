@@ -60,8 +60,6 @@ public class UserService {
     int newPoint = requestDTO.getPoint();
     user.addPoint(currentPoint, newPoint);
 
-    userJpaRepository.save(user);
-
     PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
 
     return responseDTO;
@@ -82,8 +80,6 @@ public class UserService {
       throw new PointLackException("포인트가 부족합니다.");
     }
     user.deductPoint(currentPoint, deductionPoint);
-
-    userJpaRepository.save(user);
 
     PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
 
