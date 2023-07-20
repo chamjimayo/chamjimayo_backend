@@ -12,9 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RestroomRepository extends JpaRepository<Restroom, Long> {
 
-    @Query("SELECT DISTINCT r FROM Restroom r LEFT JOIN FETCH r.equipments WHERE r.publicOrPaid = :publicOrPaid")
-    Optional<List<Restroom>> findPublicOrPaid(@Param("publicOrPaid") String publicOrPaid);
-    Optional<Restroom> findRestroomByRestroomId(long restroomId);
-    boolean existsRestroomByRestroomName(String restroomName);
+	@Query("SELECT DISTINCT r FROM Restroom r LEFT JOIN FETCH r.equipments WHERE r.publicOrPaid = :publicOrPaid")
+	Optional<List<Restroom>> findPublicOrPaid(@Param("publicOrPaid") String publicOrPaid);
+
+	Optional<Restroom> findRestroomByRestroomId(long restroomId);
+
+	boolean existsRestroomByRestroomName(String restroomName);
 
 }

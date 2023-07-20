@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class ReviewDto {
+
 	@Schema(type = "Long", example = "1")
 	private final Long userId;
 	@Schema(type = "Long", example = "1")
@@ -22,12 +23,14 @@ public class ReviewDto {
 		this.rating = rating;
 	}
 
-	public static ReviewDto create(Long userId, Long restroomId, String reviewContent, Float rating) {
+	public static ReviewDto create(Long userId, Long restroomId, String reviewContent,
+		Float rating) {
 		return new ReviewDto(userId, restroomId, reviewContent, rating);
 	}
 
 	public static ReviewDto fromEntity(Review review) {
-		return new ReviewDto(review.getUser().getUserId(), review.getRestroom().getRestroomId(), review.getReviewContent(), review.getRating());
+		return new ReviewDto(review.getUser().getUserId(), review.getRestroom().getRestroomId(),
+			review.getReviewContent(), review.getRating());
 	}
 
 }

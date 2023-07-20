@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SearchController {
 
-  private final SearchService searchService;
+	private final SearchService searchService;
 
 	/**
 	 * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능 예시:
@@ -60,7 +60,7 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"10\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"API_NOT_FOUND\", "
 					+ "\"msg\":\"Api 응답이 올바르지 않습니다.\"} }")))})
-	@Parameters ({
+	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
 	@GetMapping("/search")
@@ -72,7 +72,8 @@ public class SearchController {
 		Long userId = customUserDetails.getId();
 		SearchRequestDto requestDTO = SearchRequestDto.create(searchWord, userId);
 		List<SearchResponseDto> searchResponseDTOList = searchService.searchAddress(requestDTO);
-		ApiStandardResponse<List<SearchResponseDto>> apiStandardResponse = ApiStandardResponse.success(searchResponseDTOList);
+		ApiStandardResponse<List<SearchResponseDto>> apiStandardResponse = ApiStandardResponse.success(
+			searchResponseDTOList);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
@@ -95,7 +96,7 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-	@Parameters ({
+	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
 	@GetMapping("/search/recent")
@@ -105,7 +106,8 @@ public class SearchController {
 		Long userId = customUserDetails.getId();
 		// userId를 통해 최근 검색 기록을 가져옴
 		SearchResponseDto responseDTO = searchService.getRecentRoadAddress(userId);
-		ApiStandardResponse<SearchResponseDto> apistandardresponse = ApiStandardResponse.success(responseDTO);
+		ApiStandardResponse<SearchResponseDto> apistandardresponse = ApiStandardResponse.success(
+			responseDTO);
 		return ResponseEntity.ok(apistandardresponse);
 	}
 
@@ -137,7 +139,8 @@ public class SearchController {
 		@PathVariable Long searchId) {
 		searchService.clickAddress(searchId);
 		// searchId를 받아서 클릭 처리
-		ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success("정상적으로 클릭이 되었습니다.");
+		ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success(
+			"정상적으로 클릭이 되었습니다.");
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 }

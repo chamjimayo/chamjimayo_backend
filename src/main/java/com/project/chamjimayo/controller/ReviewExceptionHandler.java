@@ -30,7 +30,8 @@ public class ReviewExceptionHandler {
 
 	@ExceptionHandler(ReviewNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ApiStandardResponse<ErrorResponse> handleReviewNotFoundException(ReviewNotFoundException e) {
+	public ApiStandardResponse<ErrorResponse> handleReviewNotFoundException(
+		ReviewNotFoundException e) {
 		log.error("", e);
 
 		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
@@ -39,7 +40,8 @@ public class ReviewExceptionHandler {
 
 	@ExceptionHandler(RestroomNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ApiStandardResponse<ErrorResponse> handleRestroomNotFoundException(RestroomNotFoundException e) {
+	public ApiStandardResponse<ErrorResponse> handleRestroomNotFoundException(
+		RestroomNotFoundException e) {
 		log.error("", e);
 
 		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
@@ -57,19 +59,23 @@ public class ReviewExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+	public ApiStandardResponse<ErrorResponse> handleMethodArgumentTypeMismatchException(
+		MethodArgumentTypeMismatchException e) {
 		log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_PARAMETER, "올바르지 않은 파라미터 값입니다.");
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_PARAMETER,
+			"올바르지 않은 파라미터 값입니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+	public ApiStandardResponse<ErrorResponse> handleMissingServletRequestParameterException(
+		MissingServletRequestParameterException e) {
 		log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.NEED_MORE_PARAMETER, "파라미터가 부족합니다.");
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.NEED_MORE_PARAMETER,
+			"파라미터가 부족합니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 }

@@ -17,10 +17,12 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-	public ApiStandardResponse<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+	public ApiStandardResponse<ErrorResponse> handleHttpRequestMethodNotSupportedException(
+		HttpRequestMethodNotSupportedException e) {
 		log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.METHOD_NOT_ALLOWED_EXCEPTION, "지원하지 않는 HTTP Method입니다.");
+		final ErrorResponse errorResponse = ErrorResponse.create(
+			ErrorStatus.METHOD_NOT_ALLOWED_EXCEPTION, "지원하지 않는 HTTP Method입니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
@@ -29,7 +31,8 @@ public class GlobalExceptionHandler {
 	public ApiStandardResponse<ErrorResponse> handleDataAccessException(DataAccessException e) {
 		log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.DATABASE_ERROR, "데이터베이스에 오류가 발생했습니다.");
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.DATABASE_ERROR,
+			"데이터베이스에 오류가 발생했습니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
