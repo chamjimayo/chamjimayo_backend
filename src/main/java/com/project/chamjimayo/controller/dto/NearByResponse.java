@@ -1,6 +1,7 @@
 package com.project.chamjimayo.controller.dto;
 
 import com.project.chamjimayo.domain.entity.Restroom;
+import com.project.chamjimayo.domain.entity.Review;
 import com.project.chamjimayo.service.dto.EquipmentNameNId;
 import com.project.chamjimayo.service.dto.RestroomManagerNameNId;
 import com.project.chamjimayo.service.dto.ReviewContentNId;
@@ -38,7 +39,7 @@ public class NearByResponse {
 
 	private List<EquipmentNameNId> equipments;
 
-	private List<ReviewContentNId> reviews;
+	private float reviewRating;
 
 	private RestroomManagerNameNId restroomManager;
 
@@ -64,10 +65,10 @@ public class NearByResponse {
 			.stream().map(equipment -> new EquipmentNameNId(equipment.getEquipmentName(),
 				equipment.getEquipmentId()))
 			.collect(Collectors.toList());
-		this.reviews = restroom.getReviews()
-			.stream()
-			.map(review -> new ReviewContentNId(review.getReviewContent(), review.getReviewId()))
-			.collect(Collectors.toList());
+		this.reviewRating = (float)restroom.getReviews().stream()
+			.mapToDouble(Review::getRating)
+			.average()
+			.orElse(0.0);
 		if(restroom.getRestroomManager() == null){
 			this.restroomManager = null;
 		}else {
