@@ -62,7 +62,7 @@ public class RestroomController {
 	}
 
 	@Operation(summary = "주변 유/무료 화장실리스트",
-		description = "받은 좌표값으로부터 설정한 거리 내부에 있는 화장실 리스트를 반환, 거리를 설정하지 않으면 default로 1KM")
+		description = "받은 좌표값으로부터 설정한 거리 내부에 있는 화장실 리스트를 반환, 거리 순으로 화장실 정렬, 거리를 설정하지 않으면 default로 1KM")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "주변 화장실 리스트 검색 성공"),
 		@ApiResponse(responseCode = "400", description = "요청 변수 에러",
