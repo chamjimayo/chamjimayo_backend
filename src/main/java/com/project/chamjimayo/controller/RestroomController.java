@@ -4,7 +4,8 @@ import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.RestroomDetail;
+import com.project.chamjimayo.controller.dto.NearByResponse;
+import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.service.RestroomService;
@@ -71,7 +72,7 @@ public class RestroomController {
 					+ "\"msg\":\"주변에 화장실이 존재하지 않습니다.\"} }")))
 	})
 	@GetMapping("/nearby/{publicOrPaidOrEntire}")
-	public ResponseEntity<ApiStandardResponse<List<RestroomDetail>>> restroomNearBy(
+	public ResponseEntity<ApiStandardResponse<List<NearByResponse>>> restroomNearBy(
 		@PathVariable(value = "publicOrPaidOrEntire") String publicOrPaidOrEntire,
 		@RequestParam(value = "distance", required = false) Optional<Double> distance,
 		@RequestParam double longitude, double latitude) {
@@ -92,7 +93,7 @@ public class RestroomController {
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
 	})
 	@GetMapping("/detail")
-	public ResponseEntity<ApiStandardResponse<RestroomDetail>> restroomDetail(
+	public ResponseEntity<ApiStandardResponse<RestroomDetailResponse>> restroomDetail(
 		@RequestParam Long restroomId)
 		throws BaseException {
 		return ResponseEntity.ok(

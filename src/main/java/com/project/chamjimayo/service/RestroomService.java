@@ -4,7 +4,8 @@ package com.project.chamjimayo.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
-import com.project.chamjimayo.controller.dto.RestroomDetail;
+import com.project.chamjimayo.controller.dto.NearByResponse;
+import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
@@ -18,9 +19,11 @@ import com.project.chamjimayo.repository.RestroomRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
@@ -217,7 +220,7 @@ public class RestroomService {
 		}
 	}
 
-	public boolean calculateDistance(RestroomNearByRequest req, Restroom restroom) {
+	public double calculateDistance(RestroomNearByRequest req, Restroom restroom) {
 		final double EARTH_RADIUS_KM = 6371.0;
 		double lat1 = req.getLatitude();
 		double lon1 = req.getLongitude();
@@ -240,12 +243,12 @@ public class RestroomService {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double distance = EARTH_RADIUS_KM * c;
 
-		return distance * 1000 <= req.getDistance();
+		return distance * 1000;
 	}
 
 	/* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
 	@Transactional(readOnly = true)
-	public List<RestroomDetail> nearBy(RestroomNearByRequest request) {
+	public List<NearByResponse> nearBy(RestroomNearByRequest request) {
 		Optional<List<Restroom>> restroomList;
 		if (request.getPublicOrPaidOrEntire().equals("entire")) {
 			restroomList = Optional.of(restroomRepository.findAll());
@@ -253,31 +256,36 @@ public class RestroomService {
 			restroomList = restroomRepository.findPublicOrPaid(
 				request.getPublicOrPaidOrEntire());
 		}
-		List<RestroomDetail> nearByList = new ArrayList<>();
+		List<NearByResponse> nearByList = new ArrayList<>();
 		if (restroomList.isEmpty()) {
 			throw new RestroomNotFoundException("근처 화장실을 찾을 수 없습니다");
 		}
 		for (Restroom restroom : restroomList.get()) {
-			if (calculateDistance(request, restroom)) {
+			double distance = calculateDistance(request, restroom);
+			if (distance <= request.getDistance()) {
 				restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
-				RestroomDetail responseDto = new RestroomDetail();
-				responseDto = responseDto.makeDto(restroom);
+				NearByResponse responseDto = new NearByResponse();
+				responseDto = responseDto.makeDto(restroom, distance);
 				nearByList.add(responseDto);
 			}
 		}
-		return nearByList;
+		List<NearByResponse> sortedList = nearByList.stream()
+			.sorted(Comparator.comparingDouble(NearByResponse::getDistance))
+			// .sorted(Comparator.comparingDouble(Response::getDistance).reversed())
+			.collect(Collectors.toList());
+		return sortedList;
 	}
 
 	/* 화장실 Id를 통해 화장실 세부 정보 검색 */
 	@Transactional(readOnly = true)
-	public RestroomDetail restroomDetail(long restroomId) {
+	public RestroomDetailResponse restroomDetail(long restroomId) {
 		Optional<Restroom> restroomOp = Optional.ofNullable(
 			restroomRepository.findRestroomByRestroomId(restroomId)
 				.orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
 		Restroom restrooms = restroomOp.get();
 		restroomOp.get().getReviews().size(); // lazy initialize 문제 때문에 추가
 		restroomOp.get().getEquipments().size(); // lazy initialize 문제 때문에 추가
-		RestroomDetail responseDto = new RestroomDetail();
+		RestroomDetailResponse responseDto = new RestroomDetailResponse();
 		responseDto = responseDto.makeDto(restrooms);
 		return responseDto;
 	}
