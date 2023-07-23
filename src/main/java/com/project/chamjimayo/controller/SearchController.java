@@ -91,7 +91,7 @@ public class SearchController {
 	/**
 	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 리스트 반환 예시: /address/search/recent
 	 */
-	@Operation(summary = "최근 검색 기록 리스트 반환", description = "최근 검색 기록들을 반환합니다.")
+	@Operation(summary = "해당 유저의 최근 검색 기록 리스트 반환", description = "해당 유저의 최근 검색 기록들을 반환합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "최근 검색 기록 반환"),
 		@ApiResponse(responseCode = "400", description = "1. 유효한 토큰이 아닙니다.",
@@ -122,9 +122,9 @@ public class SearchController {
 	}
 
 	/**
-	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리 예시: /address/click
+	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리 후 저장
 	 */
-	@Operation(summary = "클릭", description = "검색 기록을 클릭 처리합니다.(최근 검색 기록을 반환하기 위한 처리)")
+	@Operation(summary = "주소 클릭", description = "검색 기록을 클릭(저장)합니다.(이미 클릭한 경우, 저장되지 않습니다.)")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다."),
 		@ApiResponse(responseCode = "400",
@@ -156,7 +156,7 @@ public class SearchController {
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
-	@Operation(summary = "검색 기록 삭제", description = "특정 검색 기록을 삭제합니다.")
+	@Operation(summary = "해당 유저의 특정 검색 기록 삭제", description = "해당 유저의 특정 검색 기록을 삭제합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "검색 기록 삭제 성공"),
 		@ApiResponse(responseCode = "400",
@@ -201,7 +201,7 @@ public class SearchController {
 		}
 	}
 
-	@Operation(summary = "모든 검색 기록 삭제", description = "해당 유저의 모든 검색 기록을 삭제합니다.")
+	@Operation(summary = "해당 유저의 모든 검색 기록 삭제", description = "해당 유저의 모든 검색 기록을 삭제합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모든 검색 기록 삭제 성공"),
 		@ApiResponse(responseCode = "400",

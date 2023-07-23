@@ -81,10 +81,9 @@ public class ReviewService {
 	@Transactional
 	public void deleteReview(Review review) {
 		Long reviewId = review.getReviewId();
-		reviewRepository.deleteById(reviewId);
-
 		Optional<Review> updateReview = reviewRepository.findById(reviewId);
 		Long restroomId = updateReview.get().getRestroom().getRestroomId();
+		reviewRepository.deleteById(reviewId);
 		averageRating(restroomId);
 	}
 
