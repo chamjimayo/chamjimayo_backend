@@ -38,8 +38,8 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestroomService {
 
-	private final RestroomJpaRepository restroomJpaRepository;
-	private final Environment env;
+    private final RestroomJpaRepository restroomJpaRepository;
+    private final Environment env;
 
 	/*공공화장실 데이터가 담긴 json 파일 읽어오기*/
 	public ArrayList<Map> readJson() {
@@ -142,7 +142,6 @@ public class RestroomService {
 		restroomList = readJson();
 		List<RestroomResponse> response = new ArrayList<>();
 		for (Map restroom_info : restroomList) {
-
 			//Map restroom_info = restroomList.get(51); // test
 			double[] longNLat = getLongNLat(
 				(String) restroom_info.get("소재지주소")); // 소재지 주소를 통해 위도 경도 검색
