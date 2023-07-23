@@ -17,9 +17,9 @@ import com.project.chamjimayo.exception.IoException;
 import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
-import com.project.chamjimayo.repository.RestroomRepository;
+import com.project.chamjimayo.repository.RestroomJpaRepository;
 import com.project.chamjimayo.repository.UsedRestroomRepository;
-import com.project.chamjimayo.repository.UserRepository;
+import com.project.chamjimayo.repository.UserJpaRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestroomService {
 
-	private final RestroomRepository restroomRepository;
-	private final UserRepository userRepository;
+	private final RestroomJpaRepository restroomJpaRepository;
+	private final UserJpaRepository userJpaRepository;
 	private final UsedRestroomRepository usedRestroomRepository;
 	private final Environment env;
 
@@ -171,7 +171,7 @@ public class RestroomService {
 					(String) restroom_info.get("여성용-대변기수"))) // default를 전체 대변기 수로 설정
 				.build();
 			RestroomResponse restroomResponse = new RestroomResponse(
-				restroomRepository.save(restroom).getRestroomId(),
+				restroomJpaRepository.save(restroom).getRestroomId(),
 				restroom.getRestroomName()); // 데이터베이스에 화장실 정보 저장
 			response.add(restroomResponse);
 		}
@@ -180,7 +180,7 @@ public class RestroomService {
 
 	/* 유료 화장실 등록 */
 	public RestroomResponse enrollRestroom(EnrollRestroomRequest enrollRestroomRequest) {
-		if (restroomRepository.existsRestroomByRestroomName(
+		if (restroomJpaRepository.existsRestroomByRestroomName(
 			enrollRestroomRequest.getRestroomName())) {
 			throw new RestroomNameDuplicateException("중복되는 화장실 명입니다.");
 		}
@@ -205,7 +205,7 @@ public class RestroomService {
 			.availableMaleToiletCount(enrollRestroomRequest.getMaleToiletCount())
 			.build();
 		RestroomResponse response = new RestroomResponse(
-			restroomRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
+			restroomJpaRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
 		return response;
 	}
 
@@ -238,7 +238,7 @@ public class RestroomService {
 	/* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
 	@Transactional(readOnly = true)
 	public List<RestroomDetail> nearBy(RestroomNearByRequest request) {
-		Optional<List<Restroom>> restroomList = restroomRepository.findPublicOrPaid(
+		Optional<List<Restroom>> restroomList = restroomJpaRepository.findPublicOrPaid(
 			request.getPublicOrPaid());
 		List<RestroomDetail> nearByList = new ArrayList<>();
 		if (restroomList.isEmpty()) {
@@ -259,7 +259,7 @@ public class RestroomService {
 	@Transactional(readOnly = true)
 	public RestroomDetail restroomDetail(long restroomId) {
 		Optional<Restroom> restroomOp = Optional.ofNullable(
-			restroomRepository.findRestroomByRestroomId(restroomId)
+			restroomJpaRepository.findRestroomByRestroomId(restroomId)
 				.orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
 		Restroom restrooms = restroomOp.get();
 		restroomOp.get().getReviews().size(); // lazy initialize 문제 때문에 추가
@@ -271,9 +271,9 @@ public class RestroomService {
 
 	@Transactional(readOnly = false)
 	public UsingRestroomResponse usingRestroom(long userId, long restroomId) {
-		Optional<User> user = Optional.ofNullable(userRepository.findUserByUserId(userId)
+		Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(userId)
 			.orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다")));
-		Optional<Restroom> restroom = Optional.ofNullable(restroomRepository.findRestroomByRestroomId(restroomId)
+		Optional<Restroom> restroom = Optional.ofNullable(restroomJpaRepository.findRestroomByRestroomId(restroomId)
 			.orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
 		restroom.get().useRestroom(user.get().getGender()); // 이용가능 변기 수 차감
 		user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시

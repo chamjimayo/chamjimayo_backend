@@ -23,10 +23,10 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Restroom extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "restroom_id")
-    private Long restroomId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "restroom_id")
+  private Long restroomId;
 
     @Column(name = "restroom_name")
     private String restroomName;
@@ -39,13 +39,13 @@ public class Restroom extends BaseEntity {
     @Column(name = "location_longitude")
     private double locationLongitude;
 
-    // 남여 공용 화장실인가?
-    @Column(name = "unisex")
-    private Boolean unisex;
+  // 남여 공용 화장실인가?
+  @Column(name = "unisex")
+  private Boolean unisex;
 
-    // 도로명 주소
-    @Column(name = "address")
-    private String address;
+  // 도로명 주소
+  @Column(name = "address")
+  private String address;
 
     // 개방 시간
     @Column(name = "operating_hour")
@@ -63,9 +63,9 @@ public class Restroom extends BaseEntity {
     @Column(name = "public_or_paid")
     private String publicOrPaid;
 
-    // 이용가능한 상태인가?
-    @Column(name = "accessible_toilet_existence")
-    private Boolean accessibleToiletExistence;
+  // 이용가능한 상태인가?
+  @Column(name = "accessible_toilet_existence")
+  private Boolean accessibleToiletExistence;
 
     // 남자 대변기 수
     @Column(name = "male_toilet_count")
