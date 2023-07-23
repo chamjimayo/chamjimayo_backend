@@ -219,14 +219,15 @@ public class SearchService {
 		String name = searchResponseDto.getName();
 		Double latitude = searchResponseDto.getLatitude();
 		Double longitude = searchResponseDto.getLongitude();
-		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
-			latitude, longitude);
 
 		// searchResponseDto에서 값이 없는 경우 예외 처리
 		if (searchWord == null || roadAddress == null || lotNumberAddress == null ||
 			name == null || latitude == null || longitude == null) {
 			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
 		}
+
+		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
+			latitude, longitude);
 
 		// 이전에 클릭하지 않은 경우 (db에 저장되지 않은 경우)만 저장한다.
 		if (!searchRepository.existsByUserAndLatitudeAndLongitude(user, latitude, longitude)) {
