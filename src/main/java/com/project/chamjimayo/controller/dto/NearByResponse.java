@@ -4,7 +4,6 @@ import com.project.chamjimayo.domain.entity.Restroom;
 import com.project.chamjimayo.domain.entity.Review;
 import com.project.chamjimayo.service.dto.EquipmentNameNId;
 import com.project.chamjimayo.service.dto.RestroomManagerNameNId;
-import com.project.chamjimayo.service.dto.ReviewContentNId;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;

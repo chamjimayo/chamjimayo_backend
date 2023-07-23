@@ -1,6 +1,5 @@
 package com.project.chamjimayo.controller.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

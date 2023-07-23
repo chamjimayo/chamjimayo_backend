@@ -122,4 +122,20 @@ public class Restroom extends BaseEntity {
 	public void updateRating(Float averageRating) {
 		this.averageRating = averageRating;
 	}
+
+	public void useRestroom(String gender) {
+		if (gender.equals("male")) {
+			this.availableMaleToiletCount--;
+		} else {
+			this.availableFemaleToiletCount--;
+		}
+	}
+
+	public void endOfUseRestroom(String gender) {
+		if (gender.equals("male")) {
+			this.availableMaleToiletCount++;
+		} else {
+			this.availableFemaleToiletCount++;
+		}
+	}
 }

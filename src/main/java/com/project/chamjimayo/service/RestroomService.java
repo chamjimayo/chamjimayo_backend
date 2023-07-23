@@ -8,13 +8,19 @@ import com.project.chamjimayo.controller.dto.NearByResponse;
 import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
+import com.project.chamjimayo.controller.dto.UsingRestroomResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
+import com.project.chamjimayo.domain.entity.UsedRestroom;
+import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.AddressNotFoundException;
 import com.project.chamjimayo.exception.FileNotFoundException;
 import com.project.chamjimayo.exception.IoException;
 import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
+import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.RestroomJpaRepository;
+import com.project.chamjimayo.repository.UsedRestroomRepository;
+import com.project.chamjimayo.repository.UserJpaRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,8 +44,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestroomService {
 
-    private final RestroomJpaRepository restroomJpaRepository;
-    private final Environment env;
+	private final RestroomJpaRepository restroomJpaRepository;
+	private final UserJpaRepository userJpaRepository;
+	private final UsedRestroomRepository usedRestroomRepository;
+	private final Environment env;
 
 	/*공공화장실 데이터가 담긴 json 파일 읽어오기*/
 	public ArrayList<Map> readJson() {
@@ -203,20 +211,6 @@ public class RestroomService {
 		return response;
 	}
 
-	/* 주어진 distance안에 있는 화장실인지 아닌지 판별 */
-	public boolean isNearBy(RestroomNearByRequest request, String address) {
-		String apiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="
-			+ address + "&coordinate=" + request.getLongitude() + ","
-			+ request.getLatitude(); //네이버 cloud platform GeoCoding 사용
-		ArrayList<Map> responseArrayList = geocoding(apiUrl);
-		Map responseMap = responseArrayList.get(0);
-		if (request.getDistance() >= (double) responseMap.get("distance")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public double calculateDistance(RestroomNearByRequest req, Restroom restroom) {
 		final double EARTH_RADIUS_KM = 6371.0;
 		double lat1 = req.getLatitude();
@@ -285,5 +279,32 @@ public class RestroomService {
 		RestroomDetailResponse responseDto = new RestroomDetailResponse();
 		responseDto = responseDto.makeDto(restrooms);
 		return responseDto;
+	}
+
+	@Transactional(readOnly = false)
+	public UsingRestroomResponse usingRestroom(long userId, long restroomId) {
+		Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(userId)
+			.orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다")));
+		Optional<Restroom> restroom = Optional.ofNullable(
+			restroomJpaRepository.findRestroomByRestroomId(restroomId)
+				.orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
+		restroom.get().useRestroom(user.get().getGender()); // 이용가능 변기 수 차감
+		user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시
+		UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(restroomId)
+			.build(); // 사용한 화장실 엔티티 생성
+		usedRestroomRepository.save(usedRestroom); // 화장실 이용 내역을 DB에 저장
+		return new UsingRestroomResponse(userId, restroomId);
+	}
+
+	@Transactional(readOnly = false)
+	public UsingRestroomResponse endOfUsingRestroom(long userId) {
+		Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(userId)
+			.orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다")));
+		Optional<Restroom> restroom = Optional.ofNullable(
+			restroomJpaRepository.findRestroomByRestroomId(user.get().getUsingRestroomId())
+				.orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
+		restroom.get().endOfUseRestroom(user.get().getGender()); // 이용가능 변기 수 차증
+		user.get().endOfUseRestroom(); // 현재 사용자에게 사용중 화장실 삭제
+		return new UsingRestroomResponse(userId, restroom.get().getRestroomId());
 	}
 }

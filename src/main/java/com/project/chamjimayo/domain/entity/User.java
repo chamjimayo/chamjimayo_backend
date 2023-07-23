@@ -97,4 +97,12 @@ public class User extends BaseEntity {
 	public void deductPoint(Integer currentPoint, Integer deductionPoint) {
 		this.point = currentPoint - deductionPoint;
 	}
+
+	public void useRestroom(long restroomId) {
+		this.usingRestroomId = restroomId;
+	}
+
+	public void endOfUseRestroom() {
+		this.usingRestroomId = null;
+	}
 }

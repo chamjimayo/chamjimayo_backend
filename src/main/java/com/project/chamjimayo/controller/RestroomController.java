@@ -8,8 +8,14 @@ import com.project.chamjimayo.controller.dto.NearByResponse;
 import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
+import com.project.chamjimayo.controller.dto.UsingRestroomRequest;
+import com.project.chamjimayo.controller.dto.UsingRestroomResponse;
+import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.RestroomService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,5 +105,51 @@ public class RestroomController {
 		throws BaseException {
 		return ResponseEntity.ok(
 			ApiStandardResponse.success(restroomService.restroomDetail(restroomId)));
+	}
+
+	@Operation(summary = "화장실 사용", description = "받은 화장실 Id로 화장실 사용 로직 수행")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "화장실 사용 로직 성공"),
+		@ApiResponse(responseCode = "400", description = "요청 변수 에러",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
+					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
+	})
+	@Parameters({
+		@Parameter(name = "Bearer-Token", description = "jwt token",
+			in = ParameterIn.HEADER, schema = @Schema(type = "string"))
+	})
+	@PostMapping("/use")
+	public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> usingRestroom(
+		@RequestBody UsingRestroomRequest usingRestroomRequest,
+		@Parameter(hidden = true) @AuthenticationPrincipal
+		CustomUserDetails userDetails) {
+		long userId = userDetails.getId();
+		return ResponseEntity.ok(
+			ApiStandardResponse.success(
+				restroomService.usingRestroom(userId, usingRestroomRequest.getRestroomId())));
+	}
+
+	@Operation(summary = "화장실 사용종료", description = "받은 화장실 Id로 화장실 사용종료 로직 수행")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "화장실 사용종료 로직 성공"),
+		@ApiResponse(responseCode = "400", description = "요청 변수 에러",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
+					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
+	})
+	@Parameters({
+		@Parameter(name = "Bearer-Token", description = "jwt token",
+			in = ParameterIn.HEADER, schema = @Schema(type = "string"))
+	})
+	@PostMapping("/endofuse")
+	public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> endOfUsingRestroom(
+		@Parameter(hidden = true) @AuthenticationPrincipal
+		CustomUserDetails userDetails) {
+		long userId = userDetails.getId();
+		return ResponseEntity.ok(ApiStandardResponse.success(
+			restroomService.endOfUsingRestroom(userId)));
 	}
 }
