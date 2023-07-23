@@ -41,8 +41,9 @@ public class SecurityConfig {
 		apiKeyAuthenticationFilter.setAuthenticationManager(authentication -> {
 			String principal = (String) authentication.getPrincipal();
 
-			if (!apiProperties.getApiKey().equals(principal))
+			if (!apiProperties.getApiKey().equals(principal)) {
 				throw new BadCredentialsException("Api 키가 잘못됐습니다.");
+			}
 
 			authentication.setAuthenticated(true);
 			return authentication;
@@ -51,55 +52,58 @@ public class SecurityConfig {
 		return apiKeyAuthenticationFilter;
 	}
 
-  @Bean
-  @Order(1)
-  public SecurityFilterChain filterChainWithJwt(HttpSecurity http) throws Exception {
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .csrf().disable()
-        .headers().frameOptions().disable()
-        .and()
-        .httpBasic().disable()
-        .formLogin().disable();
+	@Bean
+	@Order(1)
+	public SecurityFilterChain filterChainWithJwt(HttpSecurity http) throws Exception {
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.csrf().disable()
+			.headers().frameOptions().disable()
+			.and()
+			.httpBasic().disable()
+			.formLogin().disable();
 
-    http.userDetailsService(customUserDetailsService);
+		http.userDetailsService(customUserDetailsService);
 
-    http.exceptionHandling()
-        .authenticationEntryPoint(new RestAuthenticationEntryPoint());
+		http.exceptionHandling()
+			.authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
-    http.requestMatchers(request -> request.antMatchers("/api/users/me/**")
-            .and()
-        .addFilter(apiKeyAuthenticationFilter())
-        .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
-        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(authenticationExceptionFilter(), JwtAuthenticationFilter.class))
-        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+		http.requestMatchers(
+				request -> request.antMatchers("/api/users/me/**", "/api/address/search/**",
+						"/api/review", "/api/review/*", "/api/users/point/**")
+					.and()
+					.addFilter(apiKeyAuthenticationFilter())
+					.addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
+					.addFilterBefore(jwtAuthenticationFilter(),
+						UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(authenticationExceptionFilter(), JwtAuthenticationFilter.class))
+			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
 		return http.build();
 	}
 
-  @Bean
-  @Order(2)
-  public SecurityFilterChain filterChainWithoutJwt(HttpSecurity http) throws Exception {
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .csrf().disable()
-        .headers().frameOptions().disable()
-        .and()
-        .httpBasic().disable()
-        .formLogin().disable();
+	@Bean
+	@Order(2)
+	public SecurityFilterChain filterChainWithoutJwt(HttpSecurity http) throws Exception {
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.csrf().disable()
+			.headers().frameOptions().disable()
+			.and()
+			.httpBasic().disable()
+			.formLogin().disable();
 
-    http.userDetailsService(customUserDetailsService);
+		http.userDetailsService(customUserDetailsService);
 
-    http.exceptionHandling()
-        .authenticationEntryPoint(new RestAuthenticationEntryPoint());
+		http.exceptionHandling()
+			.authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
-    http.requestMatchers(request -> request.antMatchers("/api/**")
-        .and()
-        .addFilter(apiKeyAuthenticationFilter())
-        .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class))
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+		http.requestMatchers(request -> request.antMatchers("/api/**")
+				.and()
+				.addFilter(apiKeyAuthenticationFilter())
+				.addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class))
+			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
-    return http.build();
-  }
+		return http.build();
+	}
 }

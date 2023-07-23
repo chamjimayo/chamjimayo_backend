@@ -1,16 +1,15 @@
 package com.project.chamjimayo.controller.dto;
 
 import com.project.chamjimayo.domain.entity.Restroom;
+import com.project.chamjimayo.domain.entity.Review;
 import com.project.chamjimayo.service.dto.EquipmentNameNId;
 import com.project.chamjimayo.service.dto.RestroomManagerNameNId;
-import com.project.chamjimayo.service.dto.ReviewContentNId;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-public class RestroomDetail {
-
+public class NearByResponse {
 	private String restroomName;
 	private double longitude;
 	private double latitude;
@@ -39,12 +38,14 @@ public class RestroomDetail {
 
 	private List<EquipmentNameNId> equipments;
 
-	private List<ReviewContentNId> reviews;
+	private float reviewRating;
 
 	private RestroomManagerNameNId restroomManager;
 
+	private Double distance;
 
-	public RestroomDetail makeDto(Restroom restroom) {
+
+	public NearByResponse makeDto(Restroom restroom,double distance) {
 		this.restroomName = restroom.getRestroomName();
 		this.longitude = restroom.getLocationLongitude();
 		this.latitude = restroom.getLocationLatitude();
@@ -63,17 +64,18 @@ public class RestroomDetail {
 			.stream().map(equipment -> new EquipmentNameNId(equipment.getEquipmentName(),
 				equipment.getEquipmentId()))
 			.collect(Collectors.toList());
-		this.reviews = restroom.getReviews()
-			.stream()
-			.map(review -> new ReviewContentNId(review.getReviewContent(), review.getReviewId()))
-			.collect(Collectors.toList());
-		if (restroom.getRestroomManager() == null) {
+		this.reviewRating = (float)restroom.getReviews().stream()
+			.mapToDouble(Review::getRating)
+			.average()
+			.orElse(0.0);
+		if(restroom.getRestroomManager() == null){
 			this.restroomManager = null;
-		} else {
+		}else {
 			this.restroomManager = new RestroomManagerNameNId(
 				restroom.getRestroomManager().getName(),
 				restroom.getRestroomManager().getManagerId());
 		}
+		this.distance = distance;
 		return this;
 	}
 }

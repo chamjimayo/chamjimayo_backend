@@ -70,8 +70,8 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private List<Search> searches;
 
-  @OneToMany(mappedBy = "user")
-  private List<UsedRestroom> usedRestrooms;
+	@OneToMany(mappedBy = "user")
+	private List<UsedRestroom> usedRestrooms;
 
 	@Column(name = "using_restroom_id")
 	private Long usingRestroomId;
@@ -88,9 +88,17 @@ public class User extends BaseEntity {
 		this.authType = authType;
 	}
 
-	public void useRestroom(long restroomId){
-		this.usingRestroomId = restroomId;
+	// 포인트 충전을 위한 로직
+	public void addPoint(Integer newPoint, Integer currentPoint) {
+		this.point = newPoint + currentPoint;
 	}
 
-}
+	// 포인트 차감을 위한 로직
+	public void deductPoint(Integer currentPoint, Integer deductionPoint) {
+		this.point = currentPoint - deductionPoint;
+	}
 
+	public void useRestroom(long restroomId) {
+		this.usingRestroomId = restroomId;
+	}
+}

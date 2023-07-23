@@ -1,9 +1,11 @@
 package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.RestroomDetail;
+import com.project.chamjimayo.controller.dto.NearByResponse;
+import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.controller.dto.UsingRestroomRequest;
@@ -21,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,13 +63,13 @@ public class RestroomController {
 	})
 	@PostMapping("/enroll")
 	public ResponseEntity<ApiStandardResponse<RestroomResponse>> enrollRestroom(
-		@RequestBody EnrollRestroomRequest enrollRestroomRequest){
+		@RequestBody EnrollRestroomRequest enrollRestroomRequest) throws BaseException {
 		return ResponseEntity.ok(
 			ApiStandardResponse.success(restroomService.enrollRestroom(enrollRestroomRequest)));
 	}
 
 	@Operation(summary = "주변 유/무료 화장실리스트",
-		description = "받은 좌표값으로부터 설정한 거리 내부에 있는 화장실 리스트를 반환, 거리를 설정하지 않으면 default로 1KM")
+		description = "받은 좌표값으로부터 설정한 거리 내부에 있는 화장실 리스트를 반환, 거리 순으로 화장실 정렬, 거리를 설정하지 않으면 default로 1KM")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "주변 화장실 리스트 검색 성공"),
 		@ApiResponse(responseCode = "400", description = "요청 변수 에러",
@@ -75,16 +78,14 @@ public class RestroomController {
 					+ " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
 					+ "\"msg\":\"주변에 화장실이 존재하지 않습니다.\"} }")))
 	})
-	@GetMapping("/nearby/{publicOrPaid}")
-	public ResponseEntity<ApiStandardResponse<List<RestroomDetail>>> restroomNearBy(
-		@PathVariable(value = "publicOrPaid", required = true) String publicOrPaid,
-		@RequestParam(value = "distance", required = false) Double distance,
-		@RequestParam double longitude, double latitude){
-		if (distance == null) {
-			distance = 1000.0;
-		}
+	@GetMapping("/nearby/{publicOrPaidOrEntire}")
+	public ResponseEntity<ApiStandardResponse<List<NearByResponse>>> restroomNearBy(
+		@PathVariable(value = "publicOrPaidOrEntire") String publicOrPaidOrEntire,
+		@RequestParam(value = "distance", required = false) Optional<Double> distance,
+		@RequestParam double longitude, double latitude) {
+		distance = Optional.of(distance.orElse(1000D));
 		RestroomNearByRequest restroomNearByRequest = new RestroomNearByRequest(longitude,
-			latitude, publicOrPaid, distance);
+			latitude, publicOrPaidOrEntire, distance.get());
 		return ResponseEntity.ok(
 			ApiStandardResponse.success(restroomService.nearBy(restroomNearByRequest)));
 	}
@@ -99,11 +100,13 @@ public class RestroomController {
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
 	})
 	@GetMapping("/detail")
-	public ResponseEntity<ApiStandardResponse<RestroomDetail>> restroomDetail(
-		@RequestParam Long restroomId) {
+	public ResponseEntity<ApiStandardResponse<RestroomDetailResponse>> restroomDetail(
+		@RequestParam Long restroomId)
+		throws BaseException {
 		return ResponseEntity.ok(
 			ApiStandardResponse.success(restroomService.restroomDetail(restroomId)));
 	}
+
 	@Operation(summary = "화장실 사용", description = "받은 화장실 Id로 화장실 사용 로직 수행")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "화장실 사용 로직 성공"),
@@ -119,10 +122,12 @@ public class RestroomController {
 	})
 	@PostMapping("/use")
 	public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> usingRestroom(
-		@RequestBody UsingRestroomRequest usingRestroomRequest, @Parameter(hidden = true)@AuthenticationPrincipal
-	CustomUserDetails userDetails) {
+		@RequestBody UsingRestroomRequest usingRestroomRequest,
+		@Parameter(hidden = true) @AuthenticationPrincipal
+		CustomUserDetails userDetails) {
 		long userId = userDetails.getId();
 		return ResponseEntity.ok(
-			ApiStandardResponse.success(restroomService.usingRestroom(userId, usingRestroomRequest.getRestroomId())));
+			ApiStandardResponse.success(
+				restroomService.usingRestroom(userId, usingRestroomRequest.getRestroomId())));
 	}
 }
