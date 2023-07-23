@@ -4,6 +4,7 @@ import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.exception.ApiNotFoundException;
+import com.project.chamjimayo.exception.AuthException;
 import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
@@ -52,6 +53,15 @@ public class SearchExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiStandardResponse<ErrorResponse> handleJsonFileNotFoundException(
 		JsonFileNotFoundException e) {
+		log.error("", e);
+
+		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+		return ApiStandardResponse.fail(errorResponse);
+	}
+
+	@ExceptionHandler(AuthException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ApiStandardResponse<ErrorResponse> handleAuthException(AuthException e) {
 		log.error("", e);
 
 		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());

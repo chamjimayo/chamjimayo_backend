@@ -1,20 +1,18 @@
 package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
-import com.project.chamjimayo.controller.dto.SearchRequestDto;
 import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.domain.entity.Search;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.ApiNotFoundException;
 import com.project.chamjimayo.exception.JsonFileNotFoundException;
-import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -41,14 +39,12 @@ public class SearchService {
 
 
 	/**
-	 * 검색어에 대한 도로명 주소 검색을 수행하고, 검색 결과를 저장 후 반환
+	 * 검색어에 대한 주소 검색을 수행하고, 검색 결과를 반환
 	 */
 	@Transactional
-	public List<SearchResponseDto> searchAddress(SearchRequestDto requestDTO) {
+	public List<SearchResponseDto> searchAddress(String searchWord, Long userId) {
 		// 검색 결과 가져올 개수와 검색어 설정
-		int count = 5;
-		String searchWord = requestDTO.getSearchWord();
-		Long userId = requestDTO.getUserId();
+		int count = 7;
 
 		// Tmap API 호출을 위한 URI 설정
 		URI uri = UriComponentsBuilder.fromUriString("https://apis.openapi.sk.com")
@@ -85,6 +81,8 @@ public class SearchService {
 		List<String> fullAddressRoadList = extractFullAddressRoad(responseEntity.getBody());
 		List<String> lotNumberAddressList = extractLotNumberAddress(responseEntity.getBody());
 		List<String> nameList = extractName(responseEntity.getBody());
+		List<Double> latitudeList = extractLatitude(responseEntity.getBody());
+		List<Double> longitudeList = extractLongitude(responseEntity.getBody());
 
 		List<SearchResponseDto> searchResponseDTOList = new ArrayList<>();
 
@@ -93,12 +91,12 @@ public class SearchService {
 			String fullAddressRoad = fullAddressRoadList.get(i);
 			String lotNumberAddress = lotNumberAddressList.get(i);
 			String name = nameList.get(i);
-			Search search = new Search(user, searchWord, fullAddressRoad, lotNumberAddress, name);
-			searchRepository.save(search);
+			Double latitude = latitudeList.get(i);
+			Double longitude = longitudeList.get(i);
 
 			// 검색 결과 DTO 생성 및 추가
-			SearchResponseDto responseDTO = new SearchResponseDto(fullAddressRoad, lotNumberAddress,
-				name);
+			SearchResponseDto responseDTO = SearchResponseDto.create(searchWord, fullAddressRoad,
+				lotNumberAddress, name, latitude, longitude);
 			searchResponseDTOList.add(responseDTO);
 		}
 		return searchResponseDTOList;
@@ -165,42 +163,122 @@ public class SearchService {
 	}
 
 	/**
-	 * 유저 아이디에 해당하는 사용자의 최근 도로명 주소 가져와서 검색 결과 DTO로 반환
+	 * API 응답에서 위도를 추출하여 반환
 	 */
-	public SearchResponseDto getRecentRoadAddress(Long userId) {
+	private List<Double> extractLatitude(String responseBody) {
+		List<Double> latitudeList = new ArrayList<>();
+
+		// JSON 응답에서 frontLat와 noorLat 추출하여 평균 계산
+		List<String> frontLatList = JsonPath.read(responseBody,
+			"$.searchPoiInfo.pois.poi[*].frontLat");
+		List<String> noorLatList = JsonPath.read(responseBody,
+			"$.searchPoiInfo.pois.poi[*].noorLat");
+
+		for (int i = 0; i < frontLatList.size(); i++) {
+			double frontLat = Double.parseDouble(frontLatList.get(i));
+			double noorLat = Double.parseDouble(noorLatList.get(i));
+			double averageLat = (frontLat + noorLat) / 2.0;
+			latitudeList.add(averageLat);
+		}
+		return latitudeList;
+	}
+
+	/**
+	 * API 응답에서 경도를 추출하여 반환
+	 */
+	private List<Double> extractLongitude(String responseBody) {
+		List<Double> longitudeList = new ArrayList<>();
+
+		// 평균 계산
+		List<String> frontLonList = JsonPath.read(responseBody,
+			"$.searchPoiInfo.pois.poi[*].frontLon");
+		List<String> noorLonList = JsonPath.read(responseBody,
+			"$.searchPoiInfo.pois.poi[*].noorLon");
+
+		for (int i = 0; i < frontLonList.size(); i++) {
+			double frontLon = Double.parseDouble(frontLonList.get(i));
+			double noorL0n = Double.parseDouble(noorLonList.get(i));
+			double averageLon = (frontLon + noorL0n) / 2.0;
+			longitudeList.add(averageLon);
+		}
+		return longitudeList;
+	}
+
+	/**
+	 * 도로명 주소를 클릭한 경우
+	 */
+	@Transactional
+	public void clickAddress(Long userId, SearchResponseDto searchResponseDto) {
+
+		// userRepository 에서 userId를 통해 user 객체를 가져옴
+		User user = userJpaRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
+		String searchWord = searchResponseDto.getSearchWord();
+		String roadAddress = searchResponseDto.getRoadAddress();
+		String lotNumberAddress = searchResponseDto.getLotNumberAddress();
+		String name = searchResponseDto.getName();
+		Double latitude = searchResponseDto.getLatitude();
+		Double longitude = searchResponseDto.getLongitude();
+		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
+			latitude, longitude);
+
+		// searchResponseDto에서 값이 없는 경우 예외 처리
+		if (searchWord == null || roadAddress == null || lotNumberAddress == null ||
+			name == null || latitude == null || longitude == null) {
+			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
+		}
+
+		// 이전에 클릭하지 않은 경우 (db에 저장되지 않은 경우)만 저장한다.
+		if (!searchRepository.existsByUserAndLatitudeAndLongitude(user, latitude, longitude)) {
+			searchRepository.save(search);
+		}
+
+	}
+
+	/**
+	 * 최근 검색 기록 삭제
+	 */
+	@Transactional
+	public void deleteRecentSearchHistory(Search search) {
+		searchRepository.deleteById(search.getSearchId());
+	}
+
+	/**
+	 * 검색 기록 모두 삭제
+	 */
+	@Transactional
+	public void deleteRecentSearchHistoryAll(User user) {
+		searchRepository.deleteAllByUser(user);
+	}
+
+	/**
+	 * 해당 유저의 최근 검색 기록 리스트 반환
+	 */
+	public List<SearchResponseDto> getUserSearchHistory(Long userId) {
 		// userRepository 에서 userId를 통해 user 객체를 가져옴
 		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
 
-		// user 객체를 통해서 가장 최근에 검색된 상태가 1인 search 객체 받아오기
-		Optional<Search> searchOptional = searchRepository.findTopByUserAndClickOrderBySearchIdDesc(
-			user, 1);
+		// userId에 해당하는 모든 검색 기록 반환
+		List<Search> searchList = searchRepository.findAllByUser(user);
 
-		// 검색 결과 DTO 생성
-		SearchResponseDto responseDTO;
-		if (searchOptional.isPresent()) {
-			Search search = searchOptional.get();
-			responseDTO = new SearchResponseDto(search.getRoadAddress(),
-				search.getLotNumberAddress(), search.getName());
-		} else {
-			// 빈 문자열 생성
-			responseDTO = new SearchResponseDto("", "", "");
+		List<SearchResponseDto> searchResponseDTOList = new ArrayList<>();
+
+		// 검색 결과 DTO 리스트 생성
+		for (Search searchHistory : searchList) {
+			String searchWord = searchHistory.getSearchWord();
+			String roadAddress = searchHistory.getRoadAddress();
+			String lotNumberAddress = searchHistory.getLotNumberAddress();
+			String name = searchHistory.getName();
+			double latitude = searchHistory.getLatitude();
+			double longitude = searchHistory.getLongitude();
+
+			SearchResponseDto searchResponse = SearchResponseDto.create(searchWord, roadAddress,
+				lotNumberAddress, name, latitude, longitude);
+			searchResponseDTOList.add(searchResponse);
 		}
-		return responseDTO;
-	}
-
-
-	/**
-	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리
-	 */
-	@Transactional
-	public void clickAddress(Long searchId) {
-		// searchId로 search 를 받아옴
-		Search search = searchRepository.findById(searchId)
-			.orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
-
-		search.changeClick(1); // 도로명 주소의 상태를 클릭된 상태로 변경
-		searchRepository.save(search);
+		Collections.reverse(searchResponseDTOList);
+		return searchResponseDTOList;
 	}
 }
 
