@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -47,24 +46,28 @@ public class Search {
 	@Column(name = "name")
 	private String name;
 
-	// 도로명 주소의 상태 (0: 클릭 전, 1: 클릭 후)
-	@Column(name = "click")
-	private int click;
+	@Column(name = "latitude")
+	private Double latitude;
 
+	@Column(name = "longitude")
+	private Double longitude;
 
-	@Builder
-	public Search(User user, String searchWord, String roadAddress, String lotNumberAddress,
-		String name) {
+	private Search(User user, String searchWord, String roadAddress, String lotNumberAddress,
+		String name, Double latitude, Double longitude) {
 		this.user = user;
 		this.searchWord = searchWord;
 		this.roadAddress = roadAddress;
 		this.lotNumberAddress = lotNumberAddress;
 		this.name = name;
-		this.click = 0; // 초기 상태는 0으로 설정
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
-	public void changeClick(int click) {
-		this.click = click;
+	public static Search create(User user, String searchWord, String roadAddress,
+		String lotNumberAddress, String name, Double latitude, Double longitude) {
+		return new Search(user, searchWord, roadAddress, lotNumberAddress, name, latitude,
+			longitude);
 	}
+
 }
 
