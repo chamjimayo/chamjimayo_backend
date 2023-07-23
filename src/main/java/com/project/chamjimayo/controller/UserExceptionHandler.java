@@ -5,7 +5,6 @@ import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.exception.AuthException;
 import com.project.chamjimayo.exception.PointLackException;
 import com.project.chamjimayo.exception.UserNotFoundException;
-import com.project.chamjimayo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

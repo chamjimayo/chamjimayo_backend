@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-public class RestroomDetail {
+public class RestroomDetailResponse {
 
     private String restroomName;
     private double longitude;
@@ -44,7 +44,7 @@ public class RestroomDetail {
     private RestroomManagerNameNId restroomManager;
 
 
-    public RestroomDetail makeDto(Restroom restroom) {
+    public RestroomDetailResponse makeDto(Restroom restroom) {
         this.restroomName = restroom.getRestroomName();
         this.longitude = restroom.getLocationLongitude();
         this.latitude = restroom.getLocationLatitude();

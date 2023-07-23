@@ -8,7 +8,7 @@ import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
-import com.project.chamjimayo.repository.RestroomRepository;
+import com.project.chamjimayo.repository.RestroomJpaRepository;
 import com.project.chamjimayo.repository.ReviewRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import java.util.Collections;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
-	private final RestroomRepository restroomRepository;
+	private final RestroomJpaRepository restroomJpaRepository;
 	private final UserJpaRepository userJpaRepository;
 
 	/**
@@ -38,7 +38,7 @@ public class ReviewService {
 		Float rating = reviewRequestDto.getRating();
 		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
-		Restroom restroom = restroomRepository.findById(restroomId)
+		Restroom restroom = restroomJpaRepository.findById(restroomId)
 			.orElseThrow(
 				() -> new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId));
 
@@ -92,7 +92,7 @@ public class ReviewService {
 	 * 해당 화장실의 모든 리뷰 조회 (최신순)
 	 */
 	public List<ReviewDto> getReviewsByRestroomId(Long restroomId) {
-		Optional<Restroom> restroom = restroomRepository.findById(restroomId);
+		Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
 			throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
 		}
@@ -112,7 +112,7 @@ public class ReviewService {
 	 * 해당 화장실의 모든 리뷰를 별점(rating)이 높은 순으로 정렬하여 조회
 	 */
 	public List<ReviewDto> getReviewsByRestroomIdOrderByHighRating(Long restroomId) {
-		Optional<Restroom> restroom = restroomRepository.findById(restroomId);
+		Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
 			throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
 		}
@@ -128,7 +128,7 @@ public class ReviewService {
 	 * 해당 화장실의 모든 리뷰를 별점(rating)이 낮은 순으로 정렬하여 조회
 	 */
 	public List<ReviewDto> getReviewsByRestroomIdOrderByLowRating(Long restroomId) {
-		Optional<Restroom> restroom = restroomRepository.findById(restroomId);
+		Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
 			throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
 		}
@@ -144,7 +144,7 @@ public class ReviewService {
 	 * 해당 화장실의 평균 평점 계산 (화장실이 없다면 0점 반환)
 	 */
 	public void averageRating(Long restroomId) {
-		Optional<Restroom> restroom = restroomRepository.findById(restroomId);
+		Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
 			throw new ReviewNotFoundException("해당 화장실을 찾지 못했습니다. ID: " + restroomId);
 		}

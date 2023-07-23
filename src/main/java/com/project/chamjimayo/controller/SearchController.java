@@ -122,8 +122,7 @@ public class SearchController {
 	}
 
 	/**
-	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리 예시:
-	 * /address/click
+	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리 예시: /address/click
 	 */
 	@Operation(summary = "클릭", description = "검색 기록을 클릭 처리합니다.(최근 검색 기록을 반환하기 위한 처리)")
 	@ApiResponses({
