@@ -295,4 +295,16 @@ public class RestroomService {
 		usedRestroomRepository.save(usedRestroom); // 화장실 이용 내역을 DB에 저장
 		return new UsingRestroomResponse(userId, restroomId);
 	}
+
+	@Transactional(readOnly = false)
+	public UsingRestroomResponse endOfUsingRestroom(long userId) {
+		Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(userId)
+			.orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다")));
+		Optional<Restroom> restroom = Optional.ofNullable(
+			restroomJpaRepository.findRestroomByRestroomId(user.get().getUsingRestroomId())
+				.orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
+		restroom.get().endOfUseRestroom(user.get().getGender()); // 이용가능 변기 수 차증
+		user.get().endOfUseRestroom(); // 현재 사용자에게 사용중 화장실 삭제
+		return new UsingRestroomResponse(userId, restroom.get().getRestroomId());
+	}
 }

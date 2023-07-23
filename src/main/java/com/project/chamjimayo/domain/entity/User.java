@@ -101,4 +101,8 @@ public class User extends BaseEntity {
 	public void useRestroom(long restroomId) {
 		this.usingRestroomId = restroomId;
 	}
+
+	public void endOfUseRestroom() {
+		this.usingRestroomId = null;
+	}
 }

@@ -130,4 +130,26 @@ public class RestroomController {
 			ApiStandardResponse.success(
 				restroomService.usingRestroom(userId, usingRestroomRequest.getRestroomId())));
 	}
+
+	@Operation(summary = "화장실 사용종료", description = "받은 화장실 Id로 화장실 사용종료 로직 수행")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "화장실 사용종료 로직 성공"),
+		@ApiResponse(responseCode = "400", description = "요청 변수 에러",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
+					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
+	})
+	@Parameters({
+		@Parameter(name = "Bearer-Token", description = "jwt token",
+			in = ParameterIn.HEADER, schema = @Schema(type = "string"))
+	})
+	@PostMapping("/endofuse")
+	public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> endOfUsingRestroom(
+		@Parameter(hidden = true) @AuthenticationPrincipal
+		CustomUserDetails userDetails) {
+		long userId = userDetails.getId();
+		return ResponseEntity.ok(ApiStandardResponse.success(
+			restroomService.endOfUsingRestroom(userId)));
+	}
 }

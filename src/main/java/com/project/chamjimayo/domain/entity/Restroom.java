@@ -130,4 +130,12 @@ public class Restroom extends BaseEntity {
 			this.availableFemaleToiletCount--;
 		}
 	}
+
+	public void endOfUseRestroom(String gender) {
+		if (gender.equals("male")) {
+			this.availableMaleToiletCount++;
+		} else {
+			this.availableFemaleToiletCount++;
+		}
+	}
 }
