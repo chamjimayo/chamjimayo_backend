@@ -63,9 +63,7 @@ public class ReviewService {
 	 * 리뷰 수정
 	 */
 	@Transactional
-	public ReviewDto updateReview(Long reviewId, ReviewDto reviewDto) {
-		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
+	public ReviewDto updateReview(Review review, ReviewDto reviewDto) {
 
 		String reviewContent = reviewDto.getReviewContent();
 		Float rating = reviewDto.getRating();
@@ -81,15 +79,12 @@ public class ReviewService {
 	 * 리뷰 삭제
 	 */
 	@Transactional
-	public void deleteReview(Long reviewId) {
-		boolean reviewExists = reviewRepository.existsById(reviewId);
-		if (!reviewExists) {
-			throw new ReviewNotFoundException("리뷰를 찾을 수 없습니다. ID: " + reviewId);
-		}
+	public void deleteReview(Review review) {
+		Long reviewId = review.getReviewId();
 		reviewRepository.deleteById(reviewId);
 
-		Optional<Review> review = reviewRepository.findById(reviewId);
-		Long restroomId = review.get().getRestroom().getRestroomId();
+		Optional<Review> updateReview = reviewRepository.findById(reviewId);
+		Long restroomId = updateReview.get().getRestroom().getRestroomId();
 		averageRating(restroomId);
 	}
 
@@ -105,10 +100,7 @@ public class ReviewService {
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		List<ReviewDto> reversedReviews = allReviews.stream()
 			.map(review -> ReviewDto.create(
-				review.getUser().getUserId(),
-				review.getRestroom().getRestroomId(),
-				review.getReviewContent(),
-				review.getRating()
+				review.getReviewContent(), review.getRating()
 			))
 			.collect(Collectors.toList());
 
@@ -126,8 +118,7 @@ public class ReviewService {
 		}
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		return allReviews.stream()
-			.map(review -> ReviewDto.create(review.getUser().getUserId(),
-				review.getRestroom().getRestroomId(),
+			.map(review -> ReviewDto.create(
 				review.getReviewContent(), review.getRating()))
 			.sorted(Comparator.comparing(ReviewDto::getRating).reversed())
 			.collect(Collectors.toList());
@@ -143,8 +134,7 @@ public class ReviewService {
 		}
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
 		return allReviews.stream()
-			.map(review -> ReviewDto.create(review.getUser().getUserId(),
-				review.getRestroom().getRestroomId(),
+			.map(review -> ReviewDto.create(
 				review.getReviewContent(), review.getRating()))
 			.sorted(Comparator.comparing(ReviewDto::getRating))
 			.collect(Collectors.toList());
