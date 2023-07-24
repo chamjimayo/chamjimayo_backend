@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -78,7 +79,8 @@ public class ReviewController {
 				+ "3. 화장실 ID를 입력해주세요. \t\n"
 				+ "4. 리뷰 내용을 입력해주세요. \t\n"
 				+ "5. 평점을 입력해주세요. \t\n"
-				+ "6. 평점은 0 ~ 5점으로 입력해주세요.",
+				+ "6. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
+				+ "7. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
@@ -89,7 +91,7 @@ public class ReviewController {
 	})
 	@PostMapping()
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> createReview(
-		@RequestBody ReviewRequestDto reviewRequestDto,
+		@Valid @RequestBody ReviewRequestDto reviewRequestDto,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Long userId = customUserDetails.getId();
 		ReviewDto createdReview = reviewService.createReview(userId, reviewRequestDto);
@@ -119,8 +121,9 @@ public class ReviewController {
 		@ApiResponse(responseCode = "404",
 			description = "1. 리뷰를 찾을 수 없습니다. \t\n"
 				+ "2. 리뷰 내용을 입력해주세요. \t\n"
-				+ "3. 평점을 입력해주세요."
-				+ "4. 평점은 0 ~ 5점으로 입력해주세요.",
+				+ "3. 평점을 입력해주세요. \t\n"
+				+ "4. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
+				+ "5. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
@@ -133,7 +136,7 @@ public class ReviewController {
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> updateReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
 		@PathVariable Long reviewId,
-		@RequestBody ReviewDto reviewDto,
+		@Valid @RequestBody ReviewDto reviewDto,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Review existingReview = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));

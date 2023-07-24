@@ -9,6 +9,6 @@ public class JsonFileNotFoundException extends RuntimeException {
 	}
 
 	public ErrorStatus toErrorCode() {
-		return ErrorStatus.JSON_NOT_FOUND;
+		return ErrorStatus.INVALID_JSON;
 	}
 }

@@ -84,9 +84,6 @@ public class UserService {
 			currentPoint = 0;
 		}
 		Integer newPoint = requestDTO.getPoint();
-		if (newPoint == null) {
-			throw new JsonFileNotFoundException("포인트를 입력해주세요.");
-		}
 
 		user.addPoint(currentPoint, newPoint);
 
@@ -109,9 +106,7 @@ public class UserService {
 			currentPoint = 0;
 		}
 		Integer deductionPoint = requestDTO.getPoint();
-		if (deductionPoint == null) {
-			throw new JsonFileNotFoundException("포인트를 입력해주세요.");
-		}
+
 		if (deductionPoint > currentPoint) {
 			throw new PointLackException("포인트가 부족합니다.");
 		}

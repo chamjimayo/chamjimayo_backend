@@ -74,7 +74,7 @@ public class SearchService {
 		// Json 파일이 제대로 도착했는지 확인
 		String responseBody = responseEntity.getBody();
 		if (responseBody == null || responseBody.isEmpty()) {
-			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
+			throw new JsonFileNotFoundException("올바르지 않은 JSON 형식입니다.");
 		}
 
 		// API 응답에서 주소, 이름 리스트 추출
@@ -223,26 +223,6 @@ public class SearchService {
 		String name = searchResponseDto.getName();
 		Double latitude = searchResponseDto.getLatitude();
 		Double longitude = searchResponseDto.getLongitude();
-
-		// searchResponseDto에서 값이 없는 경우 예외 처리
-		if (searchWord == null) {
-			throw new JsonFileNotFoundException("검색어를 입력해주세요.");
-		}
-		if (roadAddress == null) {
-			throw new JsonFileNotFoundException("도로명 주소를 입력해주세요.");
-		}
-		if (lotNumberAddress == null) {
-			throw new JsonFileNotFoundException("지번 주소를 입력해주세요.");
-		}
-		if (name == null) {
-			throw new JsonFileNotFoundException("가게 이름을 입력해주세요.");
-		}
-		if (latitude == null) {
-			throw new JsonFileNotFoundException("위도를 입력해주세요.");
-		}
-		if (longitude == null) {
-			throw new JsonFileNotFoundException("경도를 입력해주세요.");
-		}
 
 		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
 			latitude, longitude);

@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -118,7 +119,9 @@ public class UserController {
 		@ApiResponse(responseCode = "404",
 			description = "1. 유저를 찾지 못했습니다. \t\n"
 				+ "2. 유저 ID를 입력해주세요. \t\n"
-				+ "3. 포인트를 입력해주세요.",
+				+ "3. 포인트를 입력해주세요. \t\n"
+				+ "4. 포인트의 최솟값은 0입니다. \t\n"
+				+ "5. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
@@ -129,7 +132,7 @@ public class UserController {
 	})
 	@PostMapping("/point/charge")
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
-		@RequestBody PointChangeDto requestDTO,
+		@Valid @RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		if (requestDTO.getUserId() == null) {
 			throw new JsonFileNotFoundException("userId를 입력해주세요.");
@@ -162,7 +165,9 @@ public class UserController {
 		@ApiResponse(responseCode = "404",
 			description = "1. 유저를 찾지 못했습니다. \t\n"
 				+ "2. 유저 ID를 입력해주세요. \t\n"
-				+ "3. 포인트를 입력해주세요.",
+				+ "3. 포인트를 입력해주세요. \t\n"
+				+ "4. 포인트의 최솟값은 0입니다. \t\n"
+				+ "5. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
@@ -173,7 +178,7 @@ public class UserController {
 	})
 	@PostMapping("/point/deduct")
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
-		@RequestBody PointChangeDto requestDTO,
+		@Valid @RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		if (requestDTO.getUserId() == null) {
 			throw new JsonFileNotFoundException("유저 ID를 입력해주세요.");

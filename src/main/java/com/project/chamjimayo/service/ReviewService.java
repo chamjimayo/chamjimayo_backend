@@ -5,7 +5,6 @@ import com.project.chamjimayo.controller.dto.ReviewRequestDto;
 import com.project.chamjimayo.domain.entity.Restroom;
 import com.project.chamjimayo.domain.entity.Review;
 import com.project.chamjimayo.domain.entity.User;
-import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
@@ -35,22 +34,8 @@ public class ReviewService {
 	@Transactional
 	public ReviewDto createReview(Long userId, ReviewRequestDto reviewRequestDto) {
 		Long restroomId = reviewRequestDto.getRestroomId();
-		if (restroomId == null) {
-			throw new JsonFileNotFoundException("화장실 ID를 입력해주세요.");
-		}
-
 		String reviewContent = reviewRequestDto.getReviewContent();
-		if (reviewContent == null) {
-			throw new JsonFileNotFoundException("리뷰 내용을 입력해주세요.");
-		}
-
 		Integer rating = reviewRequestDto.getRating();
-		if (rating == null) {
-			throw new JsonFileNotFoundException("평점을 입력해주세요.");
-		}
-		if (rating > 5 || rating < 0) {
-			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요.");
-		}
 
 		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
@@ -82,17 +67,17 @@ public class ReviewService {
 	public ReviewDto updateReview(Review review, ReviewDto reviewDto) {
 
 		String reviewContent = reviewDto.getReviewContent();
-		if (reviewContent == null) {
-			throw new JsonFileNotFoundException("리뷰 내용을 입력해주세요.");
-		}
+//		if (reviewContent == null) {
+//			throw new JsonFileNotFoundException("리뷰 내용을 입력해주세요.");
+//		}
 
 		Integer rating = reviewDto.getRating();
-		if (rating == null) {
-			throw new JsonFileNotFoundException("평점을 입력해주세요.");
-		}
-		if (rating > 5 && rating < 0) {
-			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요.");
-		}
+//		if (rating == null) {
+//			throw new JsonFileNotFoundException("평점을 입력해주세요.");
+//		}
+//		if (rating > 5 && rating < 0) {
+//			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요.");
+//		}
 
 		review.updateReview(reviewContent, rating);
 		reviewRepository.save(review);
