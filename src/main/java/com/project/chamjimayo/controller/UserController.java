@@ -4,6 +4,7 @@ import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.exception.AuthException;
+import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
 import com.project.chamjimayo.service.dto.DuplicateCheckDto;
@@ -115,10 +116,12 @@ public class UserController {
 					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
 					+ "\"msg\":\"권한이 없습니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 유저를 찾지 못했습니다. \t\n",
+			description = "1. 유저를 찾지 못했습니다. \t\n"
+				+ "2. 유저 ID를 입력해주세요. \t\n"
+				+ "3. 포인트를 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"8\", \"msg\": \"fail\","
+				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
 	@Parameters({
@@ -128,6 +131,9 @@ public class UserController {
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
 		@RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		if (requestDTO.getUserId() == null) {
+			throw new JsonFileNotFoundException("userId를 입력해주세요.");
+		}
 		if (requestDTO.getUserId().equals(customUserDetails.getId())) {
 			PointChangeDto responseDTO = userService.chargePoints(requestDTO);
 			return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
@@ -154,10 +160,12 @@ public class UserController {
 					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
 					+ "\"msg\":\"권한이 없습니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 유저를 찾지 못했습니다. \t\n",
+			description = "1. 유저를 찾지 못했습니다. \t\n"
+				+ "2. 유저 ID를 입력해주세요. \t\n"
+				+ "3. 포인트를 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"8\", \"msg\": \"fail\","
+				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
 	@Parameters({
@@ -167,6 +175,9 @@ public class UserController {
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
 		@RequestBody PointChangeDto requestDTO,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		if (requestDTO.getUserId() == null) {
+			throw new JsonFileNotFoundException("유저 ID를 입력해주세요.");
+		}
 		if (requestDTO.getUserId().equals(customUserDetails.getId())) {
 			PointChangeDto responseDTO = userService.deductPoints(requestDTO);
 			return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));

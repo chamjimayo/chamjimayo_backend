@@ -74,7 +74,10 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 작성 성공."),
 		@ApiResponse(responseCode = "404",
 			description = "1. 화장실을 찾을 수 없습니다. \t\n"
-				+ "2. 유저를 찾지 못했습니다 \t\n",
+				+ "2. 유저를 찾지 못했습니다 \t\n"
+				+ "3. 화장실 ID를 입력해주세요. \t\n"
+				+ "4. 리뷰 내용을 입력해주세요. \t\n"
+				+ "5. 평점을 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
@@ -113,7 +116,9 @@ public class ReviewController {
 					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
 					+ "\"msg\":\"권한이 없습니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 리뷰를 찾을 수 없습니다. \t\n",
+			description = "1. 리뷰를 찾을 수 없습니다. \t\n"
+				+ "2. 리뷰 내용을 입력해주세요. \t\n"
+				+ "3. 평점을 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","

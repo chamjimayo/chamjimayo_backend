@@ -221,9 +221,23 @@ public class SearchService {
 		Double longitude = searchResponseDto.getLongitude();
 
 		// searchResponseDto에서 값이 없는 경우 예외 처리
-		if (searchWord == null || roadAddress == null || lotNumberAddress == null ||
-			name == null || latitude == null || longitude == null) {
-			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
+		if (searchWord == null) {
+			throw new JsonFileNotFoundException("검색어를 입력해주세요.");
+		}
+		if (roadAddress == null) {
+			throw new JsonFileNotFoundException("도로명 주소를 입력해주세요.");
+		}
+		if (lotNumberAddress == null) {
+			throw new JsonFileNotFoundException("지번 주소를 입력해주세요.");
+		}
+		if (name == null) {
+			throw new JsonFileNotFoundException("가게 이름을 입력해주세요.");
+		}
+		if (latitude == null) {
+			throw new JsonFileNotFoundException("위도를 입력해주세요.");
+		}
+		if (longitude == null) {
+			throw new JsonFileNotFoundException("경도를 입력해주세요.");
 		}
 
 		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
@@ -233,7 +247,6 @@ public class SearchService {
 		if (!searchRepository.existsByUserAndLatitudeAndLongitude(user, latitude, longitude)) {
 			searchRepository.save(search);
 		}
-
 	}
 
 	/**

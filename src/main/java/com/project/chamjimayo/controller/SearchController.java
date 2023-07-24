@@ -87,7 +87,6 @@ public class SearchController {
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
-
 	/**
 	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 리스트 반환 예시: /address/search/recent
 	 */
@@ -137,7 +136,12 @@ public class SearchController {
 					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
 			description = "1. 검색 기록을 찾을 수 없습니다. \t\n"
-				+ "2. Json 파일이 올바르지 않습니다.",
+				+ "2. 검색어를 입력해주세요. \t\n"
+				+ "3. 도로명 주소를 입력해주세요. \t\n"
+				+ "4. 지번 주소를 입력해주세요. \t\n"
+				+ "5. 가게 이름을 입력해주세요. \t\n"
+				+ "6. 위도를 입력해주세요. \t\n"
+			 	+ "7. 경도를 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","

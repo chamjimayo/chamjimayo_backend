@@ -4,6 +4,7 @@ import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.exception.AuthException;
+import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
@@ -76,6 +77,16 @@ public class ReviewExceptionHandler {
 
 		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.NEED_MORE_PARAMETER,
 			"파라미터가 부족합니다.");
+		return ApiStandardResponse.fail(errorResponse);
+	}
+
+	@ExceptionHandler(JsonFileNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiStandardResponse<ErrorResponse> handleJsonFileNotFoundException(
+		JsonFileNotFoundException e) {
+		log.error("", e);
+
+		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
 		return ApiStandardResponse.fail(errorResponse);
 	}
 }

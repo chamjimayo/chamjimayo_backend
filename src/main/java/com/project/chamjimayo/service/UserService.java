@@ -2,6 +2,7 @@ package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.domain.entity.User;
+import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.PointLackException;
 import com.project.chamjimayo.exception.UserDuplicateException;
 import com.project.chamjimayo.exception.UserNickNameDuplicateException;
@@ -78,8 +79,15 @@ public class UserService {
 		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 
-		int currentPoint = user.getPoint() != null ? user.getPoint() : 0;
-		int newPoint = requestDTO.getPoint();
+		Integer currentPoint = user.getPoint();
+		if (currentPoint == null) {
+			currentPoint = 0;
+		}
+		Integer newPoint = requestDTO.getPoint();
+		if (newPoint == null) {
+			throw new JsonFileNotFoundException("포인트를 입력해주세요.");
+		}
+
 		user.addPoint(currentPoint, newPoint);
 
 		PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
@@ -96,11 +104,18 @@ public class UserService {
 		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 
-		int currentPoint = user.getPoint() != null ? user.getPoint() : 0;
-		int deductionPoint = requestDTO.getPoint();
+		Integer currentPoint = user.getPoint();
+		if (currentPoint == null) {
+			currentPoint = 0;
+		}
+		Integer deductionPoint = requestDTO.getPoint();
+		if (deductionPoint == null) {
+			throw new JsonFileNotFoundException("포인트를 입력해주세요.");
+		}
 		if (deductionPoint > currentPoint) {
 			throw new PointLackException("포인트가 부족합니다.");
 		}
+
 		user.deductPoint(currentPoint, deductionPoint);
 
 		PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
