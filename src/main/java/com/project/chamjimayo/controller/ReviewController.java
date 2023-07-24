@@ -77,7 +77,8 @@ public class ReviewController {
 				+ "2. 유저를 찾지 못했습니다 \t\n"
 				+ "3. 화장실 ID를 입력해주세요. \t\n"
 				+ "4. 리뷰 내용을 입력해주세요. \t\n"
-				+ "5. 평점을 입력해주세요.",
+				+ "5. 평점을 입력해주세요. \t\n"
+				+ "6. 평점은 0 ~ 5점으로 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
@@ -118,7 +119,8 @@ public class ReviewController {
 		@ApiResponse(responseCode = "404",
 			description = "1. 리뷰를 찾을 수 없습니다. \t\n"
 				+ "2. 리뷰 내용을 입력해주세요. \t\n"
-				+ "3. 평점을 입력해주세요.",
+				+ "3. 평점을 입력해주세요."
+				+ "4. 평점은 0 ~ 5점으로 입력해주세요.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","

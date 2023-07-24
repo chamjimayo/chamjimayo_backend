@@ -49,7 +49,7 @@ public class ReviewService {
 			throw new JsonFileNotFoundException("평점을 입력해주세요.");
 		}
 		if (rating > 5 || rating < 0) {
-			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요. ");
+			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요.");
 		}
 
 		User user = userJpaRepository.findById(userId)
@@ -91,7 +91,7 @@ public class ReviewService {
 			throw new JsonFileNotFoundException("평점을 입력해주세요.");
 		}
 		if (rating > 5 && rating < 0) {
-			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요. ");
+			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요.");
 		}
 
 		review.updateReview(reviewContent, rating);
