@@ -19,60 +19,41 @@ public class AuthTokenService {
 
   public AuthTokenDto createAuthToken(final String userId) {
     String accessToken = jwtTokenProvider.createAccessToken(userId);
-    String refreshToken;
-
-    Token token = tokenRepository.findTokenByUserId(userId)
-        .orElse(null);
-
-    if (isNotValid(token)) {
-      String refreshToken1 = jwtTokenProvider.createRefreshToken(userId);
-
-      if (token == null) {
-        token = tokenRepository.save(Token.create(userId, refreshToken1));
-      } else {
-        token.changeRefreshToken(refreshToken1);
-      }
-    }
-    refreshToken = token.getRefreshToken();
+    String refreshToken = getRefreshToken(userId);
 
     return AuthTokenDto.create(accessToken, refreshToken);
   }
 
-  private boolean isNotValid(Token token) {
-    if (token != null) {
-      return !validateToken(token.getRefreshToken());
-    }
-    return true;
-  }
-
   public AuthTokenDto refreshAccessToken(final String refreshToken) {
     String userId = jwtTokenProvider.getPayload(refreshToken);
-
     String accessTokenForRenew = jwtTokenProvider.createAccessToken(userId);
-    String refreshTokenForRenew;
 
+    return AuthTokenDto.create(accessTokenForRenew, refreshToken);
+  }
+
+  private String getRefreshToken(String userId) {
     Token token = tokenRepository.findTokenByUserId(userId)
         .orElse(null);
 
     if (isNotValid(token)) {
-      String refreshToken1 = jwtTokenProvider.createRefreshToken(userId);
+      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
 
       if (token == null) {
-        token = tokenRepository.save(Token.create(userId, refreshToken1));
+        token = tokenRepository.save(Token.create(userId, refreshToken));
       } else {
-        token.changeRefreshToken(refreshToken1);
+        token.changeRefreshToken(refreshToken);
       }
     }
-    refreshTokenForRenew = token.getRefreshToken();
 
-    isSame(refreshToken, refreshTokenForRenew);
-    return AuthTokenDto.create(accessTokenForRenew, refreshTokenForRenew);
+    return token.getRefreshToken();
   }
 
-  private void isSame(String refreshToken, String refreshTokenForRenew) {
-    if (!refreshToken.equals(refreshTokenForRenew)) {
-      throw new InvalidTokenException("토큰이 유효하지 않습니다.");
+  private boolean isNotValid(Token token) {
+    if (token == null) {
+      return true;
     }
+
+    return !validateToken(token.getRefreshToken());
   }
 
   public String extractPayload(final String accessToken) {
