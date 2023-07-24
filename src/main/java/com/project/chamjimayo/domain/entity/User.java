@@ -89,8 +89,8 @@ public class User extends BaseEntity {
 	}
 
 	// 포인트 충전을 위한 로직
-	public void addPoint(Integer newPoint, Integer currentPoint) {
-		this.point = newPoint + currentPoint;
+	public void addPoint(Integer currentPoint, Integer newPoint) {
+		this.point = currentPoint + newPoint;
 	}
 
 	// 포인트 차감을 위한 로직

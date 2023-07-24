@@ -35,7 +35,8 @@ public class ReviewService {
 	public ReviewDto createReview(Long userId, ReviewRequestDto reviewRequestDto) {
 		Long restroomId = reviewRequestDto.getRestroomId();
 		String reviewContent = reviewRequestDto.getReviewContent();
-		Float rating = reviewRequestDto.getRating();
+		Integer rating = reviewRequestDto.getRating();
+
 		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 		Restroom restroom = restroomJpaRepository.findById(restroomId)
@@ -66,7 +67,18 @@ public class ReviewService {
 	public ReviewDto updateReview(Review review, ReviewDto reviewDto) {
 
 		String reviewContent = reviewDto.getReviewContent();
-		Float rating = reviewDto.getRating();
+//		if (reviewContent == null) {
+//			throw new JsonFileNotFoundException("리뷰 내용을 입력해주세요.");
+//		}
+
+		Integer rating = reviewDto.getRating();
+//		if (rating == null) {
+//			throw new JsonFileNotFoundException("평점을 입력해주세요.");
+//		}
+//		if (rating > 5 && rating < 0) {
+//			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요.");
+//		}
+
 		review.updateReview(reviewContent, rating);
 		reviewRepository.save(review);
 
@@ -145,7 +157,7 @@ public class ReviewService {
 	public void averageRating(Long restroomId) {
 		Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
-			throw new ReviewNotFoundException("해당 화장실을 찾지 못했습니다. ID: " + restroomId);
+			throw new RestroomNotFoundException("해당 화장실을 찾지 못했습니다. ID: " + restroomId);
 		}
 		// restroomId에 해당하는 review 리스트 반환
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);

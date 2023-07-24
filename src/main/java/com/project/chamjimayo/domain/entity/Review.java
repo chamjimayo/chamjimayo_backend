@@ -42,24 +42,22 @@ public class Review extends BaseEntity {
 	private String reviewContent;
 
 	// 별점 (0 ~ 5점)
-	@Min(0)
-	@Max(5)
 	@Column(name = "rating")
-	private Float rating;
+	private Integer rating;
 
-	private Review(User user, Restroom restroom, String reviewContent, Float rating) {
+	private Review(User user, Restroom restroom, String reviewContent, Integer rating) {
 		this.user = user;
 		this.restroom = restroom;
 		this.reviewContent = reviewContent;
 		this.rating = rating;
 	}
 
-	public static Review create(User user, Restroom restroom, String reviewContent, Float rating) {
+	public static Review create(User user, Restroom restroom, String reviewContent, Integer rating) {
 		return new Review(user, restroom, reviewContent, rating);
 	}
 
 	// 리뷰 수정을 위한 setter
-	public void updateReview(String reviewContent, Float rating) {
+	public void updateReview(String reviewContent, Integer rating) {
 		this.reviewContent = reviewContent;
 		this.rating = rating;
 	}

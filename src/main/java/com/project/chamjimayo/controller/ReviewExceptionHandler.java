@@ -7,8 +7,14 @@ import com.project.chamjimayo.exception.AuthException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice(assignableTypes = {ReviewController.class})
 public class ReviewExceptionHandler {
 
+	// 유저를 찾을 수 없는 경우
 	@ExceptionHandler(UserNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiStandardResponse<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
@@ -28,6 +35,7 @@ public class ReviewExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
+	// 리뷰를 찾을 수 없는 경우
 	@ExceptionHandler(ReviewNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiStandardResponse<ErrorResponse> handleReviewNotFoundException(
@@ -38,6 +46,7 @@ public class ReviewExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
+	// 화장실을 찾을 수 없는 경우
 	@ExceptionHandler(RestroomNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiStandardResponse<ErrorResponse> handleRestroomNotFoundException(
@@ -48,6 +57,7 @@ public class ReviewExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
+	// 인증 오류
 	@ExceptionHandler(AuthException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public ApiStandardResponse<ErrorResponse> handleAuthException(AuthException e) {
@@ -57,6 +67,7 @@ public class ReviewExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
+	// 파라미터 값이 올바르지 않은 경우
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiStandardResponse<ErrorResponse> handleMethodArgumentTypeMismatchException(
@@ -68,6 +79,7 @@ public class ReviewExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
+	// 파라미터 값이 부족한 경우
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiStandardResponse<ErrorResponse> handleMissingServletRequestParameterException(
@@ -76,6 +88,34 @@ public class ReviewExceptionHandler {
 
 		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.NEED_MORE_PARAMETER,
 			"파라미터가 부족합니다.");
+		return ApiStandardResponse.fail(errorResponse);
+	}
+
+	// Validation 오류
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiStandardResponse<ErrorResponse> handleMethodArgumentNotValidException(
+		MethodArgumentNotValidException e) {
+		log.error("", e);
+
+		BindingResult result = e.getBindingResult();
+		List<FieldError> fieldErrors = result.getFieldErrors();
+
+		// error 메세지 추출
+		String errors = fieldErrors.stream()
+			.map(FieldError::getDefaultMessage)
+			.collect(Collectors.joining(", "));
+
+		final ErrorResponse errorResponse = ErrorResponse.create(
+			ErrorStatus.VALIDATION_EXCEPTION, errors);
+		return ApiStandardResponse.fail(errorResponse);
+	}
+
+	// validation 외 JSON 형식 오류
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiStandardResponse<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_JSON, "올바르지 않은 JSON 형식입니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 }

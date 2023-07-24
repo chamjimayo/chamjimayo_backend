@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,7 +64,7 @@ public class SearchController {
 					+ "\"msg\":\"유효한 토큰이 아닙니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
 			description = "1. Api 응답이 올바르지 않습니다. \t\n"
-				+ "2. Json 파일이 올바르지 않습니다. \t\n"
+				+ "2. 올바르지 않은 JSON 형식입니다. \t\n"
 				+ "3. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
@@ -75,7 +76,7 @@ public class SearchController {
 	})
 	@GetMapping("/search")
 	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
-		@Parameter(description = "검색어", required = true, example = "신림역스타벅스")
+		@Parameter(description = "검색어", required = true, example = "스타벅스")
 		@RequestParam("searchWord") String searchWord,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
@@ -86,7 +87,6 @@ public class SearchController {
 			searchResponseDTOList);
 		return ResponseEntity.ok(apiStandardResponse);
 	}
-
 
 	/**
 	 * 유저 아이디를 받아서 해당 유저의 최근 검색 기록 리스트 반환 예시: /address/search/recent
@@ -137,7 +137,15 @@ public class SearchController {
 					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
 			description = "1. 검색 기록을 찾을 수 없습니다. \t\n"
-				+ "2. Json 파일이 올바르지 않습니다.",
+				+ "2. 검색어를 입력해주세요. \t\n"
+				+ "3. 도로명 주소를 입력해주세요. \t\n"
+				+ "4. 지번 주소를 입력해주세요. \t\n"
+				+ "5. 가게 이름을 입력해주세요. \t\n"
+				+ "6. 위도를 입력해주세요. \t\n"
+			 	+ "7. 경도를 입력해주세요. \t\n"
+				+ "8. 위도는 -90 ~ 90으로 입력해주세요. \t\n"
+				+ "9. 경도는 -180 ~ 180으로 입력해주세요. \t\n"
+				+ "10. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","
@@ -148,7 +156,7 @@ public class SearchController {
 	})
 	@PostMapping("/search/click")
 	public ResponseEntity<ApiStandardResponse<String>> clickAddress(
-		@RequestBody SearchResponseDto searchResponseDto,
+		@Valid @RequestBody SearchResponseDto searchResponseDto,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		searchService.clickAddress(customUserDetails.getId(), searchResponseDto);
 		ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success(

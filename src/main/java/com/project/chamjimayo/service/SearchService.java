@@ -74,7 +74,7 @@ public class SearchService {
 		// Json 파일이 제대로 도착했는지 확인
 		String responseBody = responseEntity.getBody();
 		if (responseBody == null || responseBody.isEmpty()) {
-			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
+			throw new JsonFileNotFoundException("올바르지 않은 JSON 형식입니다.");
 		}
 
 		// API 응답에서 주소, 이름 리스트 추출
@@ -178,6 +178,8 @@ public class SearchService {
 			double frontLat = Double.parseDouble(frontLatList.get(i));
 			double noorLat = Double.parseDouble(noorLatList.get(i));
 			double averageLat = (frontLat + noorLat) / 2.0;
+			// 소수점 7번째까지
+			averageLat = Math.round(averageLat * 10000000) / 10000000.0;
 			latitudeList.add(averageLat);
 		}
 		return latitudeList;
@@ -199,6 +201,8 @@ public class SearchService {
 			double frontLon = Double.parseDouble(frontLonList.get(i));
 			double noorL0n = Double.parseDouble(noorLonList.get(i));
 			double averageLon = (frontLon + noorL0n) / 2.0;
+			// 소수점 7번째까지
+			averageLon = Math.round(averageLon * 10000000) / 10000000.0;
 			longitudeList.add(averageLon);
 		}
 		return longitudeList;
@@ -220,12 +224,6 @@ public class SearchService {
 		Double latitude = searchResponseDto.getLatitude();
 		Double longitude = searchResponseDto.getLongitude();
 
-		// searchResponseDto에서 값이 없는 경우 예외 처리
-		if (searchWord == null || roadAddress == null || lotNumberAddress == null ||
-			name == null || latitude == null || longitude == null) {
-			throw new JsonFileNotFoundException("Json 파일이 올바르지 않습니다.");
-		}
-
 		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
 			latitude, longitude);
 
@@ -233,7 +231,6 @@ public class SearchService {
 		if (!searchRepository.existsByUserAndLatitudeAndLongitude(user, latitude, longitude)) {
 			searchRepository.save(search);
 		}
-
 	}
 
 	/**
