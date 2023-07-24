@@ -44,9 +44,12 @@ public class ReviewService {
 			throw new JsonFileNotFoundException("리뷰 내용을 입력해주세요.");
 		}
 
-		Float rating = reviewRequestDto.getRating();
+		Integer rating = reviewRequestDto.getRating();
 		if (rating == null) {
 			throw new JsonFileNotFoundException("평점을 입력해주세요.");
+		}
+		if (rating > 5 || rating < 0) {
+			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요. ");
 		}
 
 		User user = userJpaRepository.findById(userId)
@@ -83,9 +86,12 @@ public class ReviewService {
 			throw new JsonFileNotFoundException("리뷰 내용을 입력해주세요.");
 		}
 
-		Float rating = reviewDto.getRating();
+		Integer rating = reviewDto.getRating();
 		if (rating == null) {
 			throw new JsonFileNotFoundException("평점을 입력해주세요.");
+		}
+		if (rating > 5 && rating < 0) {
+			throw new JsonFileNotFoundException("평점은 0 ~ 5점으로 입력해주세요. ");
 		}
 
 		review.updateReview(reviewContent, rating);
@@ -166,7 +172,7 @@ public class ReviewService {
 	public void averageRating(Long restroomId) {
 		Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
 		if (restroom.isEmpty()) {
-			throw new ReviewNotFoundException("해당 화장실을 찾지 못했습니다. ID: " + restroomId);
+			throw new RestroomNotFoundException("해당 화장실을 찾지 못했습니다. ID: " + restroomId);
 		}
 		// restroomId에 해당하는 review 리스트 반환
 		List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);

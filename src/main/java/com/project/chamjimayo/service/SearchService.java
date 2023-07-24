@@ -178,6 +178,8 @@ public class SearchService {
 			double frontLat = Double.parseDouble(frontLatList.get(i));
 			double noorLat = Double.parseDouble(noorLatList.get(i));
 			double averageLat = (frontLat + noorLat) / 2.0;
+			// 소수점 7번째까지
+			averageLat = Math.round(averageLat * 10000000) / 10000000.0;
 			latitudeList.add(averageLat);
 		}
 		return latitudeList;
@@ -199,6 +201,8 @@ public class SearchService {
 			double frontLon = Double.parseDouble(frontLonList.get(i));
 			double noorL0n = Double.parseDouble(noorLonList.get(i));
 			double averageLon = (frontLon + noorL0n) / 2.0;
+			// 소수점 7번째까지
+			averageLon = Math.round(averageLon * 10000000) / 10000000.0;
 			longitudeList.add(averageLon);
 		}
 		return longitudeList;

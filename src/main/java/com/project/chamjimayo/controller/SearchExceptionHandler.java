@@ -48,7 +48,6 @@ public class SearchExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
-
 	@ExceptionHandler(JsonFileNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiStandardResponse<ErrorResponse> handleJsonFileNotFoundException(

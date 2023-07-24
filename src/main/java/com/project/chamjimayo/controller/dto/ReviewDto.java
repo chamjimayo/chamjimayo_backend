@@ -9,15 +9,15 @@ public class ReviewDto {
 
 	@Schema(type = "string", example = "깔끔해요!")
 	private String reviewContent;
-	@Schema(type = "Float", example = "4.3")
-	private Float rating;
+	@Schema(type = "Integer", example = "4")
+	private Integer rating;
 
-	private ReviewDto(String reviewContent, Float rating) {
+	private ReviewDto(String reviewContent, Integer rating) {
 		this.reviewContent = reviewContent;
 		this.rating = rating;
 	}
 
-	public static ReviewDto create(String reviewContent, Float rating) {
+	public static ReviewDto create(String reviewContent, Integer rating) {
 		return new ReviewDto(reviewContent, rating);
 	}
 
