@@ -35,8 +35,8 @@ public class SearchResponseDto {
 
 	@Schema(type = "double", example = "12.1234567")
 	@NotNull(message = "경도를 입력해주세요.")
-	@Min(value = -90, message = "경도는 -90 ~ 90으로 입력해주세요.")
-	@Max(value = 90, message = "경도는 -90 ~ 90으로 입력해주세요.")
+	@Min(value = -180, message = "경도는 -180 ~ 180으로 입력해주세요.")
+	@Max(value = 180, message = "경도는 -180 ~ 180으로 입력해주세요.")
 	private final Double longitude;
 
 	private SearchResponseDto(String searchWord, String roadAddress, String lotNumberAddress,

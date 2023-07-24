@@ -144,7 +144,7 @@ public class SearchController {
 				+ "6. 위도를 입력해주세요. \t\n"
 			 	+ "7. 경도를 입력해주세요. \t\n"
 				+ "8. 위도는 -90 ~ 90으로 입력해주세요. \t\n"
-				+ "9. 경도는 -90 ~ 90으로 입력해주세요. \t\n"
+				+ "9. 경도는 -180 ~ 180으로 입력해주세요. \t\n"
 				+ "10. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
