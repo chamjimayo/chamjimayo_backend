@@ -1,7 +1,6 @@
 package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.domain.entity.Token;
-import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.JwtTokenProvider;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
 public class AuthTokenService {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final TokenRepository tokenRepository;
 
+  @Transactional
   public AuthTokenDto createAuthToken(final String userId) {
     String accessToken = jwtTokenProvider.createAccessToken(userId);
     String refreshToken = getRefreshToken(userId);
@@ -35,32 +34,28 @@ public class AuthTokenService {
     Token token = tokenRepository.findTokenByUserId(userId)
         .orElse(null);
 
-    if (isNotValid(token)) {
+    if (token == null) {
       String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+      token = tokenRepository.save(Token.create(userId, refreshToken));
+    }
 
-      if (token == null) {
-        token = tokenRepository.save(Token.create(userId, refreshToken));
-      } else {
-        token.changeRefreshToken(refreshToken);
-      }
+    if (jwtTokenProvider.isExpired(token.getRefreshToken())) {
+      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+      token.changeRefreshToken(refreshToken);
     }
 
     return token.getRefreshToken();
-  }
-
-  private boolean isNotValid(Token token) {
-    if (token == null) {
-      return true;
-    }
-
-    return !validateToken(token.getRefreshToken());
   }
 
   public String extractPayload(final String accessToken) {
     return jwtTokenProvider.getPayload(accessToken);
   }
 
-  public boolean validateToken(final String token) {
+  public boolean isValid(final String token) {
     return jwtTokenProvider.isValid(token);
+  }
+
+  public boolean isExpired(final String token) {
+    return jwtTokenProvider.isExpired(token);
   }
 }

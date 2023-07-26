@@ -24,12 +24,12 @@ public class AuthService {
   }
 
   public AuthTokenDto refreshToken(IssueTokenDto dto) {
-    if (authTokenService.validateToken(dto.getRefreshToken())) {
-      return authTokenService.refreshAccessToken(dto.getRefreshToken());
+    if (authTokenService.isExpired(dto.getRefreshToken())) {
+      String userId = userService.getUserByAuthId(dto.getAuthId());
+
+      return authTokenService.createAuthToken(userId);
     }
 
-    String userId = userService.getUserByAuthId(dto.getAuthId());
-
-    return authTokenService.createAuthToken(userId);
+    return authTokenService.refreshAccessToken(dto.getRefreshToken());
   }
 }

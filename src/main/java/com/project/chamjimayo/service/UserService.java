@@ -53,19 +53,23 @@ public class UserService {
 		return String.valueOf(user.getUserId());
 	}
 
+	@Transactional(readOnly = true)
 	public DuplicateCheckDto isNicknameDuplicate(String nickname) {
 		return DuplicateCheckDto.create(userJpaRepository.existsUserByNickname(nickname));
 	}
 
+	@Transactional(readOnly = true)
 	public UserDetailsDto getUserDetails(Long id) {
 		return userQueryRepository.findUserDetailsById(id)
 			.orElseThrow(() -> new UserNotFoundException("사용자를 찾지 못했습니다."));
 	}
 
+	@Transactional(readOnly = true)
 	public RestroomSummaryDto getUsingRestroom(Long id) {
 		return restroomQueryRepository.findUsingRestRoomDtoByUserId(id);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<RestroomSummaryDto> getUsedRestrooms(Long id, Pageable pageable) {
 		return restroomQueryRepository.findUsedRestroomDtosByUserIdAndPageable(id, pageable);
 	}
