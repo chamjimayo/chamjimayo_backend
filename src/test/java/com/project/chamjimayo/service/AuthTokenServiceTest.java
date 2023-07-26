@@ -27,7 +27,7 @@ class AuthTokenServiceTest {
   private JwtTokenProvider jwtTokenProvider;
 
   @InjectMocks
-  private AuthTokenService authTokenService;
+  private AuthTokenService sut;
 
   private String userId;
   private String accessToken;
@@ -46,10 +46,9 @@ class AuthTokenServiceTest {
     Token token = Token.create(userId, refreshToken);
 
     when(jwtTokenProvider.createAccessToken(userId)).thenReturn(accessToken);
-    when(jwtTokenProvider.isValid(refreshToken)).thenReturn(true);
     when(tokenRepository.findTokenByUserId(userId)).thenReturn(Optional.of(token));
 
-    AuthTokenDto authToken = authTokenService.createAuthToken(userId);
+    AuthTokenDto authToken = sut.createAuthToken(userId);
 
     assertEquals(refreshToken, authToken.getRefreshToken());
   }
@@ -65,12 +64,12 @@ class AuthTokenServiceTest {
     when(tokenRepository.findTokenByUserId(userId)).thenReturn(Optional.empty());
     when(tokenRepository.save(any(Token.class))).thenReturn(token);
 
-    AuthTokenDto authToken = authTokenService.createAuthToken(userId);
+    AuthTokenDto authToken = sut.createAuthToken(userId);
 
     assertEquals(newRefreshToken, authToken.getRefreshToken());
   }
 
-  @DisplayName("리프레시 토큰이 유효하지 않은 유저의 인증 토큰을 생성한다.")
+  @DisplayName("리프레시 토큰이 만료된 유저의 인증 토큰을 생성한다.")
   @Test
   void createAuthTokenWhenRefreshTokenNotValid() {
     Token token = Token.create(userId, refreshToken);
@@ -78,9 +77,10 @@ class AuthTokenServiceTest {
 
     when(jwtTokenProvider.createAccessToken(userId)).thenReturn(accessToken);
     when(jwtTokenProvider.createRefreshToken(userId)).thenReturn(newRefreshToken);
+    when(jwtTokenProvider.isExpired(token.getRefreshToken())).thenReturn(true);
     when(tokenRepository.findTokenByUserId(userId)).thenReturn(Optional.of(token));
 
-    AuthTokenDto authToken = authTokenService.createAuthToken(userId);
+    AuthTokenDto authToken = sut.createAuthToken(userId);
 
     assertEquals(newRefreshToken, authToken.getRefreshToken());
   }
@@ -91,7 +91,7 @@ class AuthTokenServiceTest {
     when(jwtTokenProvider.getPayload(refreshToken)).thenReturn(userId);
     when(jwtTokenProvider.createAccessToken(userId)).thenReturn(accessToken);
 
-    AuthTokenDto authTokenDto = authTokenService.refreshAccessToken(refreshToken);
+    AuthTokenDto authTokenDto = sut.refreshAccessToken(refreshToken);
 
     assertEquals(accessToken, authTokenDto.getAccessToken());
   }
