@@ -67,15 +67,15 @@ public class SearchService {
 			throw new ApiNotFoundException("Api 응답이 올바르지 않습니다.");
 		}
 
-		// 사용자 정보 가져오기
-		User user = userJpaRepository.findById(userId)
-			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
-
 		// Json 파일이 제대로 도착했는지 확인
 		String responseBody = responseEntity.getBody();
 		if (responseBody == null || responseBody.isEmpty()) {
-			throw new JsonFileNotFoundException("올바르지 않은 JSON 형식입니다.");
+			throw new ApiNotFoundException("Api 응답이 올바르지 않습니다.");
 		}
+
+		// 사용자 정보 가져오기
+		User user = userJpaRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
 
 		// API 응답에서 주소, 이름 리스트 추출
 		List<String> fullAddressRoadList = extractFullAddressRoad(responseEntity.getBody());

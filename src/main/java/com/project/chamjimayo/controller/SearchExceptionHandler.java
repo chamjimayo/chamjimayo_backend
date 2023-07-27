@@ -10,6 +10,8 @@ import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -78,6 +80,25 @@ public class SearchExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
+	// 파라미터가 올바르지 않은 경우 (validation)
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiStandardResponse<ErrorResponse> handleConstraintViolationException(
+		ConstraintViolationException e) {
+		log.error("", e);
+
+		// ConstraintViolationException에서 발생한 오류 메세지 추출
+		String errorMessage = "";
+		for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+			errorMessage = violation.getMessage();
+			break; // 첫 번째 오류 메세지만 추출
+		}
+
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_PARAMETER,
+			errorMessage);
+		return ApiStandardResponse.fail(errorResponse);
+	}
+
 	// 파라미터 값이 올바르지 않은 경우
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -125,8 +146,10 @@ public class SearchExceptionHandler {
 	// validation 외 JSON 형식 오류
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-		ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_JSON, "올바르지 않은 JSON 형식입니다.");
+	public ApiStandardResponse<ErrorResponse> handleHttpMessageNotReadableException(
+		HttpMessageNotReadableException e) {
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_JSON,
+			"올바르지 않은 JSON 형식입니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 }

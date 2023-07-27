@@ -109,6 +109,16 @@ public class UserController {
 	@Operation(summary = "포인트 충전", description = "해당 유저의 포인트를 충전합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "포인트 충전 성공."),
+		@ApiResponse(responseCode = "400",
+			description = "1. 유저 ID를 입력해주세요. \t\n"
+				+ "3. 포인트를 입력해주세요. \t\n"
+				+ "4. 포인트의 최솟값은 0입니다. \t\n"
+				+ "5. 올바르지 않은 JSON 형식입니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
+					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }"))),
 		@ApiResponse(responseCode = "403",
 			description = "1. 권한이 없습니다. \t\n",
 			content = @Content(mediaType = "application/json",
@@ -117,11 +127,7 @@ public class UserController {
 					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
 					+ "\"msg\":\"권한이 없습니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 유저를 찾지 못했습니다. \t\n"
-				+ "2. 유저 ID를 입력해주세요. \t\n"
-				+ "3. 포인트를 입력해주세요. \t\n"
-				+ "4. 포인트의 최솟값은 0입니다. \t\n"
-				+ "5. 올바르지 않은 JSON 형식입니다.",
+			description = "1. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
@@ -149,7 +155,11 @@ public class UserController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "포인트 차감 성공."),
 		@ApiResponse(responseCode = "400",
-			description = "1. 포인트가 부족합니다. \t\n",
+			description = "1. 포인트가 부족합니다."
+				+ "2. 유저 ID를 입력해주세요. \t\n"
+				+ "3. 포인트를 입력해주세요. \t\n"
+				+ "4. 포인트의 최솟값은 0입니다. \t\n"
+				+ "5. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"22\", \"msg\": \"fail\","
@@ -163,11 +173,7 @@ public class UserController {
 					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
 					+ "\"msg\":\"권한이 없습니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 유저를 찾지 못했습니다. \t\n"
-				+ "2. 유저 ID를 입력해주세요. \t\n"
-				+ "3. 포인트를 입력해주세요. \t\n"
-				+ "4. 포인트의 최솟값은 0입니다. \t\n"
-				+ "5. 올바르지 않은 JSON 형식입니다.",
+			description = "1. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","

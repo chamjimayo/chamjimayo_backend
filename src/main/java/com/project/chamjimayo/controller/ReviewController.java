@@ -73,14 +73,20 @@ public class ReviewController {
 	@Operation(summary = "리뷰 작성", description = "새로운 리뷰를 작성합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "리뷰 작성 성공."),
+		@ApiResponse(responseCode = "400",
+			description = "1. 화장실 ID를 입력해주세요. \t\n"
+				+ "2. 리뷰 내용을 입력해주세요. \t\n"
+				+ "3. 평점을 입력해주세요. \t\n"
+				+ "4. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
+				+ "5. 올바르지 않은 JSON 형식입니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"23\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"VALIDATION_EXCEPTION\", "
+					+ "\"msg\":\"화장실 ID를 입력해주세요.\"} }"))),
 		@ApiResponse(responseCode = "404",
 			description = "1. 화장실을 찾을 수 없습니다. \t\n"
-				+ "2. 유저를 찾지 못했습니다 \t\n"
-				+ "3. 화장실 ID를 입력해주세요. \t\n"
-				+ "4. 리뷰 내용을 입력해주세요. \t\n"
-				+ "5. 평점을 입력해주세요. \t\n"
-				+ "6. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
-				+ "7. 올바르지 않은 JSON 형식입니다.",
+				+ "2. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
@@ -105,7 +111,11 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 수정 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 올바르지 않은 파라미터 값입니다. \t\n"
+				+ "3. 리뷰 내용을 입력해주세요. \t\n"
+				+ "4. 평점을 입력해주세요. \t\n"
+				+ "5. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
+				+ "6. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -119,11 +129,7 @@ public class ReviewController {
 					+ " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
 					+ "\"msg\":\"권한이 없습니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 리뷰를 찾을 수 없습니다. \t\n"
-				+ "2. 리뷰 내용을 입력해주세요. \t\n"
-				+ "3. 평점을 입력해주세요. \t\n"
-				+ "4. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
-				+ "5. 올바르지 않은 JSON 형식입니다.",
+			description = "1. 리뷰를 찾을 수 없습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
@@ -241,7 +247,7 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
-	@GetMapping("/list/{restroomId}/high-rating")
+	@GetMapping("/list/high-rating/{restroomId}")
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomIdOrderByHighRating(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
 		@PathVariable Long restroomId) {
@@ -270,7 +276,7 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
-	@GetMapping("/list/{restroomId}/low-rating")
+	@GetMapping("/list/low-rating/{restroomId}")
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomIdOrderByLowRating(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
 		@PathVariable Long restroomId) {
