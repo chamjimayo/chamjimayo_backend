@@ -1,7 +1,6 @@
 package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.domain.entity.Token;
-import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.JwtTokenProvider;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
@@ -11,75 +10,52 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
 public class AuthTokenService {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final TokenRepository tokenRepository;
 
+  @Transactional
   public AuthTokenDto createAuthToken(final String userId) {
     String accessToken = jwtTokenProvider.createAccessToken(userId);
-    String refreshToken;
-
-    Token token = tokenRepository.findTokenByUserId(userId)
-        .orElse(null);
-
-    if (isNotValid(token)) {
-      String refreshToken1 = jwtTokenProvider.createRefreshToken(userId);
-
-      if (token == null) {
-        token = tokenRepository.save(Token.create(userId, refreshToken1));
-      } else {
-        token.changeRefreshToken(refreshToken1);
-      }
-    }
-    refreshToken = token.getRefreshToken();
+    String refreshToken = getRefreshToken(userId);
 
     return AuthTokenDto.create(accessToken, refreshToken);
   }
 
-  private boolean isNotValid(Token token) {
-    if (token != null) {
-      return !validateToken(token.getRefreshToken());
-    }
-    return true;
-  }
-
   public AuthTokenDto refreshAccessToken(final String refreshToken) {
     String userId = jwtTokenProvider.getPayload(refreshToken);
-
     String accessTokenForRenew = jwtTokenProvider.createAccessToken(userId);
-    String refreshTokenForRenew;
 
+    return AuthTokenDto.create(accessTokenForRenew, refreshToken);
+  }
+
+  private String getRefreshToken(String userId) {
     Token token = tokenRepository.findTokenByUserId(userId)
         .orElse(null);
 
-    if (isNotValid(token)) {
-      String refreshToken1 = jwtTokenProvider.createRefreshToken(userId);
-
-      if (token == null) {
-        token = tokenRepository.save(Token.create(userId, refreshToken1));
-      } else {
-        token.changeRefreshToken(refreshToken1);
-      }
+    if (token == null) {
+      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+      token = tokenRepository.save(Token.create(userId, refreshToken));
     }
-    refreshTokenForRenew = token.getRefreshToken();
 
-    isSame(refreshToken, refreshTokenForRenew);
-    return AuthTokenDto.create(accessTokenForRenew, refreshTokenForRenew);
-  }
-
-  private void isSame(String refreshToken, String refreshTokenForRenew) {
-    if (!refreshToken.equals(refreshTokenForRenew)) {
-      throw new InvalidTokenException("토큰이 유효하지 않습니다.");
+    if (jwtTokenProvider.isExpired(token.getRefreshToken())) {
+      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+      token.changeRefreshToken(refreshToken);
     }
+
+    return token.getRefreshToken();
   }
 
   public String extractPayload(final String accessToken) {
     return jwtTokenProvider.getPayload(accessToken);
   }
 
-  public boolean validateToken(final String token) {
+  public boolean isValid(final String token) {
     return jwtTokenProvider.isValid(token);
+  }
+
+  public boolean isExpired(final String token) {
+    return jwtTokenProvider.isExpired(token);
   }
 }

@@ -32,30 +32,29 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
 	// security 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// JWT를 위한 의존성
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'org.springdoc:springdoc-openapi-core:1.1.49'
-	implementation 'org.springdoc:springdoc-openapi:2.0.4'
-	implementation 'org.springdoc:springdoc-openapi:2.0.4'
-	implementation 'org.springdoc:springdoc-openapi:2.0.4'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	//swagger 의존성 추가
+	implementation 'org.springdoc:springdoc-openapi-core:1.1.49'
+	implementation 'org.springdoc:springdoc-openapi:2.0.4'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
 	// queryDSL 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-	// swagger 의존성 추가
-	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
-
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 
 	// validation 의존성 추가
@@ -64,14 +63,8 @@ dependencies {
 	// json path 의존성
 	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 
-	// security 의존성 추가
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-
-	// JWT를 위한 의존성
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
+	testImplementation 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {

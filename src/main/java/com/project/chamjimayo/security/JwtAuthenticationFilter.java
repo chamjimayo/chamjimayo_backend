@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     String accessToken = getAccessTokenFromRequest(request);
 
-    if (!StringUtils.hasText(accessToken) && !authTokenService.validateToken(accessToken)) {
+    if (!StringUtils.hasText(accessToken) && !authTokenService.isValid(accessToken)) {
       throw new InvalidTokenException("jwt 토큰이 유효하지 않습니다.");
     }
 

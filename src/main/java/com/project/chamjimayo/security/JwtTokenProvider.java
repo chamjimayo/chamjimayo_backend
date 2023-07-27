@@ -3,6 +3,7 @@ package com.project.chamjimayo.security;
 import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.security.config.JwtProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -61,14 +62,30 @@ public class JwtTokenProvider {
 
   public boolean isValid(final String token) {
     try {
-      Jwts.parserBuilder()
-          .setSigningKey(key)
-          .build()
-          .parseClaimsJws(token);
+      parseJws(token);
 
       return true;
     } catch (final JwtException | IllegalArgumentException e) {
       return false;
     }
+  }
+
+  public boolean isExpired(final String token) {
+    try {
+      parseJws(token);
+
+      return false;
+    } catch (ExpiredJwtException e) {
+      return true;
+    } catch (JwtException | IllegalArgumentException e) {
+      throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+    }
+  }
+
+  private void parseJws(String token) {
+    Jwts.parserBuilder()
+        .setSigningKey(key)
+        .build()
+        .parseClaimsJws(token);
   }
 }
