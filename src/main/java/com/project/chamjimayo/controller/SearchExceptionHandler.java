@@ -80,7 +80,7 @@ public class SearchExceptionHandler {
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
-	// 파라미터가 올바르지 않은 경우 (validation)
+	// 파라미터가 올바르지 않은 경우 (validation에 걸린 경우)
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiStandardResponse<ErrorResponse> handleConstraintViolationException(

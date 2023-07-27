@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -176,7 +177,8 @@ public class SearchController {
 		@ApiResponse(responseCode = "200", description = "검색 기록 삭제 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 검색기록 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -202,7 +204,7 @@ public class SearchController {
 	@DeleteMapping("/search/{searchId}")
 	public ResponseEntity<ApiStandardResponse<String>> deleteRecentSearchHistory(
 		@Parameter(description = "검색기록 ID", required = true, example = "1 (Long)")
-		@PathVariable Long searchId,
+		@PathVariable @Min(value = 1, message = "검색기록 ID는 1 이상의 정수입니다.") Long searchId,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Search existingSearch = searchRepository.findById(searchId)
 			.orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
@@ -219,14 +221,6 @@ public class SearchController {
 	@Operation(summary = "해당 유저의 모든 검색 기록 삭제", description = "해당 유저의 모든 검색 기록을 삭제합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모든 검색 기록 삭제 성공"),
-		@ApiResponse(responseCode = "400",
-			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
-					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
 		@ApiResponse(responseCode = "404", description = "1. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),

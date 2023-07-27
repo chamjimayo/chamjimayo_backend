@@ -22,9 +22,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/review")
 @RestController
+@Validated
 public class ReviewController {
 
 	private final ReviewService reviewService;
@@ -48,7 +51,8 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 리뷰 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -64,7 +68,7 @@ public class ReviewController {
 	@GetMapping("/get/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> getReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
-		@PathVariable Long reviewId) {
+		@PathVariable @Min(value = 1, message = "리뷰 ID는 1 이상의 정수입니다.") Long reviewId) {
 		ReviewDto reviewDto = reviewService.getReview(reviewId);
 		ApiStandardResponse<ReviewDto> apiStandardResponse = ApiStandardResponse.success(reviewDto);
 		return ResponseEntity.ok(apiStandardResponse);
@@ -111,11 +115,12 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 수정 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다. \t\n"
-				+ "3. 리뷰 내용을 입력해주세요. \t\n"
-				+ "4. 평점을 입력해주세요. \t\n"
-				+ "5. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
-				+ "6. 올바르지 않은 JSON 형식입니다.",
+				+ "2. 리뷰 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다. \t\n"
+				+ "4. 리뷰 내용을 입력해주세요. \t\n"
+				+ "5. 평점을 입력해주세요. \t\n"
+				+ "6. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
+				+ "7. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -141,7 +146,7 @@ public class ReviewController {
 	@PatchMapping("/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewDto>> updateReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
-		@PathVariable Long reviewId,
+		@PathVariable @Min(value = 1, message = "리뷰 ID는 1 이상의 정수입니다.") Long reviewId,
 		@Valid @RequestBody ReviewDto reviewDto,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Review existingReview = reviewRepository.findById(reviewId)
@@ -161,7 +166,8 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 삭제 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 리뷰 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -187,7 +193,7 @@ public class ReviewController {
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<String>> deleteReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
-		@PathVariable Long reviewId,
+		@PathVariable @Min(value = 1, message = "리뷰 ID는 1 이상의 정수입니다.") Long reviewId,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Review existingReview = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
@@ -206,7 +212,8 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 화장실 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -222,7 +229,7 @@ public class ReviewController {
 	@GetMapping("/list/{restroomId}")
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomId(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
-		@PathVariable Long restroomId) {
+		@PathVariable @Min(value = 1, message = "화장실 ID는 1 이상의 정수입니다.") Long restroomId) {
 		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomId(restroomId);
 		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(
 			reviewDtoList);
@@ -234,7 +241,8 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 화장실 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -250,7 +258,7 @@ public class ReviewController {
 	@GetMapping("/list/high-rating/{restroomId}")
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomIdOrderByHighRating(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
-		@PathVariable Long restroomId) {
+		@PathVariable @Min(value = 1, message = "화장실 ID는 1 이상의 정수입니다.") Long restroomId) {
 		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomIdOrderByHighRating(
 			restroomId);
 		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(
@@ -263,7 +271,8 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 화장실 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -279,7 +288,7 @@ public class ReviewController {
 	@GetMapping("/list/low-rating/{restroomId}")
 	public ResponseEntity<ApiStandardResponse<List<ReviewDto>>> getReviewsByRestroomIdOrderByLowRating(
 		@Parameter(description = "화장실 ID", required = true, example = "1 (Long)")
-		@PathVariable Long restroomId) {
+		@PathVariable @Min(value = 1, message = "화장실 ID는 1 이상의 정수입니다.") Long restroomId) {
 		List<ReviewDto> reviewDtoList = reviewService.getReviewsByRestroomIdOrderByLowRating(
 			restroomId);
 		ApiStandardResponse<List<ReviewDto>> apiStandardResponse = ApiStandardResponse.success(

@@ -9,6 +9,8 @@ import com.project.chamjimayo.exception.ReviewNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -64,6 +66,25 @@ public class ReviewExceptionHandler {
 		log.error("", e);
 
 		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+		return ApiStandardResponse.fail(errorResponse);
+	}
+
+	// 파라미터가 올바르지 않은 경우 (validation에 걸린 경우)
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiStandardResponse<ErrorResponse> handleConstraintViolationException(
+		ConstraintViolationException e) {
+		log.error("", e);
+
+		// ConstraintViolationException에서 발생한 오류 메세지 추출
+		String errorMessage = "";
+		for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+			errorMessage = violation.getMessage();
+			break; // 첫 번째 오류 메세지만 추출
+		}
+
+		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_PARAMETER,
+			errorMessage);
 		return ApiStandardResponse.fail(errorResponse);
 	}
 
