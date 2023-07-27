@@ -63,7 +63,7 @@ public class SearchController {
 				+ "2. 파라미터가 부족합니다. \t\n"
 				+ "3. 올바르지 않은 파라미터 값입니다. \t\n"
 				+ "4. 검색어를 입력해주세요. \t\n"
-				+ "5. 특수문자를 포함할 수 없습니다.",
+				+ "5. 검색어에는 특수문자를 포함할 수 없습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"06\", \"msg\": \"fail\","
@@ -84,7 +84,7 @@ public class SearchController {
 	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
 		@Parameter(description = "검색어", required = true, example = "스타벅스")
 		@NotBlank(message = "검색어를 입력해주세요.")
-		@Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "특수문자를 포함할 수 없습니다.")
+		@Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "검색어에는 특수문자를 포함할 수 없습니다.")
 		@RequestParam("searchWord") String searchWord,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
