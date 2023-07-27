@@ -24,9 +24,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/address")
 @RestController
+@Validated
 public class SearchController {
 
 	private final SearchService searchService;
@@ -56,7 +61,9 @@ public class SearchController {
 		@ApiResponse(responseCode = "400",
 			description = "1. 유효한 토큰이 아닙니다. \t\n"
 				+ "2. 파라미터가 부족합니다. \t\n"
-				+ "3. 올바르지 않은 파라미터 값입니다.",
+				+ "3. 올바르지 않은 파라미터 값입니다. \t\n"
+				+ "4. 검색어를 입력해주세요. \t\n"
+				+ "5. 검색어에는 특수문자를 포함할 수 없습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"06\", \"msg\": \"fail\","
@@ -64,8 +71,7 @@ public class SearchController {
 					+ "\"msg\":\"유효한 토큰이 아닙니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
 			description = "1. Api 응답이 올바르지 않습니다. \t\n"
-				+ "2. 올바르지 않은 JSON 형식입니다. \t\n"
-				+ "3. 유저를 찾지 못했습니다.",
+				+ "2. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"10\", \"msg\": \"fail\","
@@ -77,6 +83,8 @@ public class SearchController {
 	@GetMapping("/search")
 	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
 		@Parameter(description = "검색어", required = true, example = "스타벅스")
+		@NotBlank(message = "검색어를 입력해주세요.")
+		@Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "검색어에는 특수문자를 포함할 수 없습니다.")
 		@RequestParam("searchWord") String searchWord,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		// 현재 로그인 한 유저의 userId를 가져옴
@@ -129,23 +137,23 @@ public class SearchController {
 		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다."),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 올바르지 않은 파라미터 값입니다. \t\n"
+				+ "3. 검색어를 입력해주세요. \t\n"
+				+ "4. 도로명 주소를 입력해주세요. \t\n"
+				+ "5. 지번 주소를 입력해주세요. \t\n"
+				+ "6. 가게 이름을 입력해주세요. \t\n"
+				+ "7. 위도를 입력해주세요. \t\n"
+				+ "8. 경도를 입력해주세요. \t\n"
+				+ "9. 위도는 -90 ~ 90으로 입력해주세요. \t\n"
+				+ "10. 경도는 -180 ~ 180으로 입력해주세요. \t\n"
+				+ "11. 올바르지 않은 JSON 형식입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
 					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
 		@ApiResponse(responseCode = "404",
-			description = "1. 검색 기록을 찾을 수 없습니다. \t\n"
-				+ "2. 검색어를 입력해주세요. \t\n"
-				+ "3. 도로명 주소를 입력해주세요. \t\n"
-				+ "4. 지번 주소를 입력해주세요. \t\n"
-				+ "5. 가게 이름을 입력해주세요. \t\n"
-				+ "6. 위도를 입력해주세요. \t\n"
-			 	+ "7. 경도를 입력해주세요. \t\n"
-				+ "8. 위도는 -90 ~ 90으로 입력해주세요. \t\n"
-				+ "9. 경도는 -180 ~ 180으로 입력해주세요. \t\n"
-				+ "10. 올바르지 않은 JSON 형식입니다.",
+			description = "1. 검색 기록을 찾을 수 없습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","
@@ -169,7 +177,8 @@ public class SearchController {
 		@ApiResponse(responseCode = "200", description = "검색 기록 삭제 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
+				+ "2. 검색기록 ID는 1 이상의 정수입니다. \t\n"
+				+ "3. 올바르지 않은 파라미터 값입니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -195,7 +204,7 @@ public class SearchController {
 	@DeleteMapping("/search/{searchId}")
 	public ResponseEntity<ApiStandardResponse<String>> deleteRecentSearchHistory(
 		@Parameter(description = "검색기록 ID", required = true, example = "1 (Long)")
-		@PathVariable Long searchId,
+		@PathVariable @Min(value = 1, message = "검색기록 ID는 1 이상의 정수입니다.") Long searchId,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Search existingSearch = searchRepository.findById(searchId)
 			.orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
@@ -212,14 +221,6 @@ public class SearchController {
 	@Operation(summary = "해당 유저의 모든 검색 기록 삭제", description = "해당 유저의 모든 검색 기록을 삭제합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모든 검색 기록 삭제 성공"),
-		@ApiResponse(responseCode = "400",
-			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 올바르지 않은 파라미터 값입니다.",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
-					+ "\"msg\":\"파라미터가 부족합니다.\"} }"))),
 		@ApiResponse(responseCode = "404", description = "1. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
