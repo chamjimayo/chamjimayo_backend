@@ -3,36 +3,46 @@ package com.project.chamjimayo.service;
 import com.project.chamjimayo.domain.entity.Token;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.JwtTokenProvider;
+import com.project.chamjimayo.security.config.JwtProperties;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
 import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class AuthTokenService {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final TokenRepository tokenRepository;
+  private final long accessTokenValidityMs;
+  private final long refreshTokenValidityMs;
+
+  public AuthTokenService(JwtTokenProvider jwtTokenProvider, TokenRepository tokenRepository,
+      JwtProperties jwtProperties) {
+    this.jwtTokenProvider = jwtTokenProvider;
+    this.tokenRepository = tokenRepository;
+    this.accessTokenValidityMs = jwtProperties.getAccessTokenValidityMs();
+    this.refreshTokenValidityMs = jwtProperties.getRefreshTokenValidityMs();
+  }
 
   @Transactional
   public AuthTokenDto createAuthToken(final String userId) {
     String accessToken = jwtTokenProvider.createAccessToken(userId);
     String refreshToken = getRefreshToken(userId);
 
-    return AuthTokenDto.create(accessToken, refreshToken);
+    return AuthTokenDto.create(accessToken, refreshToken,
+        accessTokenValidityMs, refreshTokenValidityMs);
   }
 
   public AuthTokenDto refreshAccessToken(final String refreshToken) {
     String userId = jwtTokenProvider.getPayload(refreshToken);
     String accessTokenForRenew = jwtTokenProvider.createAccessToken(userId);
 
-    return AuthTokenDto.create(accessTokenForRenew, refreshToken);
+    return AuthTokenDto.create(accessTokenForRenew, refreshToken,
+        accessTokenValidityMs, refreshTokenValidityMs);
   }
 
   private String getRefreshToken(String userId) {
-    Token token = tokenRepository.findTokenByUserId(userId)
-        .orElse(null);
+    Token token = tokenRepository.findTokenByUserId(userId).orElse(null);
 
     if (token == null) {
       String refreshToken = jwtTokenProvider.createRefreshToken(userId);

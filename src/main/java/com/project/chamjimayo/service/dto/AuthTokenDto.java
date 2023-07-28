@@ -5,19 +5,45 @@ import lombok.Getter;
 
 @Getter
 public class AuthTokenDto {
-
-  @Schema(description = "access token", example = "jwt token")
   private final String accessToken;
-
-  @Schema(description = "refresh token", example = "jwt token")
   private final String refreshToken;
 
-  private AuthTokenDto(String accessToken, String refreshToken) {
+  private final long accessTokenValidityMs;
+  private final long refreshTokenValidityMs;
+
+  private AuthTokenDto(String accessToken, String refreshToken, long accessTokenValidityMs,
+      long refreshTokenValidityMs) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    this.accessTokenValidityMs = accessTokenValidityMs;
+    this.refreshTokenValidityMs = refreshTokenValidityMs;
   }
 
-  public static AuthTokenDto create(String accessToken, String refreshToken) {
-    return new AuthTokenDto(accessToken, refreshToken);
+  public static AuthTokenDto create(String accessToken, String refreshToken,
+      long accessTokenValidityMs, long refreshTokenValidityMs) {
+    return new AuthTokenDto(accessToken, refreshToken, accessTokenValidityMs,
+        refreshTokenValidityMs);
+  }
+
+  @Schema(name = "AuthTokenDto.Response")
+  @Getter
+  public static class Response {
+    private final String accessToken;
+    private final String refreshToken;
+
+    private final long accessTokenValidityMs;
+    private final long refreshTokenValidityMs;
+
+    private Response(String accessToken, String refreshToken, long accessTokenValidityMs,
+        long refreshTokenValidityMs) {
+      this.accessToken = accessToken;
+      this.refreshToken = refreshToken;
+      this.accessTokenValidityMs = accessTokenValidityMs;
+      this.refreshTokenValidityMs = refreshTokenValidityMs;
+    }
+  }
+
+  public Response toResponse() {
+    return new Response(accessToken, refreshToken, accessTokenValidityMs, refreshTokenValidityMs);
   }
 }
