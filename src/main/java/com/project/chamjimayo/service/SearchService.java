@@ -5,7 +5,6 @@ import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.domain.entity.Search;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.ApiNotFoundException;
-import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
