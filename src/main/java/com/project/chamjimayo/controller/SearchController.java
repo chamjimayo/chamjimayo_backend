@@ -180,7 +180,8 @@ public class SearchController {
 			description = "1. 파라미터가 부족합니다. \t\n"
 				+ "2. 올바르지 않은 파라미터 값입니다. \t\n"
 				+ "3. 가게 이름을 입력해주세요. \t\n"
-				+ "4. 가게 이름에는 특수문자를 포함할 수 없습니다.",
+				+ "4. 가게 이름에는 특수문자를 포함할 수 없습니다. \t\n"
+				+ "5. 유효한 토큰이 아닙니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -225,6 +226,12 @@ public class SearchController {
 	@Operation(summary = "해당 유저의 모든 검색 기록 삭제", description = "해당 유저의 모든 검색 기록을 삭제합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모든 검색 기록 삭제 성공"),
+		@ApiResponse(responseCode = "400", description = "1. 유효한 토큰이 아닙니다.",
+			content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ErrorResponse.class),
+				examples = @ExampleObject(value = "{ \"code\": \"06\", \"msg\": \"fail\","
+					+ " \"data\": {\"status\": \"INVALID_TOKEN_EXCEPTION\", "
+					+ "\"msg\":\"유효한 토큰이 아닙니다.\"} }"))),
 		@ApiResponse(responseCode = "404", description = "1. 유저를 찾지 못했습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
