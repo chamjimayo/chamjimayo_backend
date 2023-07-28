@@ -1,7 +1,6 @@
 package com.project.chamjimayo.controller.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -11,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class ReviewRequestDto {
 
-	@Schema(type = "Long", example = "501")
+	@Schema(type = "Long", example = "1")
 	@NotNull(message = "화장실 ID를 입력해주세요.")
 	private final Long restroomId;
 

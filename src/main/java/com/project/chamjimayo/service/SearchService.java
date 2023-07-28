@@ -5,7 +5,6 @@ import com.project.chamjimayo.controller.dto.SearchResponseDto;
 import com.project.chamjimayo.domain.entity.Search;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.ApiNotFoundException;
-import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
@@ -13,6 +12,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -227,10 +227,13 @@ public class SearchService {
 		Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
 			latitude, longitude);
 
-		// 이전에 클릭하지 않은 경우 (db에 저장되지 않은 경우)만 저장한다.
-		if (!searchRepository.existsByUserAndLatitudeAndLongitude(user, latitude, longitude)) {
-			searchRepository.save(search);
+		// 이전에 클릭하지 않은 경우 (db에 저장되지 않은 경우)만 저장한다. - 가게 이름(고유)으로 검증
+		Optional<Search> existingSearch = searchRepository.findByUserAndName(user, name);
+		// 값이 존재하는 경우, 삭제하고 다시 저장 (최신화를 위해)
+		if (existingSearch.isPresent()) {
+			searchRepository.delete(existingSearch.get());
 		}
+		searchRepository.save(search);
 	}
 
 	/**

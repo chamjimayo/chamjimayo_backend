@@ -113,7 +113,8 @@ public class UserController {
 			description = "1. 유저 ID를 입력해주세요. \t\n"
 				+ "3. 포인트를 입력해주세요. \t\n"
 				+ "4. 포인트의 최솟값은 0입니다. \t\n"
-				+ "5. 올바르지 않은 JSON 형식입니다.",
+				+ "5. 올바르지 않은 JSON 형식입니다. \t\n"
+				+ "6. 유효한 토큰이 아닙니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
@@ -159,7 +160,8 @@ public class UserController {
 				+ "2. 유저 ID를 입력해주세요. \t\n"
 				+ "3. 포인트를 입력해주세요. \t\n"
 				+ "4. 포인트의 최솟값은 0입니다. \t\n"
-				+ "5. 올바르지 않은 JSON 형식입니다.",
+				+ "5. 올바르지 않은 JSON 형식입니다. \t\n"
+				+ "6. 유효한 토큰이 아닙니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"22\", \"msg\": \"fail\","
