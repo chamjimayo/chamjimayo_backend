@@ -24,7 +24,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,7 +130,7 @@ public class SearchController {
 	/**
 	 * 도로명 주소를 클릭한 경우 해당 도로명 주소의 상태를 변경 -> 해당 주소를 클릭 처리하면 최종적으로 검색한 것으로 처리 후 저장
 	 */
-	@Operation(summary = "주소 클릭", description = "검색 기록을 클릭(저장)합니다.(이미 클릭한 경우, 저장되지 않습니다.)")
+	@Operation(summary = "주소 클릭", description = "검색 기록을 클릭(저장)합니다.(이미 존재하는 경우, 최신화 적용)")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "정상적으로 클릭이 되었습니다."),
 		@ApiResponse(responseCode = "400",
@@ -172,13 +170,18 @@ public class SearchController {
 		return ResponseEntity.ok(apiStandardResponse);
 	}
 
+	/**
+	 * 가게 이름을 통해서 검색 기록 삭제
+	 */
 	@Operation(summary = "해당 유저의 특정 검색 기록 삭제", description = "해당 유저의 특정 검색 기록을 삭제합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "검색 기록 삭제 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
 				+ "2. 검색기록 ID는 1 이상의 정수입니다. \t\n"
-				+ "3. 올바르지 않은 파라미터 값입니다.",
+				+ "3. 올바르지 않은 파라미터 값입니다. \t\n"
+				+ "4. 가게 이름을 입력해주세요. \t\n"
+				+ "5. 가게 이름에는 특수문자를 포함할 수 없습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
@@ -201,12 +204,14 @@ public class SearchController {
 	@Parameters({
 		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
 	})
-	@DeleteMapping("/search/{searchId}")
+	@DeleteMapping("/search")
 	public ResponseEntity<ApiStandardResponse<String>> deleteRecentSearchHistory(
-		@Parameter(description = "검색기록 ID", required = true, example = "1 (Long)")
-		@PathVariable @Min(value = 1, message = "검색기록 ID는 1 이상의 정수입니다.") Long searchId,
+		@Parameter(description = "가게 이름", required = true, example = "스타벅스 서울역점")
+		@NotBlank(message = "가게 이름을 입력해주세요.")
+		@Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "가게 이름에는 특수문자를 포함할 수 없습니다.")
+		@RequestParam("name") String name,
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		Search existingSearch = searchRepository.findById(searchId)
+		Search existingSearch = searchRepository.findByName(name)
 			.orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
 		if (existingSearch.getUser().getUserId().equals(customUserDetails.getId())) {
 			searchService.deleteRecentSearchHistory(existingSearch);
