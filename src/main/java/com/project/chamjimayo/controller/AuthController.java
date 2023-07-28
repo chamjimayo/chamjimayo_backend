@@ -7,6 +7,7 @@ import com.project.chamjimayo.controller.dto.LoginRequest;
 import com.project.chamjimayo.controller.dto.SignUpRequest;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
 import com.project.chamjimayo.service.AuthService;
+import com.project.chamjimayo.service.dto.AuthTokenDto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -43,10 +44,10 @@ public class AuthController {
       )
   })
   @PostMapping("/signup")
-  public ResponseEntity<ApiStandardResponse<AuthTokenDto>> signUp(
+  public ResponseEntity<ApiStandardResponse<Response>> signUp(
       @RequestBody SignUpRequest request) {
     AuthTokenDto dto = authService.issueNewToken(request.toDto());
-    return ResponseEntity.ok(ApiStandardResponse.success(dto));
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 
   @Operation(summary = "로그인", description = "회원 식별 번호 요청 후 access, refresh token 반환")
@@ -62,10 +63,10 @@ public class AuthController {
       )
   })
   @PostMapping("/login")
-  public ResponseEntity<ApiStandardResponse<AuthTokenDto>> login(
+  public ResponseEntity<ApiStandardResponse<Response>> login(
       @RequestBody LoginRequest request) {
     AuthTokenDto dto = authService.issueToken(request.getAuthId());
-    return ResponseEntity.ok(ApiStandardResponse.success(dto));
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 
   @Operation(summary = "액세스 토큰 갱신",
@@ -83,9 +84,9 @@ public class AuthController {
       )
   })
   @PostMapping("/token/access")
-  public ResponseEntity<ApiStandardResponse<AuthTokenDto>> issueToken(
+  public ResponseEntity<ApiStandardResponse<Response>> issueToken(
       @RequestBody IssueTokenRequest issueTokenRequest) {
     AuthTokenDto dto = authService.refreshToken(issueTokenRequest.toDto());
-    return ResponseEntity.ok(ApiStandardResponse.success(dto));
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 }

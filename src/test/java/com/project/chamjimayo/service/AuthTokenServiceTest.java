@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.project.chamjimayo.domain.entity.Token;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.JwtTokenProvider;
+import com.project.chamjimayo.security.config.JwtProperties;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,9 @@ class AuthTokenServiceTest {
 
   @Mock
   private JwtTokenProvider jwtTokenProvider;
+
+  @Mock
+  private JwtProperties jwtProperties;
 
   @InjectMocks
   private AuthTokenService sut;

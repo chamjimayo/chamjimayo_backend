@@ -2,9 +2,7 @@ package com.project.chamjimayo.security;
 
 import com.project.chamjimayo.exception.InvalidTokenException;
 import com.project.chamjimayo.security.config.JwtProperties;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,21 +16,21 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
   private final SecretKey key;
-  private final long accessTokenValidityInMilliseconds;
-  private final long refreshTokenValidityInMilliseconds;
+  private final long accessTokenValidityMs;
+  private final long refreshTokenValidityMs;
 
   public JwtTokenProvider(JwtProperties jwtProperties) {
     this.key = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
-    this.accessTokenValidityInMilliseconds = jwtProperties.getAccessTokenValidityInMilliseconds();
-    this.refreshTokenValidityInMilliseconds = jwtProperties.getRefreshTokenValidityInMilliseconds();
+    this.accessTokenValidityMs = jwtProperties.getAccessTokenValidityMs();
+    this.refreshTokenValidityMs = jwtProperties.getRefreshTokenValidityMs();
   }
 
   public String createAccessToken(final String payload) {
-    return createToken(payload, accessTokenValidityInMilliseconds);
+    return createToken(payload, accessTokenValidityMs);
   }
 
   public String createRefreshToken(final String payload) {
-    return createToken(payload, refreshTokenValidityInMilliseconds);
+    return createToken(payload, refreshTokenValidityMs);
   }
 
   private String createToken(final String payload, final Long validityInMilliseconds) {

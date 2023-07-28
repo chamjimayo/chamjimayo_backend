@@ -26,8 +26,8 @@ class JwtTokenProviderTest {
   private JwtProperties createJwtProperties(long tokenValidityInMilliseconds) {
     JwtProperties jwtProperties = new JwtProperties();
     jwtProperties.setSecretKey("T".repeat(32));
-    jwtProperties.setAccessTokenValidityInMilliseconds(tokenValidityInMilliseconds);
-    jwtProperties.setRefreshTokenValidityInMilliseconds(tokenValidityInMilliseconds);
+    jwtProperties.setAccessTokenValidityMs(tokenValidityInMilliseconds);
+    jwtProperties.setRefreshTokenValidityMs(tokenValidityInMilliseconds);
 
     return jwtProperties;
   }
