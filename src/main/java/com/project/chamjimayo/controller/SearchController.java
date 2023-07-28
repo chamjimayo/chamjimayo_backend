@@ -178,10 +178,9 @@ public class SearchController {
 		@ApiResponse(responseCode = "200", description = "검색 기록 삭제 성공"),
 		@ApiResponse(responseCode = "400",
 			description = "1. 파라미터가 부족합니다. \t\n"
-				+ "2. 검색기록 ID는 1 이상의 정수입니다. \t\n"
-				+ "3. 올바르지 않은 파라미터 값입니다. \t\n"
-				+ "4. 가게 이름을 입력해주세요. \t\n"
-				+ "5. 가게 이름에는 특수문자를 포함할 수 없습니다.",
+				+ "2. 올바르지 않은 파라미터 값입니다. \t\n"
+				+ "3. 가게 이름을 입력해주세요. \t\n"
+				+ "4. 가게 이름에는 특수문자를 포함할 수 없습니다.",
 			content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ErrorResponse.class),
 				examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","

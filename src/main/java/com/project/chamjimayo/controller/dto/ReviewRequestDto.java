@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class ReviewRequestDto {
 
-	@Schema(type = "Long", example = "501")
+	@Schema(type = "Long", example = "1")
 	@NotNull(message = "화장실 ID를 입력해주세요.")
 	private final Long restroomId;
 
