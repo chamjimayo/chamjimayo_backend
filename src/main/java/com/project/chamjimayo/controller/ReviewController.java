@@ -99,9 +99,8 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PostMapping()
 	public ResponseEntity<ApiStandardResponse<ReviewResponseDto>> createReview(
 		@Valid @RequestBody ReviewRequestDto reviewRequestDto,
@@ -144,9 +143,8 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"REVIEW_NOT_FOUND\", "
 					+ "\"msg\":\"리뷰를 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PatchMapping("/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<ReviewResponseDto>> updateReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
@@ -193,9 +191,8 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"REVIEW_NOT_FOUND\", "
 					+ "\"msg\":\"리뷰를 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<ApiStandardResponse<String>> deleteReview(
 		@Parameter(description = "리뷰 ID", required = true, example = "1 (Long)")
@@ -229,9 +226,8 @@ public class ReviewController {
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@GetMapping("/list")
 	public ResponseEntity<ApiStandardResponse<List<ReviewResponseDto>>> getReviewsByUserId(
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {

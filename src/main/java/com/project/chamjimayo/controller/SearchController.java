@@ -75,9 +75,8 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"10\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"API_NOT_FOUND\", "
 					+ "\"msg\":\"Api 응답이 올바르지 않습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@GetMapping("/search")
 	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
 		@Parameter(description = "검색어", required = true, example = "스타벅스")
@@ -112,9 +111,8 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@GetMapping("/search/recent")
 	public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getUserSearchHistory(
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -157,9 +155,8 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"SEARCH_NOT_FOUND\", "
 					+ "\"msg\":\"검색 기록을 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PostMapping("/search/click")
 	public ResponseEntity<ApiStandardResponse<String>> clickAddress(
 		@Valid @RequestBody SearchResponseDto searchResponseDto,
@@ -201,9 +198,8 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"09\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"SEARCH_NOT_FOUND\", "
 					+ "\"msg\":\"검색 기록을 찾을 수 없습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@DeleteMapping("/search")
 	public ResponseEntity<ApiStandardResponse<String>> deleteRecentSearchHistory(
 		@Parameter(description = "가게 이름", required = true, example = "스타벅스 서울역점")
@@ -238,9 +234,8 @@ public class SearchController {
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@DeleteMapping("/search/all")
 	public ResponseEntity<ApiStandardResponse<String>> deleteRecentSearchHistoryAll(
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {

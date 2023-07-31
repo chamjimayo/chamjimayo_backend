@@ -116,10 +116,8 @@ public class RestroomController {
 					+ " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
 	})
-	@Parameters({
-		@Parameter(name = "Bearer-Token", description = "jwt token",
-			in = ParameterIn.HEADER, schema = @Schema(type = "string"))
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PostMapping("/use")
 	public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> usingRestroom(
 		@RequestBody UsingRestroomRequest usingRestroomRequest,
@@ -140,10 +138,8 @@ public class RestroomController {
 					+ " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
 					+ "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
 	})
-	@Parameters({
-		@Parameter(name = "Bearer-Token", description = "jwt token",
-			in = ParameterIn.HEADER, schema = @Schema(type = "string"))
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PostMapping("/endofuse")
 	public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> endOfUsingRestroom(
 		@Parameter(hidden = true) @AuthenticationPrincipal
