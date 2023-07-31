@@ -10,22 +10,22 @@ import lombok.Getter;
 @Getter
 public class ReviewUpdateDto {
 
-	@Schema(type = "string", example = "깔끔해요!")
-	@NotBlank(message = "리뷰 내용을 입력해주세요.")
-	private String reviewContent;
+  @Schema(type = "string", example = "깔끔해요!")
+  @NotBlank(message = "리뷰 내용을 입력해주세요.")
+  private String reviewContent;
 
-	@Schema(type = "Integer", example = "4")
-	@NotNull(message = "평점을 입력해주세요.")
-	@Min(value = 0, message = "평점은 0 ~ 5점으로 입력해주세요.")
-	@Max(value = 5, message = "평점은 0 ~ 5점으로 입력해주세요.")
-	private Integer rating;
+  @Schema(type = "Integer", example = "4")
+  @NotNull(message = "평점을 입력해주세요.")
+  @Min(value = 0, message = "평점은 0 ~ 5점으로 입력해주세요.")
+  @Max(value = 5, message = "평점은 0 ~ 5점으로 입력해주세요.")
+  private Integer rating;
 
-	private ReviewUpdateDto(String reviewContent, Integer rating) {
-		this.reviewContent = reviewContent;
-		this.rating = rating;
-	}
+  private ReviewUpdateDto(String reviewContent, Integer rating) {
+    this.reviewContent = reviewContent;
+    this.rating = rating;
+  }
 
-	public static ReviewUpdateDto create(String reviewContent, Integer rating) {
-		return new ReviewUpdateDto(reviewContent, rating);
-	}
+  public static ReviewUpdateDto create(String reviewContent, Integer rating) {
+    return new ReviewUpdateDto(reviewContent, rating);
+  }
 }

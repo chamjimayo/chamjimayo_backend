@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SearchRepository extends JpaRepository<Search, Long> {
 
-	List<Search> findAllByUser(User user);
+  List<Search> findAllByUser(User user);
 
-	void deleteAllByUser(User user);
+  void deleteAllByUser(User user);
 
-	Optional<Search> findByUserAndName(User user, String Name);
+  Optional<Search> findByUserAndName(User user, String Name);
 
-	Optional<Search> findByName(String name);
+  Optional<Search> findByName(String name);
 }
 
 

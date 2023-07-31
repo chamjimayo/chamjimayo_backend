@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class RestroomResponse {
 
-	private long restroomId;
+  private long restroomId;
 
-	private String restroomName;
+  private String restroomName;
 }

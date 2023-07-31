@@ -12,24 +12,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Token {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-	private String userId;
+  private String userId;
 
-	private String refreshToken;
+  private String refreshToken;
 
-	public Token(String userId, String refreshToken) {
-		this.userId = userId;
-		this.refreshToken = refreshToken;
-	}
+  public Token(String userId, String refreshToken) {
+    this.userId = userId;
+    this.refreshToken = refreshToken;
+  }
 
-	public static Token create(String userId, String refreshToken) {
-		return new Token(userId, refreshToken);
-	}
+  public static Token create(String userId, String refreshToken) {
+    return new Token(userId, refreshToken);
+  }
 
-	public void changeRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
+  public void changeRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
 }

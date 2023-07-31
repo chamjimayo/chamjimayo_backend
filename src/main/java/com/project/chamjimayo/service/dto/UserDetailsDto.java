@@ -6,34 +6,34 @@ import lombok.Getter;
 @Getter
 public class UserDetailsDto {
 
-	private final String name;
+  private final String name;
 
-	private final String nickname;
+  private final String nickname;
 
-	private final Integer point;
+  private final Integer point;
 
-	public UserDetailsDto(String name, String nickname, Integer point) {
-		this.name = name;
-		this.nickname = nickname;
-		this.point = point;
-	}
+  public UserDetailsDto(String name, String nickname, Integer point) {
+    this.name = name;
+    this.nickname = nickname;
+    this.point = point;
+  }
 
-	@Schema(name = "UserDetailsDto.Response")
-	@Getter
-	public static class Response {
+  @Schema(name = "UserDetailsDto.Response")
+  @Getter
+  public static class Response {
 
-		private final String name;
-		private final String nickname;
-		private final Integer point;
+    private final String name;
+    private final String nickname;
+    private final Integer point;
 
-		public Response(String name, String nickname, Integer point) {
-			this.name = name;
-			this.nickname = nickname;
-			this.point = point;
-		}
-	}
+    public Response(String name, String nickname, Integer point) {
+      this.name = name;
+      this.nickname = nickname;
+      this.point = point;
+    }
+  }
 
-	public Response toResponse() {
-		return new Response(name, nickname, point);
-	}
+  public Response toResponse() {
+    return new Response(name, nickname, point);
+  }
 }

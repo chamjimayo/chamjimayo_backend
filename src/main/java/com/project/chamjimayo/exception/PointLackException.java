@@ -4,12 +4,12 @@ import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class PointLackException extends RuntimeException {
 
-	public PointLackException(String msg) {
-		super(msg);
-	}
+  public PointLackException(String msg) {
+    super(msg);
+  }
 
-	public ErrorStatus toErrorCode() {
-		return ErrorStatus.POINT_NOT_ENOUGH;
-	}
+  public ErrorStatus toErrorCode() {
+    return ErrorStatus.POINT_NOT_ENOUGH;
+  }
 
 }

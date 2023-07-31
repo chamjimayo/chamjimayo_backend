@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsedRestroomRepository extends JpaRepository<UsedRestroom, Long> {
 
-	UsedRestroom findUsedRestroomByRestroomId(long restroomId);
+  UsedRestroom findUsedRestroomByRestroomId(long restroomId);
 }

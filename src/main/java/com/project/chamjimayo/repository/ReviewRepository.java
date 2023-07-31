@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-	List<Review> findAllByRestroom(Optional<Restroom> restroom);
+  List<Review> findAllByRestroom(Optional<Restroom> restroom);
 
-	List<Review> findAllByUser(Optional<User> user);
+  List<Review> findAllByUser(Optional<User> user);
 }
 

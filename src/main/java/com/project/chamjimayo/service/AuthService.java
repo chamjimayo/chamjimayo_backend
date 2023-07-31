@@ -10,26 +10,26 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final AuthTokenService authTokenService;
-	private final UserService userService;
+  private final AuthTokenService authTokenService;
+  private final UserService userService;
 
-	public AuthTokenDto issueNewToken(SignUpDto dto) {
-		String id = userService.saveUser(dto);
-		return authTokenService.createAuthToken(id);
-	}
+  public AuthTokenDto issueNewToken(SignUpDto dto) {
+    String id = userService.saveUser(dto);
+    return authTokenService.createAuthToken(id);
+  }
 
-	public AuthTokenDto issueToken(String authId) {
-		String id = userService.getUserByAuthId(authId);
-		return authTokenService.createAuthToken(id);
-	}
+  public AuthTokenDto issueToken(String authId) {
+    String id = userService.getUserByAuthId(authId);
+    return authTokenService.createAuthToken(id);
+  }
 
-	public AuthTokenDto refreshToken(IssueTokenDto dto) {
-		if (authTokenService.isExpired(dto.getRefreshToken())) {
-			String userId = userService.getUserByAuthId(dto.getAuthId());
+  public AuthTokenDto refreshToken(IssueTokenDto dto) {
+    if (authTokenService.isExpired(dto.getRefreshToken())) {
+      String userId = userService.getUserByAuthId(dto.getAuthId());
 
-			return authTokenService.createAuthToken(userId);
-		}
+      return authTokenService.createAuthToken(userId);
+    }
 
-		return authTokenService.refreshAccessToken(dto.getRefreshToken());
-	}
+    return authTokenService.refreshAccessToken(dto.getRefreshToken());
+  }
 }

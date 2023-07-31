@@ -19,62 +19,62 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(assignableTypes = {AuthController.class})
 public class AuthExceptionHandler {
 
-	@ExceptionHandler(UserNickNameDuplicateException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleUserNickNameDuplicateException(
-		UserNickNameDuplicateException e) {
-		log.error("", e);
+  @ExceptionHandler(UserNickNameDuplicateException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handleUserNickNameDuplicateException(
+      UserNickNameDuplicateException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
-	@ExceptionHandler(UserDuplicateException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleIllegalUserDuplicateException(
-		UserDuplicateException e) {
-		log.error("", e);
+  @ExceptionHandler(UserDuplicateException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handleIllegalUserDuplicateException(
+      UserDuplicateException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
-	@ExceptionHandler(UserNotFoundException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
-		log.error("", e);
+  @ExceptionHandler(UserNotFoundException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
-	@ExceptionHandler(AuthException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleAuthException(AuthException e) {
-		log.error("", e);
+  @ExceptionHandler(AuthException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handleAuthException(AuthException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
-	@ExceptionHandler(InvalidTokenException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handlerInvalidTokenException(
-		InvalidTokenException e) {
-		log.error("", e);
+  @ExceptionHandler(InvalidTokenException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handlerInvalidTokenException(
+      InvalidTokenException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handlerMethodArgumentNotValidException(
-		MethodArgumentNotValidException e) {
-		log.error("", e);
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handlerMethodArgumentNotValidException(
+      MethodArgumentNotValidException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(
-			ErrorStatus.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, "요청이 올바르지 않습니다.");
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(
+        ErrorStatus.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, "요청이 올바르지 않습니다.");
+    return ApiStandardResponse.fail(errorResponse);
+  }
 }

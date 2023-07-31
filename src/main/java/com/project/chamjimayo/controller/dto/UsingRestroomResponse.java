@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UsingRestroomResponse {
 
-	long userId;
+  long userId;
 
-	long restroomId;
+  long restroomId;
 }

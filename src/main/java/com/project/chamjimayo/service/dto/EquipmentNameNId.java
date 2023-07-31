@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class EquipmentNameNId {
 
-	String equipmentName;
+  String equipmentName;
 
-	long id;
+  long id;
 }

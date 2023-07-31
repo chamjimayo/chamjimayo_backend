@@ -19,29 +19,29 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class AuthenticationExceptionFilter extends OncePerRequestFilter {
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
-		try {
-			filterChain.doFilter(request, response);
-		} catch (InvalidTokenException e) {
-			ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_TOKEN_EXCEPTION,
-				e.getMessage());
-			createApiErrorResponse(HttpStatus.BAD_REQUEST, response, errorResponse);
-		} catch (BadCredentialsException e) {
-			ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.AUTHENTICATION_EXCEPTION,
-				e.getMessage());
-			createApiErrorResponse(HttpStatus.UNAUTHORIZED, response, errorResponse);
-		}
-	}
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    try {
+      filterChain.doFilter(request, response);
+    } catch (InvalidTokenException e) {
+      ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_TOKEN_EXCEPTION,
+          e.getMessage());
+      createApiErrorResponse(HttpStatus.BAD_REQUEST, response, errorResponse);
+    } catch (BadCredentialsException e) {
+      ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.AUTHENTICATION_EXCEPTION,
+          e.getMessage());
+      createApiErrorResponse(HttpStatus.UNAUTHORIZED, response, errorResponse);
+    }
+  }
 
-	private void createApiErrorResponse(HttpStatus status, HttpServletResponse response,
-		ErrorResponse errorResponse)
-		throws IOException {
-		ApiStandardResponse<ErrorResponse> apiResponse = ApiStandardResponse.fail(errorResponse);
-		response.setStatus(status.value());
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.setCharacterEncoding("utf-8");
-		response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
-	}
+  private void createApiErrorResponse(HttpStatus status, HttpServletResponse response,
+      ErrorResponse errorResponse)
+      throws IOException {
+    ApiStandardResponse<ErrorResponse> apiResponse = ApiStandardResponse.fail(errorResponse);
+    response.setStatus(status.value());
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setCharacterEncoding("utf-8");
+    response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
+  }
 }

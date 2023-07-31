@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 public class UsingRestroomRequest {
 
-	@NotBlank
-	private long restroomId;
+  @NotBlank
+  private long restroomId;
 }

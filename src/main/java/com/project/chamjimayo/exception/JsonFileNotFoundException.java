@@ -4,11 +4,11 @@ import com.project.chamjimayo.controller.dto.ErrorStatus;
 
 public class JsonFileNotFoundException extends RuntimeException {
 
-	public JsonFileNotFoundException(String msg) {
-		super(msg);
-	}
+  public JsonFileNotFoundException(String msg) {
+    super(msg);
+  }
 
-	public ErrorStatus toErrorCode() {
-		return ErrorStatus.INVALID_JSON;
-	}
+  public ErrorStatus toErrorCode() {
+    return ErrorStatus.INVALID_JSON;
+  }
 }

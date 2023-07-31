@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequest {
 
-	@NotBlank
-	@Schema(description = "사용자 식별 아이디")
-	private String authId;
+  @NotBlank
+  @Schema(description = "사용자 식별 아이디")
+  private String authId;
 }

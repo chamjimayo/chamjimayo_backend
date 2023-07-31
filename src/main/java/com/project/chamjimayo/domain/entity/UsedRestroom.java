@@ -17,20 +17,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsedRestroom {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-	@Column(name = "restroom_id")
-	private Long restroomId;
+  @Column(name = "restroom_id")
+  private Long restroomId;
 
-	@Builder
-	public UsedRestroom(User user, long restroomId) {
-		this.user = user;
-		this.restroomId = restroomId;
-	}
+  @Builder
+  public UsedRestroom(User user, long restroomId) {
+    this.user = user;
+    this.restroomId = restroomId;
+  }
 }

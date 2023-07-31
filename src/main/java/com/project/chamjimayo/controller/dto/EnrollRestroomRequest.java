@@ -7,26 +7,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EnrollRestroomRequest {
 
-	private String restroomName;
+  private String restroomName;
 
-	// 주소
-	private String address;
+  // 주소
+  private String address;
 
-	// 개방 시간
-	private String operatingHour;
+  // 개방 시간
+  private String operatingHour;
 
-	// 화장실 대표 사진 url
-	private String restroomPhoto;
+  // 화장실 대표 사진 url
+  private String restroomPhoto;
 
-	// 남자 대변기 수
-	private Integer maleToiletCount;
+  // 남자 대변기 수
+  private Integer maleToiletCount;
 
-	// 여자 대변기 수
-	private Integer femaleToiletCount;
+  // 여자 대변기 수
+  private Integer femaleToiletCount;
 
-	//유로 무료
-	private String publicOrPaid;
+  //유로 무료
+  private String publicOrPaid;
 
-	private long restroomManagerId = 0;
-
+  private long restroomManagerId = 0;
 }

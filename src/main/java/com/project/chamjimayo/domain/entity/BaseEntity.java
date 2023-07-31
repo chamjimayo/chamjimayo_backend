@@ -14,24 +14,24 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-	// 등록 시간 (생성 시간)
-	@CreatedDate
-	@Column(name = "created_date", nullable = false, updatable = false)
-	private LocalDateTime createdDate;
+  // 등록 시간 (생성 시간)
+  @CreatedDate
+  @Column(name = "created_date", nullable = false, updatable = false)
+  private LocalDateTime createdDate;
 
-	// 수정 시간
-	@LastModifiedDate
-	@Column(name = "updated_date", nullable = false)
-	private LocalDateTime updatedDate;
+  // 수정 시간
+  @LastModifiedDate
+  @Column(name = "updated_date", nullable = false)
+  private LocalDateTime updatedDate;
 
-	// 상태
-	// 0 = 사용 불가, 1 = 사용 가능
-	@Column(name = "status")
-	private boolean status;
+  // 상태
+  // 0 = 사용 불가, 1 = 사용 가능
+  @Column(name = "status")
+  private boolean status;
 
-	BaseEntity() {
-		createdDate = LocalDateTime.now();
-		updatedDate = LocalDateTime.now();
-		status = true;
-	}
+  BaseEntity() {
+    createdDate = LocalDateTime.now();
+    updatedDate = LocalDateTime.now();
+    status = true;
+  }
 }

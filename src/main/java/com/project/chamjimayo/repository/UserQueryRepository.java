@@ -12,17 +12,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserQueryRepository {
 
-	private final JPAQueryFactory jpaQueryFactory;
+  private final JPAQueryFactory jpaQueryFactory;
 
-	public UserQueryRepository(EntityManager em) {
-		this.jpaQueryFactory = new JPAQueryFactory(em);
-	}
+  public UserQueryRepository(EntityManager em) {
+    this.jpaQueryFactory = new JPAQueryFactory(em);
+  }
 
-	public Optional<UserDetailsDto> findUserDetailsById(Long id) {
-		return Optional.ofNullable(jpaQueryFactory.select(
-				Projections.constructor(UserDetailsDto.class, user.name, user.nickname, user.point))
-			.from(user)
-			.where(user.userId.eq(id))
-			.fetchOne());
-	}
+  public Optional<UserDetailsDto> findUserDetailsById(Long id) {
+    return Optional.ofNullable(jpaQueryFactory.select(
+            Projections.constructor(UserDetailsDto.class, user.name, user.nickname, user.point))
+        .from(user)
+        .where(user.userId.eq(id))
+        .fetchOne());
+  }
 }
