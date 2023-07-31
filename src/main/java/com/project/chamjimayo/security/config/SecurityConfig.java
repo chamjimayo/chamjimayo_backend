@@ -44,11 +44,9 @@ public class SecurityConfig {
 			if (!apiProperties.getApiKey().equals(principal)) {
 				throw new BadCredentialsException("Api 키가 잘못됐습니다.");
 			}
-
 			authentication.setAuthenticated(true);
 			return authentication;
 		});
-
 		return apiKeyAuthenticationFilter;
 	}
 

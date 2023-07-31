@@ -10,8 +10,11 @@ import lombok.Getter;
 
 @Getter
 public class NearByResponse {
+
 	private String restroomName;
+
 	private double longitude;
+
 	private double latitude;
 	// 남여 공용 화장실인가?
 	private Boolean unisex;
@@ -45,7 +48,7 @@ public class NearByResponse {
 	private Double distance;
 
 
-	public NearByResponse makeDto(Restroom restroom,double distance) {
+	public NearByResponse makeDto(Restroom restroom, double distance) {
 		this.restroomName = restroom.getRestroomName();
 		this.longitude = restroom.getLocationLongitude();
 		this.latitude = restroom.getLocationLatitude();
@@ -64,13 +67,13 @@ public class NearByResponse {
 			.stream().map(equipment -> new EquipmentNameNId(equipment.getEquipmentName(),
 				equipment.getEquipmentId()))
 			.collect(Collectors.toList());
-		this.reviewRating = (float)restroom.getReviews().stream()
+		this.reviewRating = (float) restroom.getReviews().stream()
 			.mapToDouble(Review::getRating)
 			.average()
 			.orElse(0.0);
-		if(restroom.getRestroomManager() == null){
+		if (restroom.getRestroomManager() == null) {
 			this.restroomManager = null;
-		}else {
+		} else {
 			this.restroomManager = new RestroomManagerNameNId(
 				restroom.getRestroomManager().getName(),
 				restroom.getRestroomManager().getManagerId());

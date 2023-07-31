@@ -10,12 +10,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableConfigurationProperties({
-		JwtProperties.class, ApiProperties.class
+	JwtProperties.class, ApiProperties.class
 })
 public class ChamjimayoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChamjimayoApplication.class, args);
 	}
-
 }

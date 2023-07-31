@@ -29,7 +29,7 @@ public class UsedRestroom {
 	private Long restroomId;
 
 	@Builder
-	public UsedRestroom(User user,long restroomId){
+	public UsedRestroom(User user, long restroomId) {
 		this.user = user;
 		this.restroomId = restroomId;
 	}

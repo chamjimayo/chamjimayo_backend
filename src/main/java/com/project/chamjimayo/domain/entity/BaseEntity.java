@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,7 +29,7 @@ public abstract class BaseEntity {
 	@Column(name = "status")
 	private boolean status;
 
-	BaseEntity(){
+	BaseEntity() {
 		createdDate = LocalDateTime.now();
 		updatedDate = LocalDateTime.now();
 		status = true;

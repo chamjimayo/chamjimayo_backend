@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RestroomManagerNameNId {
-    String RestroomManagerName;
-    long id;
+
+	String RestroomManagerName;
+	long id;
 }

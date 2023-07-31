@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IssueTokenRequest {
 
-  @NotBlank
-  @Schema(description = "사용자 식별 아이디")
-  private String authId;
+	@NotBlank
+	@Schema(description = "사용자 식별 아이디")
+	private String authId;
 
-  @NotBlank
-  @Schema(description = "refresh token")
-  private String refreshToken;
+	@NotBlank
+	@Schema(description = "refresh token")
+	private String refreshToken;
 
-  public IssueTokenDto toDto() {
-    return IssueTokenDto.create(authId, refreshToken);
-  }
+	public IssueTokenDto toDto() {
+		return IssueTokenDto.create(authId, refreshToken);
+	}
 }

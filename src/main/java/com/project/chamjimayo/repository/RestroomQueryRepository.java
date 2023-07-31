@@ -17,47 +17,46 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RestroomQueryRepository {
 
-  private final JPAQueryFactory jpaQueryFactory;
+	private final JPAQueryFactory jpaQueryFactory;
 
-  public RestroomQueryRepository(EntityManager em) {
-    this.jpaQueryFactory = new JPAQueryFactory(em);
-  }
+	public RestroomQueryRepository(EntityManager em) {
+		this.jpaQueryFactory = new JPAQueryFactory(em);
+	}
 
-  public RestroomSummaryDto findUsingRestRoomDtoByUserId(Long id) {
-    RestroomSummaryDto dto = jpaQueryFactory.select(
-            Projections.constructor(RestroomSummaryDto.class,
-                restroom.restroomId, restroom.restroomName, restroom.address,
-                restroom.reviews.size(), restroom.operatingHour))
-        .from(restroom)
-        .innerJoin(user).on(restroom.restroomId.eq(user.usingRestroomId))
-        .where(user.userId.eq(id).and(user.usingRestroomId.isNotNull()))
-        .fetchOne();
+	public RestroomSummaryDto findUsingRestRoomDtoByUserId(Long id) {
+		RestroomSummaryDto dto = jpaQueryFactory.select(
+				Projections.constructor(RestroomSummaryDto.class,
+					restroom.restroomId, restroom.restroomName, restroom.address,
+					restroom.reviews.size(), restroom.operatingHour))
+			.from(restroom)
+			.innerJoin(user).on(restroom.restroomId.eq(user.usingRestroomId))
+			.where(user.userId.eq(id).and(user.usingRestroomId.isNotNull()))
+			.fetchOne();
 
-    if (dto == null) {
-      return RestroomSummaryDto.empty();
-    }
+		if (dto == null) {
+			return RestroomSummaryDto.empty();
+		}
+		return dto;
+	}
 
-    return dto;
-  }
+	public Page<RestroomSummaryDto> findUsedRestroomDtosByUserIdAndPageable
+		(Long id, Pageable pageable) {
+		List<RestroomSummaryDto> dtos = jpaQueryFactory.select(
+				Projections.constructor(RestroomSummaryDto.class,
+					restroom.restroomId, restroom.restroomName, restroom.address,
+					restroom.reviews.size(), restroom.operatingHour))
+			.from(restroom)
+			.innerJoin(usedRestroom).on(restroom.restroomId.eq(usedRestroom.restroomId))
+			.where(usedRestroom.user.userId.eq(id))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
 
-  public Page<RestroomSummaryDto> findUsedRestroomDtosByUserIdAndPageable
-      (Long id, Pageable pageable) {
-    List<RestroomSummaryDto> dtos = jpaQueryFactory.select(
-            Projections.constructor(RestroomSummaryDto.class,
-                restroom.restroomId, restroom.restroomName, restroom.address,
-                restroom.reviews.size(), restroom.operatingHour))
-        .from(restroom)
-        .innerJoin(usedRestroom).on(restroom.restroomId.eq(usedRestroom.restroomId))
-        .where(usedRestroom.user.userId.eq(id))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
+		Long count = jpaQueryFactory.select(usedRestroom.count())
+			.from(usedRestroom)
+			.where(usedRestroom.user.userId.eq(id))
+			.fetchOne();
 
-    Long count = jpaQueryFactory.select(usedRestroom.count())
-        .from(usedRestroom)
-        .where(usedRestroom.user.userId.eq(id))
-        .fetchOne();
-
-    return new PageImpl<>(dtos, pageable, count);
-  }
+		return new PageImpl<>(dtos, pageable, count);
+	}
 }

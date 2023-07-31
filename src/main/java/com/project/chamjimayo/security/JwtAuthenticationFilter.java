@@ -18,35 +18,35 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final AuthTokenService authTokenService;
-  private final CustomUserDetailsService customUserDetailsService;
+	private final AuthTokenService authTokenService;
+	private final CustomUserDetailsService customUserDetailsService;
 
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		FilterChain filterChain) throws ServletException, IOException {
 
-    String accessToken = getAccessTokenFromRequest(request);
+		String accessToken = getAccessTokenFromRequest(request);
 
-    if (!StringUtils.hasText(accessToken) && !authTokenService.isValid(accessToken)) {
-      throw new InvalidTokenException("jwt 토큰이 유효하지 않습니다.");
-    }
+		if (!StringUtils.hasText(accessToken) && !authTokenService.isValid(accessToken)) {
+			throw new InvalidTokenException("jwt 토큰이 유효하지 않습니다.");
+		}
 
-    String userId = authTokenService.extractPayload(accessToken);
+		String userId = authTokenService.extractPayload(accessToken);
 
-    UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
-    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-        userDetails, null, userDetails.getAuthorities());
-    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+		UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+			userDetails, null, userDetails.getAuthorities());
+		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    filterChain.doFilter(request, response);
-  }
+		filterChain.doFilter(request, response);
+	}
 
-  private String getAccessTokenFromRequest(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Bearer-Token");
-    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
-    }
-    return "";
-  }
+	private String getAccessTokenFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Bearer-Token");
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
+		return "";
+	}
 }

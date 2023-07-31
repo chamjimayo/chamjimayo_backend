@@ -2,7 +2,6 @@ package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.domain.entity.User;
-import com.project.chamjimayo.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.exception.PointLackException;
 import com.project.chamjimayo.exception.UserDuplicateException;
 import com.project.chamjimayo.exception.UserNickNameDuplicateException;

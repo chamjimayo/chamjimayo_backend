@@ -75,8 +75,10 @@ public class UserExceptionHandler {
 	// validation 외 JSON 형식 오류
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiStandardResponse<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-		ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_JSON, "올바르지 않은 JSON 형식입니다.");
+	public ApiStandardResponse<ErrorResponse> handleHttpMessageNotReadableException(
+		HttpMessageNotReadableException e) {
+		ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_JSON,
+			"올바르지 않은 JSON 형식입니다.");
 		return ApiStandardResponse.fail(errorResponse);
 	}
 }

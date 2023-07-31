@@ -68,6 +68,5 @@ public class Search {
 		return new Search(user, searchWord, roadAddress, lotNumberAddress, name, latitude,
 			longitude);
 	}
-
 }
 

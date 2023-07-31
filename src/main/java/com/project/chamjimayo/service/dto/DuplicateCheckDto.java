@@ -5,28 +5,29 @@ import lombok.Getter;
 
 @Getter
 public class DuplicateCheckDto {
-  private final boolean isDuplicate;
 
-  private DuplicateCheckDto(boolean isDuplicate) {
-    this.isDuplicate = isDuplicate;
-  }
+	private final boolean isDuplicate;
 
-  public static DuplicateCheckDto create(boolean isDuplicate) {
-    return new DuplicateCheckDto(isDuplicate);
-  }
+	private DuplicateCheckDto(boolean isDuplicate) {
+		this.isDuplicate = isDuplicate;
+	}
 
-  @Schema(name = "DuplicateCheckDto.Response")
-  @Getter
-  public static class Response {
+	public static DuplicateCheckDto create(boolean isDuplicate) {
+		return new DuplicateCheckDto(isDuplicate);
+	}
 
-    private final boolean isDuplicate;
+	@Schema(name = "DuplicateCheckDto.Response")
+	@Getter
+	public static class Response {
 
-    public Response(boolean isDuplicate) {
-      this.isDuplicate = isDuplicate;
-    }
-  }
+		private final boolean isDuplicate;
 
-  public Response toResponse() {
-    return new Response(isDuplicate);
-  }
+		public Response(boolean isDuplicate) {
+			this.isDuplicate = isDuplicate;
+		}
+	}
+
+	public Response toResponse() {
+		return new Response(isDuplicate);
+	}
 }

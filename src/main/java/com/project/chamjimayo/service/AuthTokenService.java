@@ -11,61 +11,61 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthTokenService {
 
-  private final JwtTokenProvider jwtTokenProvider;
-  private final TokenRepository tokenRepository;
-  private final long accessTokenValidityMs;
-  private final long refreshTokenValidityMs;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final TokenRepository tokenRepository;
+	private final long accessTokenValidityMs;
+	private final long refreshTokenValidityMs;
 
-  public AuthTokenService(JwtTokenProvider jwtTokenProvider, TokenRepository tokenRepository,
-      JwtProperties jwtProperties) {
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.tokenRepository = tokenRepository;
-    this.accessTokenValidityMs = jwtProperties.getAccessTokenValidityMs();
-    this.refreshTokenValidityMs = jwtProperties.getRefreshTokenValidityMs();
-  }
+	public AuthTokenService(JwtTokenProvider jwtTokenProvider, TokenRepository tokenRepository,
+		JwtProperties jwtProperties) {
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.tokenRepository = tokenRepository;
+		this.accessTokenValidityMs = jwtProperties.getAccessTokenValidityMs();
+		this.refreshTokenValidityMs = jwtProperties.getRefreshTokenValidityMs();
+	}
 
-  @Transactional
-  public AuthTokenDto createAuthToken(final String userId) {
-    String accessToken = jwtTokenProvider.createAccessToken(userId);
-    String refreshToken = getRefreshToken(userId);
+	@Transactional
+	public AuthTokenDto createAuthToken(final String userId) {
+		String accessToken = jwtTokenProvider.createAccessToken(userId);
+		String refreshToken = getRefreshToken(userId);
 
-    return AuthTokenDto.create(accessToken, refreshToken,
-        accessTokenValidityMs, refreshTokenValidityMs);
-  }
+		return AuthTokenDto.create(accessToken, refreshToken,
+			accessTokenValidityMs, refreshTokenValidityMs);
+	}
 
-  public AuthTokenDto refreshAccessToken(final String refreshToken) {
-    String userId = jwtTokenProvider.getPayload(refreshToken);
-    String accessTokenForRenew = jwtTokenProvider.createAccessToken(userId);
+	public AuthTokenDto refreshAccessToken(final String refreshToken) {
+		String userId = jwtTokenProvider.getPayload(refreshToken);
+		String accessTokenForRenew = jwtTokenProvider.createAccessToken(userId);
 
-    return AuthTokenDto.create(accessTokenForRenew, refreshToken,
-        accessTokenValidityMs, refreshTokenValidityMs);
-  }
+		return AuthTokenDto.create(accessTokenForRenew, refreshToken,
+			accessTokenValidityMs, refreshTokenValidityMs);
+	}
 
-  private String getRefreshToken(String userId) {
-    Token token = tokenRepository.findTokenByUserId(userId).orElse(null);
+	private String getRefreshToken(String userId) {
+		Token token = tokenRepository.findTokenByUserId(userId).orElse(null);
 
-    if (token == null) {
-      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
-      token = tokenRepository.save(Token.create(userId, refreshToken));
-    }
+		if (token == null) {
+			String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+			token = tokenRepository.save(Token.create(userId, refreshToken));
+		}
 
-    if (jwtTokenProvider.isExpired(token.getRefreshToken())) {
-      String refreshToken = jwtTokenProvider.createRefreshToken(userId);
-      token.changeRefreshToken(refreshToken);
-    }
+		if (jwtTokenProvider.isExpired(token.getRefreshToken())) {
+			String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+			token.changeRefreshToken(refreshToken);
+		}
 
-    return token.getRefreshToken();
-  }
+		return token.getRefreshToken();
+	}
 
-  public String extractPayload(final String accessToken) {
-    return jwtTokenProvider.getPayload(accessToken);
-  }
+	public String extractPayload(final String accessToken) {
+		return jwtTokenProvider.getPayload(accessToken);
+	}
 
-  public boolean isValid(final String token) {
-    return jwtTokenProvider.isValid(token);
-  }
+	public boolean isValid(final String token) {
+		return jwtTokenProvider.isValid(token);
+	}
 
-  public boolean isExpired(final String token) {
-    return jwtTokenProvider.isExpired(token);
-  }
+	public boolean isExpired(final String token) {
+		return jwtTokenProvider.isExpired(token);
+	}
 }
