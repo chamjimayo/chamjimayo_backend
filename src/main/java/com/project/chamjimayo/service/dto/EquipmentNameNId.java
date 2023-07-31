@@ -8,5 +8,6 @@ import lombok.Getter;
 public class EquipmentNameNId {
 
 	String equipmentName;
+
 	long id;
 }

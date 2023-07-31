@@ -7,8 +7,11 @@ import lombok.Getter;
 public class AuthTokenDto {
 
 	private final String accessToken;
+
 	private final String refreshToken;
+
 	private final long accessTokenValidityMs;
+
 	private final long refreshTokenValidityMs;
 
 	private AuthTokenDto(String accessToken, String refreshToken, long accessTokenValidityMs,

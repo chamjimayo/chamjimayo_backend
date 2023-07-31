@@ -9,9 +9,13 @@ import lombok.Getter;
 public class SignUpDto {
 
 	private final AuthType authType;
+
 	private final String authId;
+
 	private final String name;
+
 	private final String nickname;
+
 	private final String gender;
 
 	private SignUpDto(AuthType authType, String authId, String name, String nickname,

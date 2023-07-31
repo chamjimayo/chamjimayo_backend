@@ -8,5 +8,6 @@ import lombok.Getter;
 public class RestroomResponse {
 
 	private long restroomId;
+
 	private String restroomName;
 }

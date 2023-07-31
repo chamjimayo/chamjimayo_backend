@@ -8,5 +8,6 @@ import lombok.Getter;
 public class RestroomManagerNameNId {
 
 	String RestroomManagerName;
+
 	long id;
 }

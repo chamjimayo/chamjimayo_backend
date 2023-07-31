@@ -8,5 +8,6 @@ import lombok.Getter;
 public class ReviewContentNId {
 
 	String reviewContent;
+
 	long id;
 }

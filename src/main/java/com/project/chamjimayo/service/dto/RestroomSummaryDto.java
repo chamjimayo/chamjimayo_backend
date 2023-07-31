@@ -7,9 +7,13 @@ import lombok.Getter;
 public class RestroomSummaryDto {
 
 	private final Long id;
+
 	private final String restroomName;
+
 	private final String roadAddress;
+
 	private final Integer reviewCount;
+
 	private final String operatingHour;
 
 	public RestroomSummaryDto(Long id, String restroomName, String roadAddress, Integer reviewCount,

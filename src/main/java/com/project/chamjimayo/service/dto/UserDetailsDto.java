@@ -7,7 +7,9 @@ import lombok.Getter;
 public class UserDetailsDto {
 
 	private final String name;
+
 	private final String nickname;
+
 	private final Integer point;
 
 	public UserDetailsDto(String name, String nickname, Integer point) {
