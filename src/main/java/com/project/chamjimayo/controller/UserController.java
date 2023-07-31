@@ -134,9 +134,8 @@ public class UserController {
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PostMapping("/point/charge")
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
 		@Valid @RequestBody PointChangeDto requestDTO,
@@ -181,9 +180,8 @@ public class UserController {
 				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
 					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
 					+ "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-	@Parameters({
-		@Parameter(in = ParameterIn.HEADER, name = "Bearer-Token", required = true)
-	})
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+		in = ParameterIn.HEADER, example = "Bearer e1323423534")
 	@PostMapping("/point/deduct")
 	public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
 		@Valid @RequestBody PointChangeDto requestDTO,
