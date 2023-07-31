@@ -2,8 +2,8 @@ package com.project.chamjimayo.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(
+      RestAuthenticationEntryPoint.class);
 
   @Override
   public void commence(HttpServletRequest request,

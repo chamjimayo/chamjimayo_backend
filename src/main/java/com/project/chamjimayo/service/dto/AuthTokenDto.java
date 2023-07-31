@@ -5,10 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class AuthTokenDto {
+
   private final String accessToken;
+
   private final String refreshToken;
 
   private final long accessTokenValidityMs;
+
   private final long refreshTokenValidityMs;
 
   private AuthTokenDto(String accessToken, String refreshToken, long accessTokenValidityMs,
@@ -28,9 +31,9 @@ public class AuthTokenDto {
   @Schema(name = "AuthTokenDto.Response")
   @Getter
   public static class Response {
+
     private final String accessToken;
     private final String refreshToken;
-
     private final long accessTokenValidityMs;
     private final long refreshTokenValidityMs;
 
@@ -44,6 +47,7 @@ public class AuthTokenDto {
   }
 
   public Response toResponse() {
-    return new Response(accessToken, refreshToken, accessTokenValidityMs, refreshTokenValidityMs);
+    return new Response(accessToken, refreshToken, accessTokenValidityMs,
+        refreshTokenValidityMs);
   }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 public class IssueTokenDto {
 
   private String authId;
+
   private String refreshToken;
 
   public IssueTokenDto(String authId, String refreshToken) {

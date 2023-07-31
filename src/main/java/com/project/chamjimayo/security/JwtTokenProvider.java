@@ -20,7 +20,8 @@ public class JwtTokenProvider {
   private final long refreshTokenValidityMs;
 
   public JwtTokenProvider(JwtProperties jwtProperties) {
-    this.key = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
+    this.key = Keys.hmacShaKeyFor(
+        jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
     this.accessTokenValidityMs = jwtProperties.getAccessTokenValidityMs();
     this.refreshTokenValidityMs = jwtProperties.getRefreshTokenValidityMs();
   }

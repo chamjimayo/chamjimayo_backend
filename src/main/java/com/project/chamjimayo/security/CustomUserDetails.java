@@ -12,7 +12,7 @@ public class CustomUserDetails implements UserDetails {
 
   private final Long id;
   private final Collection<GrantedAuthority> authorities = new ArrayList<>();
-  
+
   private CustomUserDetails(Long id, Role role) {
     this.id = id;
     authorities.add(new SimpleGrantedAuthority(role.toString()));

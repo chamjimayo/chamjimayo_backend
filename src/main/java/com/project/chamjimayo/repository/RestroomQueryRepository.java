@@ -36,7 +36,6 @@ public class RestroomQueryRepository {
     if (dto == null) {
       return RestroomSummaryDto.empty();
     }
-
     return dto;
   }
 

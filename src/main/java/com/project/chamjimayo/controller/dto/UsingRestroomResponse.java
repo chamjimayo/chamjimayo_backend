@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UsingRestroomResponse {
-	long userId;
-	long restroomId;
+
+  long userId;
+
+  long restroomId;
 }

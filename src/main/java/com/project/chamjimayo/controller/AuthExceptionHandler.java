@@ -59,7 +59,8 @@ public class AuthExceptionHandler {
 
   @ExceptionHandler(InvalidTokenException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ApiStandardResponse<ErrorResponse> handlerInvalidTokenException(InvalidTokenException e) {
+  public ApiStandardResponse<ErrorResponse> handlerInvalidTokenException(
+      InvalidTokenException e) {
     log.error("", e);
 
     final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());

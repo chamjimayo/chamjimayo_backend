@@ -15,26 +15,26 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-	public ApiStandardResponse<ErrorResponse> handleHttpRequestMethodNotSupportedException(
-		HttpRequestMethodNotSupportedException e) {
-		log.error("", e);
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  public ApiStandardResponse<ErrorResponse> handleHttpRequestMethodNotSupportedException(
+      HttpRequestMethodNotSupportedException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(
-			ErrorStatus.METHOD_NOT_ALLOWED_EXCEPTION, "지원하지 않는 HTTP Method입니다.");
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(
+        ErrorStatus.METHOD_NOT_ALLOWED_EXCEPTION, "지원하지 않는 HTTP Method입니다.");
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
-	@ExceptionHandler(DataAccessException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public ApiStandardResponse<ErrorResponse> handleDataAccessException(DataAccessException e) {
-		log.error("", e);
+  @ExceptionHandler(DataAccessException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ApiStandardResponse<ErrorResponse> handleDataAccessException(DataAccessException e) {
+    log.error("", e);
 
-		final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.DATABASE_ERROR,
-			"데이터베이스에 오류가 발생했습니다.");
-		return ApiStandardResponse.fail(errorResponse);
-	}
+    final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.DATABASE_ERROR,
+        "데이터베이스에 오류가 발생했습니다.");
+    return ApiStandardResponse.fail(errorResponse);
+  }
 
 //	// test 단계에서 예상치 못한 오류 파악을 위한 주석 처리
 //	@ExceptionHandler(Exception.class)

@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class DuplicateCheckDto {
+
   private final boolean isDuplicate;
 
   private DuplicateCheckDto(boolean isDuplicate) {

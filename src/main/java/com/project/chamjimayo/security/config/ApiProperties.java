@@ -12,5 +12,6 @@ import org.springframework.stereotype.Component;
 public class ApiProperties {
 
   private String apiKey;
+
   private String headerName;
 }

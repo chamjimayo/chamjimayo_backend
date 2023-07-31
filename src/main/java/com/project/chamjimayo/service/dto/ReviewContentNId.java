@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ReviewContentNId {
-    String reviewContent;
-    long id;
+
+  String reviewContent;
+
+  long id;
 }

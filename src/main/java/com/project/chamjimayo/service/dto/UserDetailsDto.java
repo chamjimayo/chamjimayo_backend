@@ -21,10 +21,9 @@ public class UserDetailsDto {
   @Schema(name = "UserDetailsDto.Response")
   @Getter
   public static class Response {
+
     private final String name;
-
     private final String nickname;
-
     private final Integer point;
 
     public Response(String name, String nickname, Integer point) {

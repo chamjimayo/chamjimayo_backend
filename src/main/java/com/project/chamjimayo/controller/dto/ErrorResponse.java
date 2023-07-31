@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class ErrorResponse {
+
   @Schema(type = "enum", example = "오류에 대한 코드")
   private final ErrorStatus status;
 

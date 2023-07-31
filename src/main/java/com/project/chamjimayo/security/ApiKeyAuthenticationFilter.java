@@ -16,7 +16,6 @@ public class ApiKeyAuthenticationFilter extends AbstractPreAuthenticatedProcessi
     if (key == null) {
       throw new BadCredentialsException("Api 키가 올바르지 않습니다.");
     }
-
     return key;
   }
 
@@ -24,6 +23,4 @@ public class ApiKeyAuthenticationFilter extends AbstractPreAuthenticatedProcessi
   protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
     return "N/A";
   }
-
-
 }

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-  
+
   private final AuthTokenService authTokenService;
   private final UserService userService;
-  
+
   public AuthTokenDto issueNewToken(SignUpDto dto) {
     String id = userService.saveUser(dto);
     return authTokenService.createAuthToken(id);

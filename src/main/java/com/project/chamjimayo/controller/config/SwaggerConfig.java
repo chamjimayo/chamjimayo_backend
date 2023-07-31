@@ -1,8 +1,8 @@
 package com.project.chamjimayo.controller.config;
 
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
@@ -99,7 +99,8 @@ public class SwaggerConfig {
     apiStandardResponseSchema.addProperty("data", errorResponseSchema);
 
     apiStandardResponseSchema.example(
-        ApiStandardResponse.fail(ErrorResponse.create(errorStatus, getErrorMessage(errorStatus))));
+        ApiStandardResponse.fail(
+            ErrorResponse.create(errorStatus, getErrorMessage(errorStatus))));
     return apiStandardResponseSchema;
   }
 
@@ -116,12 +117,14 @@ public class SwaggerConfig {
     }
   }
 
-  private ApiResponse createApiResponse(String message, Schema<ApiStandardResponse<ErrorResponse>> schema) {
+  private ApiResponse createApiResponse(String message,
+      Schema<ApiStandardResponse<ErrorResponse>> schema) {
     MediaType mediaType = new MediaType();
     mediaType.schema(schema);
     return new ApiResponse().description(message)
         .content(
-            new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+            new Content().addMediaType(
+                org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
                 mediaType));
   }
 }
