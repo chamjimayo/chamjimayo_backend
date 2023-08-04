@@ -44,7 +44,7 @@ public class SearchService {
   @Transactional
   public List<SearchResponseDto> searchAddress(String searchWord, Long userId) {
     // 검색 결과 가져올 개수와 검색어 설정
-    int count = 7;
+    int count = 10;
 
     // Tmap API 호출을 위한 URI 설정
     URI uri = UriComponentsBuilder.fromUriString("https://apis.openapi.sk.com")
