@@ -11,7 +11,6 @@ import lombok.Getter;
 @Getter
 public class NearByResponse {
 
-  private Long restroomId;
   private String restroomName;
   private double longitude;
   private double latitude;
@@ -46,9 +45,9 @@ public class NearByResponse {
 
   private Double distance;
 
+  private Long restroomId;
 
   public NearByResponse makeDto(Restroom restroom, double distance) {
-    this.restroomId = restroom.getRestroomId();
     this.restroomName = restroom.getRestroomName();
     this.longitude = restroom.getLocationLongitude();
     this.latitude = restroom.getLocationLatitude();
@@ -67,10 +66,11 @@ public class NearByResponse {
         .stream().map(equipment -> new EquipmentNameNId(equipment.getEquipmentName(),
             equipment.getEquipmentId()))
         .collect(Collectors.toList());
-    this.reviewRating = (float) restroom.getReviews().stream()
-        .mapToDouble(Review::getRating)
-        .average()
-        .orElse(0.0);
+    this.reviewRating = restroom.getAverageRating();
+//        (float) restroom.getReviews().stream()
+//        .mapToDouble(Review::getRating)
+//        .average()
+//        .orElse(0.0);
     if (restroom.getRestroomManager() == null) {
       this.restroomManager = null;
     } else {
@@ -79,6 +79,7 @@ public class NearByResponse {
           restroom.getRestroomManager().getManagerId());
     }
     this.distance = distance;
+    this.restroomId = restroom.getRestroomId();
     return this;
   }
 }
