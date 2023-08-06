@@ -58,6 +58,8 @@ public class NearByResponse {
 
   private Double distance;
 
+  private Long restroomId;
+
 
   public NearByResponse makeDto(Restroom restroom, double distance) {
     this.restroomName = restroom.getRestroomName();
@@ -78,10 +80,7 @@ public class NearByResponse {
         .stream().map(equipment -> new EquipmentNameNId(equipment.getEquipmentName(),
             equipment.getEquipmentId()))
         .collect(Collectors.toList());
-    this.reviewRating = (float) restroom.getReviews().stream()
-        .mapToDouble(Review::getRating)
-        .average()
-        .orElse(0.0);
+    this.reviewRating = (restroom.getAverageRating() == null) ? 0 : restroom.getAverageRating();
     if (restroom.getRestroomManager() == null) {
       this.restroomManager = null;
     } else {
@@ -90,6 +89,7 @@ public class NearByResponse {
           restroom.getRestroomManager().getManagerId());
     }
     this.distance = distance;
+    this.restroomId = restroom.getRestroomId();
     return this;
   }
 }
