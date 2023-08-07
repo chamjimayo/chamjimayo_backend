@@ -72,7 +72,7 @@ public class SecurityConfig {
                     "/api/users/point/**",
                     "/api/restroom/use",
                     "/api/restroom/endofuse",
-                    "/api/in-app/**")
+                    "/api/in-app/purchase/verify")
                 .and()
                 .addFilter(apiKeyAuthenticationFilter())
                 .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)

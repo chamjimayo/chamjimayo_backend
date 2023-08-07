@@ -15,7 +15,7 @@ public class InAppPurchaseService {
   private final ReceiptValidationService receiptValidationService;
 
   @Transactional
-  public void processPurchase(Long userId, GoogleInAppPurchaseRequest request) {
+  public void verifyPurchase(Long userId, GoogleInAppPurchaseRequest request) {
     if (receiptValidationService.validateReceipt(request)) {
       Integer point = Product.pointsFromProductId(request.getProductId());
       userService.chargePoints(PointChangeDto.create(userId, point));

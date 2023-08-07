@@ -5,7 +5,7 @@ import com.google.api.services.androidpublisher.AndroidPublisher.Purchases.Produ
 import com.google.api.services.androidpublisher.model.ProductPurchase;
 import com.project.chamjimayo.controller.config.GoogleProperties;
 import com.project.chamjimayo.controller.dto.GoogleInAppPurchaseRequest;
-import com.project.chamjimayo.exception.GoogleClientRequestInitializeException;
+import com.project.chamjimayo.exception.GoogleClientRequestException;
 import com.project.chamjimayo.exception.PurchaseVerificationException;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class ReceiptValidationService {
               request.getProductId(), request.getToken())
           .execute();
     } catch (IOException e) {
-      throw new GoogleClientRequestInitializeException("구글 클라이언트 요청 생성에 실패했습니다.");
+      throw new GoogleClientRequestException(e);
     }
   }
 
@@ -55,7 +55,7 @@ public class ReceiptValidationService {
               request.getProductId(), request.getToken())
           .execute();
     } catch (IOException e) {
-      throw new GoogleClientRequestInitializeException("구글 클라이언트 요청 생성에 실패했습니다.");
+      throw new GoogleClientRequestException(e);
     }
     return purchase;
   }

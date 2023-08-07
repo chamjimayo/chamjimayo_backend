@@ -8,6 +8,6 @@ public class PurchaseVerificationException extends RuntimeException {
   }
 
   public ErrorStatus toErrorCode() {
-    return ErrorStatus.INVALID_JSON;
+    return ErrorStatus.PURCHASE_VERIFICATION_EXCEPTION;
   }
 }
