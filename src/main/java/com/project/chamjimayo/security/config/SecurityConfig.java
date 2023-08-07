@@ -68,9 +68,11 @@ public class SecurityConfig {
 
     http.requestMatchers(
             request -> request.antMatchers("/api/users/me/**", "/api/address/search/**",
-                    "/api/review", "/api/review/*", "/api/review/list/*", "/api/users/point/**",
+                    "/api/review", "/api/review/*", "/api/review/list/*",
+                    "/api/users/point/**",
                     "/api/restroom/use",
-                    "/api/restroom/endofuse")
+                    "/api/restroom/endofuse",
+                    "/api/in-app/**")
                 .and()
                 .addFilter(apiKeyAuthenticationFilter())
                 .addFilterBefore(authenticationExceptionFilter(), ApiKeyAuthenticationFilter.class)
