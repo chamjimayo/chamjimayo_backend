@@ -11,13 +11,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class InAppPurchaseService {
   private final UserService userService;
+  private final OrderService orderService;
   private final ReceiptValidationService receiptValidationService;
 
   @Transactional
   public void processPurchase(Long userId, GoogleInAppPurchaseRequest request) {
     if (receiptValidationService.validateReceipt(request)) {
-      userService.chargePoints(PointChangeDto.create(userId,
-          Product.pointsFromProductId(request.getProductId())));
+      Integer point = Product.pointsFromProductId(request.getProductId());
+      userService.chargePoints(PointChangeDto.create(userId, point));
+      orderService.createOrder(request.getToken(), userId, point);
     }
   }
 }
