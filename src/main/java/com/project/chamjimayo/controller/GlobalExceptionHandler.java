@@ -35,7 +35,6 @@ public class GlobalExceptionHandler {
         "데이터베이스에 오류가 발생했습니다.");
     return ApiStandardResponse.fail(errorResponse);
   }
-
 //	// test 단계에서 예상치 못한 오류 파악을 위한 주석 처리
 //	@ExceptionHandler(Exception.class)
 //	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
