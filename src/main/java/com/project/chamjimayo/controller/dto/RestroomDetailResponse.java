@@ -1,6 +1,7 @@
 package com.project.chamjimayo.controller.dto;
 
 import com.project.chamjimayo.domain.entity.Restroom;
+import com.project.chamjimayo.domain.entity.RestroomPhoto;
 import com.project.chamjimayo.service.dto.EquipmentNameNId;
 import com.project.chamjimayo.service.dto.RestroomManagerNameNId;
 import com.project.chamjimayo.service.dto.ReviewContentNId;
@@ -26,8 +27,8 @@ public class RestroomDetailResponse {
   // 개방 시간
   private String operatingHour;
 
-  // 화장실 대표 사진 url
-  private String restroomPhoto;
+  // 화장실 사진 url
+  private List<String> restroomPhoto;
 
   // 비품이 있을 확률 -> 어떤 비품이 있는 확률인지...?
   private double equipmentExistenceProbability;
@@ -65,7 +66,9 @@ public class RestroomDetailResponse {
     this.unisex = restroom.getUnisex();
     this.address = restroom.getAddress();
     this.operatingHour = restroom.getOperatingHour();
-    this.restroomPhoto = restroom.getRestroomPhoto();
+    this.restroomPhoto = restroom.getRestroomPhotos().stream()
+        .map(RestroomPhoto::getPhotoUrl)
+        .collect(Collectors.toList());
     this.equipmentExistenceProbability = restroom.getEquipmentExistenceProbability();
     this.publicOrPaid = restroom.getPublicOrPaid();
     this.accessibleToiletExistence = restroom.getAccessibleToiletExistence();

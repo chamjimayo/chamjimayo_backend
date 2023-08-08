@@ -1,5 +1,6 @@
 package com.project.chamjimayo.controller.dto;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,8 +16,8 @@ public class EnrollRestroomRequest {
   // 개방 시간
   private String operatingHour;
 
-  // 화장실 대표 사진 url
-  private String restroomPhoto;
+  // 화장실 사진 url
+  private List<String> imageUrl;
 
   // 남자 대변기 수
   private Integer maleToiletCount;

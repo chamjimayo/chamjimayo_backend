@@ -68,7 +68,7 @@ public class NearByResponse {
     this.unisex = restroom.getUnisex();
     this.address = restroom.getAddress();
     this.operatingHour = restroom.getOperatingHour();
-    this.restroomPhoto = restroom.getRestroomPhoto();
+    this.restroomPhoto = restroom.getRestroomPhotos().get(0).getPhotoUrl(); // 첫번째에 있는 사진 사용
     this.equipmentExistenceProbability = restroom.getEquipmentExistenceProbability();
     this.publicOrPaid = restroom.getPublicOrPaid();
     this.accessibleToiletExistence = restroom.getAccessibleToiletExistence();
