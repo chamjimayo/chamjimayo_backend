@@ -10,6 +10,7 @@ import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
 import com.project.chamjimayo.controller.dto.UsingRestroomResponse;
 import com.project.chamjimayo.domain.entity.Restroom;
+import com.project.chamjimayo.domain.entity.RestroomPhoto;
 import com.project.chamjimayo.domain.entity.UsedRestroom;
 import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.AddressNotFoundException;
@@ -19,6 +20,7 @@ import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.RestroomJpaRepository;
+import com.project.chamjimayo.repository.RestroomPhotoRepository;
 import com.project.chamjimayo.repository.UsedRestroomRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import java.io.IOException;
@@ -47,6 +49,7 @@ public class RestroomService {
   private final RestroomJpaRepository restroomJpaRepository;
   private final UserJpaRepository userJpaRepository;
   private final UsedRestroomRepository usedRestroomRepository;
+  private final RestroomPhotoRepository restroomPhotoRespository;
   private final Environment env;
 
   /*공공화장실 데이터가 담긴 json 파일 읽어오기*/
@@ -161,7 +164,6 @@ public class RestroomService {
           //restroomManager 차후개발
           .address((String) restroom_info.get("소재지주소"))
           .operatingHour((String) restroom_info.get("개방시간"))
-          .restroomPhoto("이미지 URL") // 차후개발
           .equipmentExistenceProbability(0)//차후개발
           .publicOrPaid("public")
           .accessibleToiletExistence(true) // 이용 가능 상태 default로 true
@@ -176,6 +178,10 @@ public class RestroomService {
           restroomJpaRepository.save(restroom).getRestroomId(),
           restroom.getRestroomName()); // 데이터베이스에 화장실 정보 저장
       response.add(restroomResponse);
+      //화장실 이미지 추가
+      RestroomPhoto restroomPhoto = new RestroomPhoto();
+      restroomPhoto.createImage(restroom);
+      restroomPhotoRespository.save(restroomPhoto);
     }
     return response;
   }
@@ -197,7 +203,6 @@ public class RestroomService {
 //                enrollRestroomRequest.getRestroomManagerId())) //restroomManager 차후개발
         .address(enrollRestroomRequest.getAddress())
         .operatingHour(enrollRestroomRequest.getOperatingHour())
-        .restroomPhoto(enrollRestroomRequest.getRestroomPhoto())
         .equipmentExistenceProbability(0)
         .publicOrPaid(enrollRestroomRequest.getPublicOrPaid())
         .accessibleToiletExistence(true)
@@ -208,6 +213,14 @@ public class RestroomService {
         .build();
     RestroomResponse response = new RestroomResponse(
         restroomJpaRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
+    //화장실 이미지 추가
+    for(String imgUrl: enrollRestroomRequest.getImageUrl()) {
+      RestroomPhoto restroomPhoto = new RestroomPhoto();
+      restroomPhoto.createImage(restroom, imgUrl);
+      restroomPhotoRespository.save(restroomPhoto);
+    }
+
+
     return response;
   }
 

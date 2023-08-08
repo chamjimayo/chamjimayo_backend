@@ -51,9 +51,9 @@ public class Restroom extends BaseEntity {
   @Column(name = "operating_hour")
   private String operatingHour;
 
-  // 화장실 대표 사진 url
-  @Column(name = "restroom_photo")
-  private String restroomPhoto;
+  // 화장실 사진 url
+  @OneToMany(mappedBy = "restroom")
+  private List<RestroomPhoto> restroomPhotos;
 
   // 비품이 있을 확률 -> 어떤 비품이 있는 확률인지...?
   @Column(name = "equipment_existence_probability")
@@ -98,8 +98,8 @@ public class Restroom extends BaseEntity {
 
   @Builder
   public Restroom(String restroomName, double locationLatitude, double locationLongitude,
-      String address, String operatingHour, String restroomPhoto,
-      double equipmentExistenceProbability, String publicOrPaid,
+      String address, String operatingHour, double equipmentExistenceProbability,
+      String publicOrPaid,
       boolean accessibleToiletExistence, int maleToiletCount, int femaleToiletCount,
       int availableMaleToiletCount, int availableFemaleToiletCount, boolean unisex) {
     super();
@@ -108,7 +108,6 @@ public class Restroom extends BaseEntity {
     this.locationLongitude = locationLongitude;
     this.address = address;
     this.operatingHour = operatingHour;
-    this.restroomPhoto = restroomPhoto;
     this.equipmentExistenceProbability = equipmentExistenceProbability;
     this.publicOrPaid = publicOrPaid;
     this.accessibleToiletExistence = accessibleToiletExistence;

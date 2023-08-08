@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Order {
+public class Order extends BaseEntity{
   @Id
   private String purchaseToken;
   private Long userId;
