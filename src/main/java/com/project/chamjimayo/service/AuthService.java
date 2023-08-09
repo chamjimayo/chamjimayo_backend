@@ -1,7 +1,6 @@
 package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.service.dto.AuthTokenDto;
-import com.project.chamjimayo.service.dto.IssueTokenDto;
 import com.project.chamjimayo.service.dto.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,13 @@ public class AuthService {
     return authTokenService.createAuthToken(id);
   }
 
-  public AuthTokenDto refreshToken(IssueTokenDto dto) {
-    if (authTokenService.isExpired(dto.getRefreshToken())) {
-      String userId = userService.getUserByAuthId(dto.getAuthId());
+  public AuthTokenDto refreshToken(String refreshToken) {
+    if (authTokenService.isExpired(refreshToken)) {
+      String userId = authTokenService.extractPayload(refreshToken);
 
       return authTokenService.createAuthToken(userId);
     }
 
-    return authTokenService.refreshAccessToken(dto.getRefreshToken());
+    return authTokenService.refreshAccessToken(refreshToken);
   }
 }
