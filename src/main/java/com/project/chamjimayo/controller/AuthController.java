@@ -3,6 +3,7 @@ package com.project.chamjimayo.controller;
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.LoginRequest;
+import com.project.chamjimayo.controller.dto.RefreshAccessTokenRequest;
 import com.project.chamjimayo.controller.dto.SignUpRequest;
 import com.project.chamjimayo.service.AuthService;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
@@ -84,8 +85,8 @@ public class AuthController {
   })
   @PostMapping("/token/access")
   public ResponseEntity<ApiStandardResponse<Response>> issueToken(
-      @RequestBody String refreshToken) {
-    AuthTokenDto dto = authService.refreshToken(refreshToken);
+      @RequestBody RefreshAccessTokenRequest request) {
+    AuthTokenDto dto = authService.refreshToken(request.getRefreshToken());
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 }
