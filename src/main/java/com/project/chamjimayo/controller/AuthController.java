@@ -2,7 +2,6 @@ package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.IssueTokenRequest;
 import com.project.chamjimayo.controller.dto.LoginRequest;
 import com.project.chamjimayo.controller.dto.SignUpRequest;
 import com.project.chamjimayo.service.AuthService;
@@ -70,7 +69,7 @@ public class AuthController {
   }
 
   @Operation(summary = "액세스 토큰 갱신",
-      description = "회원 식별 번호와 refresh token으로 access 토큰 갱신")
+      description = "refresh token으로 access 토큰 갱신")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공"),
       @ApiResponse(responseCode = "400", description = "1. 토큰이 유효하지 않습니다. \t\n"
@@ -85,8 +84,8 @@ public class AuthController {
   })
   @PostMapping("/token/access")
   public ResponseEntity<ApiStandardResponse<Response>> issueToken(
-      @RequestBody IssueTokenRequest issueTokenRequest) {
-    AuthTokenDto dto = authService.refreshToken(issueTokenRequest.toDto());
+      @RequestBody String refreshToken) {
+    AuthTokenDto dto = authService.refreshToken(refreshToken);
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 }

@@ -57,8 +57,8 @@ public class AuthTokenService {
     return token.getRefreshToken();
   }
 
-  public String extractPayload(final String accessToken) {
-    return jwtTokenProvider.getPayload(accessToken);
+  public String extractPayload(final String token) {
+    return jwtTokenProvider.getPayload(token);
   }
 
   public boolean isValid(final String token) {
