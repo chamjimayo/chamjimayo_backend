@@ -2,10 +2,10 @@ package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.project.chamjimayo.controller.dto.SearchResponseDto;
-import com.project.chamjimayo.domain.entity.Search;
-import com.project.chamjimayo.domain.entity.User;
-import com.project.chamjimayo.exception.ApiNotFoundException;
-import com.project.chamjimayo.exception.UserNotFoundException;
+import com.project.chamjimayo.repository.domain.entity.Search;
+import com.project.chamjimayo.repository.domain.entity.User;
+import com.project.chamjimayo.service.exception.ApiNotFoundException;
+import com.project.chamjimayo.service.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import java.net.URI;
@@ -248,7 +248,9 @@ public class SearchService {
    * 검색 기록 모두 삭제
    */
   @Transactional
-  public void deleteRecentSearchHistoryAll(User user) {
+  public void deleteRecentSearchHistoryAll(Long userId) {
+    User user = userJpaRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
     searchRepository.deleteAllByUser(user);
   }
 

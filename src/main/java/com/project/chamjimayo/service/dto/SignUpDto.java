@@ -1,8 +1,8 @@
 package com.project.chamjimayo.service.dto;
 
-import com.project.chamjimayo.domain.entity.AuthType;
-import com.project.chamjimayo.domain.entity.Role;
-import com.project.chamjimayo.domain.entity.User;
+import com.project.chamjimayo.repository.domain.entity.AuthType;
+import com.project.chamjimayo.repository.domain.entity.Role;
+import com.project.chamjimayo.repository.domain.entity.User;
 import lombok.Getter;
 
 @Getter

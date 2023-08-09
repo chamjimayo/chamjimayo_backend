@@ -1,6 +1,6 @@
 package com.project.chamjimayo.repository;
 
-import com.project.chamjimayo.domain.entity.UsedRestroom;
+import com.project.chamjimayo.repository.domain.entity.UsedRestroom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

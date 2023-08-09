@@ -1,9 +1,9 @@
 package com.project.chamjimayo.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.ErrorStatus;
+import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.service.exception.ErrorStatus;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

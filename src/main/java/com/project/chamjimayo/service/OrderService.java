@@ -1,6 +1,6 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.domain.entity.Order;
+import com.project.chamjimayo.repository.domain.entity.Order;
 import com.project.chamjimayo.repository.OrderJpaRepository;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

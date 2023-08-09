@@ -1,6 +1,6 @@
 package com.project.chamjimayo.repository;
 
-import com.project.chamjimayo.domain.entity.User;
+import com.project.chamjimayo.repository.domain.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,8 +1,8 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.GoogleInAppPurchaseRequest;
+import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.PointChangeDto;
-import com.project.chamjimayo.domain.entity.Product;
+import com.project.chamjimayo.repository.domain.entity.Product;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
