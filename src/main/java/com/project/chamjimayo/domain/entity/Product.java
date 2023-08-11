@@ -1,9 +1,11 @@
 package com.project.chamjimayo.domain.entity;
 
 public enum Product {
-  PRODUCT_A("product_a", 100),
-  PRODUCT_B("product_b", 200),
-  PRODUCT_C("product_c", 300);
+  POINT_1000("point_1000", 1000),
+  POINT_3000("point_3000", 3000),
+  POINT_5000("point_5000", 5000),
+  POINT_8000("point_8000", 8000),
+  POINT_10000("point_10000", 10000);
 
   private final String productId;
   private final int points;
@@ -13,19 +15,10 @@ public enum Product {
     this.points = points;
   }
 
-  public String getProductId() {
-    return productId;
-  }
-
-  public int getPoints() {
-    return points;
-  }
-
-  // This method can be used to get the corresponding Product enum for a product id
   public static Integer pointsFromProductId(String productId) {
     for (Product product : values()) {
-      if (product.getProductId().equals(productId)) {
-        return product.getPoints();
+      if (product.productId.equals(productId)) {
+        return product.points;
       }
     }
 

@@ -81,7 +81,7 @@ public class User extends BaseEntity {
       String gender, Role role, String authId, AuthType authType) {
     this.name = name;
     this.nickname = nickname;
-    this.point = point;
+    this.point = (point != null) ? point : 0;
     this.gender = gender;
     this.role = role;
     this.authId = authId;
@@ -89,13 +89,13 @@ public class User extends BaseEntity {
   }
 
   // 포인트 충전을 위한 로직
-  public void addPoint(Integer currentPoint, Integer newPoint) {
-    this.point = currentPoint + newPoint;
+  public void addPoint(Integer newPoint) {
+    this.point = this.point + newPoint;
   }
 
   // 포인트 차감을 위한 로직
-  public void deductPoint(Integer currentPoint, Integer deductionPoint) {
-    this.point = currentPoint - deductionPoint;
+  public void deductPoint(Integer deductionPoint) {
+    this.point = this.point - deductionPoint;
   }
 
   public void useRestroom(long restroomId) {

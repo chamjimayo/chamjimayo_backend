@@ -78,21 +78,19 @@ public class UserService {
    */
   @Transactional
   public PointChangeDto chargePoints(PointChangeDto requestDTO) {
-    Long userId = requestDTO.getUserId();
-    User user = userJpaRepository.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
+    User user = getUser(requestDTO);
 
-    Integer currentPoint = user.getPoint();
-    if (currentPoint == null) {
-      currentPoint = 0;
-    }
     Integer newPoint = requestDTO.getPoint();
 
-    user.addPoint(currentPoint, newPoint);
+    user.addPoint(newPoint);
 
-    PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
+    return PointChangeDto.create(user.getUserId(), user.getPoint());
+  }
 
-    return responseDTO;
+  private User getUser(PointChangeDto requestDto) {
+    return userJpaRepository.findById(requestDto.getUserId())
+        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: "
+            + requestDto.getUserId()));
   }
 
   /**
@@ -100,24 +98,16 @@ public class UserService {
    */
   @Transactional
   public PointChangeDto deductPoints(PointChangeDto requestDTO) {
-    Long userId = requestDTO.getUserId();
-    User user = userJpaRepository.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
+    User user = getUser(requestDTO);
 
-    Integer currentPoint = user.getPoint();
-    if (currentPoint == null) {
-      currentPoint = 0;
-    }
     Integer deductionPoint = requestDTO.getPoint();
 
-    if (deductionPoint > currentPoint) {
+    if (deductionPoint > user.getPoint()) {
       throw new PointLackException("포인트가 부족합니다.");
     }
 
-    user.deductPoint(currentPoint, deductionPoint);
+    user.deductPoint(deductionPoint);
 
-    PointChangeDto responseDTO = PointChangeDto.create(userId, user.getPoint());
-
-    return responseDTO;
+    return PointChangeDto.create(user.getUserId(), user.getPoint());
   }
 }
