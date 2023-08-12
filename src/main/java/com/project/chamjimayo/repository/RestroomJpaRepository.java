@@ -17,5 +17,7 @@ public interface RestroomJpaRepository extends JpaRepository<Restroom, Long> {
 
   Optional<Restroom> findRestroomByRestroomId(long restroomId);
 
+
+
   boolean existsRestroomByRestroomName(String restroomName);
 }

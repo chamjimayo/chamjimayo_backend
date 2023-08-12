@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.NearByResponse;
+import com.project.chamjimayo.controller.dto.PageDto;
 import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
@@ -16,6 +17,7 @@ import com.project.chamjimayo.domain.entity.User;
 import com.project.chamjimayo.exception.AddressNotFoundException;
 import com.project.chamjimayo.exception.FileNotFoundException;
 import com.project.chamjimayo.exception.IoException;
+import com.project.chamjimayo.exception.PageOutOfRangeException;
 import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import com.project.chamjimayo.exception.UserNotFoundException;
@@ -26,6 +28,7 @@ import com.project.chamjimayo.repository.UserJpaRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -252,7 +255,7 @@ public class RestroomService {
 
   /* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
   @Transactional(readOnly = true)
-  public List<NearByResponse> nearBy(RestroomNearByRequest request) {
+  public List<NearByResponse> nearBy(RestroomNearByRequest request, PageDto pageDto) {
     Optional<List<Restroom>> restroomList;
     if (request.getPublicOrPaidOrEntire().equals("entire")) {
       restroomList = Optional.of(restroomJpaRepository.findAll());
@@ -273,10 +276,37 @@ public class RestroomService {
         nearByList.add(responseDto);
       }
     }
-    List<NearByResponse> sortedList = nearByList.stream()
-        .sorted(Comparator.comparingDouble(NearByResponse::getDistance))
-        // .sorted(Comparator.comparingDouble(Response::getDistance).reversed())
-        .collect(Collectors.toList());
+    List<NearByResponse> sortedList = sortList(nearByList, request.getSortBy());
+    //default page값이 들어온 경우는 페이징 처리 X
+    if(pageDto.getPage() == -1) return sortedList;
+    else return getPagedList(sortedList, pageDto.getPage(), pageDto.getSize());
+  }
+
+  public List<NearByResponse> getPagedList(List<NearByResponse> sortedList, int page, int size) {
+    int startIndex = (page-1) * size;
+    int endIndex = Math.min(startIndex + size, sortedList.size());
+
+    if (startIndex >= endIndex) {
+      throw new PageOutOfRangeException("페이지 범위가 벗어났습니다");
+    }
+
+    return sortedList.subList(startIndex, endIndex);
+  }
+
+  public List<NearByResponse> sortList(List<NearByResponse> nearByList, String sortBy){
+    List<NearByResponse> sortedList;
+    // 별점순 정렬
+    if(sortBy.equals("rating")) {
+      sortedList = nearByList.stream()
+          .sorted(Comparator.comparingDouble(NearByResponse::getReviewRating).reversed())
+          .collect(Collectors.toList());
+    }
+    // 거리순 정렬
+    else{
+      sortedList = nearByList.stream()
+          .sorted(Comparator.comparingDouble(NearByResponse::getDistance))
+          .collect(Collectors.toList());
+    }
     return sortedList;
   }
 
