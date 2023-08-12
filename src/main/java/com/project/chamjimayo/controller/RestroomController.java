@@ -5,6 +5,7 @@ import com.project.chamjimayo.controller.dto.BaseException;
 import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.NearByResponse;
+import com.project.chamjimayo.controller.dto.PageDto;
 import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
 import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
 import com.project.chamjimayo.controller.dto.RestroomResponse;
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -77,16 +79,22 @@ public class RestroomController {
                   + " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
                   + "\"msg\":\"주변에 화장실이 존재하지 않습니다.\"} }")))
   })
+  @Parameter(name = "sortBy", schema = @Schema(type = "string"),
+      in = ParameterIn.DEFAULT, example = "distance / rating")
   @GetMapping("/nearby/{publicOrPaidOrEntire}")
   public ResponseEntity<ApiStandardResponse<List<NearByResponse>>> restroomNearBy(
       @PathVariable(value = "publicOrPaidOrEntire") String publicOrPaidOrEntire,
-      @RequestParam(value = "distance", required = false) Optional<Double> distance,
-      @RequestParam double longitude, double latitude) {
-    distance = Optional.of(distance.orElse(1000D));
+      @RequestParam(defaultValue = "1000") Double distance,
+      @RequestParam double longitude,
+      @RequestParam double latitude,
+      @RequestParam(defaultValue = "distance") String sortBy,
+      @RequestParam(defaultValue = "-1") int page,
+      @RequestParam(defaultValue = "10") int size) {
     RestroomNearByRequest restroomNearByRequest = new RestroomNearByRequest(longitude,
-        latitude, publicOrPaidOrEntire, distance.get());
+        latitude, publicOrPaidOrEntire, distance, sortBy);
+    PageDto pageDto = new PageDto(page,size);
     return ResponseEntity.ok(
-        ApiStandardResponse.success(restroomService.nearBy(restroomNearByRequest)));
+        ApiStandardResponse.success(restroomService.nearBy(restroomNearByRequest,pageDto)));
   }
 
   @Operation(summary = "화장실 세부 정보", description = "받은 화장실Id로 화장실 세부 정보를 검색 및 반환")
