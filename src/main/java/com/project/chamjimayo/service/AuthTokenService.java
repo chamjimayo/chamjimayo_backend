@@ -68,4 +68,8 @@ public class AuthTokenService {
   public boolean isExpired(final String token) {
     return jwtTokenProvider.isExpired(token);
   }
+
+  public boolean has(String refreshToken) {
+    return tokenRepository.existsTokenByRefreshToken(refreshToken);
+  }
 }
