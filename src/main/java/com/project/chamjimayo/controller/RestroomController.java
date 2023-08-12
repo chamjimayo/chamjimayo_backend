@@ -80,7 +80,13 @@ public class RestroomController {
                   + "\"msg\":\"주변에 화장실이 존재하지 않습니다.\"} }")))
   })
   @Parameter(name = "sortBy", schema = @Schema(type = "string"),
-      in = ParameterIn.DEFAULT, example = "distance / rating")
+      in = ParameterIn.QUERY, example = "distance / rating", description = "default = distance")
+  @Parameter(name = "page", schema = @Schema(type = "int"),
+      in = ParameterIn.QUERY, example = "1", description = "받고 싶은 페이지 (입력하지 않으면 페이징 하지 않은 전체 데이터 반환)")
+  @Parameter(name = "size", schema = @Schema(type = "int"),
+      in = ParameterIn.QUERY, example = "10", description = "한 페이지에 담고싶은 데이터 개수")
+  @Parameter(name = "publicOrPaidOrEntire", schema = @Schema(type = "string"),
+      in = ParameterIn.PATH, example = "public/paid/entire")
   @GetMapping("/nearby/{publicOrPaidOrEntire}")
   public ResponseEntity<ApiStandardResponse<List<NearByResponse>>> restroomNearBy(
       @PathVariable(value = "publicOrPaidOrEntire") String publicOrPaidOrEntire,
