@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
 
   private final ReviewRepository reviewRepository;
@@ -32,7 +33,6 @@ public class ReviewService {
   /**
    * 리뷰 등록
    */
-  @Transactional
   public ReviewResponseDto createReview(Long userId, ReviewRequestDto reviewRequestDto) {
     Long restroomId = reviewRequestDto.getRestroomId();
     String reviewContent = reviewRequestDto.getReviewContent();
@@ -49,7 +49,7 @@ public class ReviewService {
 
     averageRating(review.getRestroom().getRestroomId());
 
-    return ReviewResponseDto.fromEntity(review);
+    return dtoFromEntity(review);
   }
 
   /**
@@ -58,13 +58,12 @@ public class ReviewService {
   public ReviewResponseDto getReview(Long reviewId) {
     Review review = reviewRepository.findById(reviewId)
         .orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
-    return ReviewResponseDto.fromEntity(review);
+    return dtoFromEntity(review);
   }
 
   /**
    * 리뷰 수정
    */
-  @Transactional
   public ReviewResponseDto updateReview(Review review, ReviewUpdateDto reviewUpdateDto) {
 
     String reviewContent = reviewUpdateDto.getReviewContent();
@@ -75,13 +74,12 @@ public class ReviewService {
 
     averageRating(review.getRestroom().getRestroomId());
 
-    return ReviewResponseDto.fromEntity(updateReview);
+    return dtoFromEntity(updateReview);
   }
 
   /**
    * 리뷰 삭제
    */
-  @Transactional
   public void deleteReview(Review review) {
     Long reviewId = review.getReviewId();
     Optional<Review> updateReview = reviewRepository.findById(reviewId);
@@ -102,7 +100,7 @@ public class ReviewService {
     List<Review> allReviews = reviewRepository.findAllByUser(user);
     Collections.reverse(allReviews);
     return allReviews.stream()
-        .map(ReviewResponseDto::fromEntity)
+        .map(this::dtoFromEntity)
         .collect(Collectors.toList());
   }
 
@@ -118,7 +116,7 @@ public class ReviewService {
     List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
     Collections.reverse(allReviews);
     return allReviews.stream()
-        .map(ReviewResponseDto::fromEntity)
+        .map(this::dtoFromEntity)
         .collect(Collectors.toList());
   }
 
@@ -133,7 +131,7 @@ public class ReviewService {
     List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
     return allReviews.stream()
         .sorted(Comparator.comparing(Review::getRating).reversed())
-        .map(ReviewResponseDto::fromEntity)
+        .map(this::dtoFromEntity)
         .collect(Collectors.toList());
   }
 
@@ -148,7 +146,7 @@ public class ReviewService {
     List<Review> allReviews = reviewRepository.findAllByRestroom(restroom);
     return allReviews.stream()
         .sorted(Comparator.comparing(Review::getRating))
-        .map(ReviewResponseDto::fromEntity)
+        .map(this::dtoFromEntity)
         .collect(Collectors.toList());
   }
 
@@ -175,5 +173,13 @@ public class ReviewService {
     // 해당 restroom의 averageRating에 업데이트
     Restroom updateRestroom = restroom.get();
     updateRestroom.updateRating(averageRating);
+  }
+
+  public ReviewResponseDto dtoFromEntity(Review review) {
+    User user = review.getUser();
+
+    return ReviewResponseDto.create(review.getReviewId(), user.getUserId(), user.getNickname(),
+        user.getUserProfile(), review.getRestroom().getRestroomId(), review.getReviewContent(),
+        review.getRating(), review.getUpdatedDate());
   }
 }
