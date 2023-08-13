@@ -1,9 +1,9 @@
 package com.project.chamjimayo.security.config;
 
-import com.project.chamjimayo.security.ApiKeyAuthenticationFilter;
-import com.project.chamjimayo.security.AuthenticationExceptionFilter;
+import com.project.chamjimayo.service.exception.ApiKeyAuthenticationFilter;
+import com.project.chamjimayo.security.filter.AuthenticationExceptionFilter;
 import com.project.chamjimayo.security.CustomUserDetailsService;
-import com.project.chamjimayo.security.JwtAuthenticationFilter;
+import com.project.chamjimayo.security.filter.JwtAuthenticationFilter;
 import com.project.chamjimayo.security.RestAuthenticationEntryPoint;
 import com.project.chamjimayo.service.AuthTokenService;
 import lombok.RequiredArgsConstructor;

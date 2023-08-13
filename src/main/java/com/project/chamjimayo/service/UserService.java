@@ -1,11 +1,11 @@
 package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.controller.dto.PointChangeDto;
-import com.project.chamjimayo.domain.entity.User;
-import com.project.chamjimayo.exception.PointLackException;
-import com.project.chamjimayo.exception.UserDuplicateException;
-import com.project.chamjimayo.exception.UserNickNameDuplicateException;
-import com.project.chamjimayo.exception.UserNotFoundException;
+import com.project.chamjimayo.repository.domain.entity.User;
+import com.project.chamjimayo.service.exception.PointLackException;
+import com.project.chamjimayo.service.exception.UserDuplicateException;
+import com.project.chamjimayo.service.exception.UserNickNameDuplicateException;
+import com.project.chamjimayo.service.exception.UserNotFoundException;
 import com.project.chamjimayo.repository.RestroomQueryRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.repository.UserQueryRepository;

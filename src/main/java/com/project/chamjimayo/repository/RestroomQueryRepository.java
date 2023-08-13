@@ -1,8 +1,8 @@
 package com.project.chamjimayo.repository;
 
-import static com.project.chamjimayo.domain.entity.QRestroom.restroom;
-import static com.project.chamjimayo.domain.entity.QUsedRestroom.usedRestroom;
-import static com.project.chamjimayo.domain.entity.QUser.user;
+import static com.project.chamjimayo.repository.domain.entity.QRestroom.restroom;
+import static com.project.chamjimayo.repository.domain.entity.QUsedRestroom.usedRestroom;
+import static com.project.chamjimayo.repository.domain.entity.QUser.user;
 
 import com.project.chamjimayo.service.dto.RestroomSummaryDto;
 import com.querydsl.core.types.Projections;

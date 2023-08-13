@@ -1,10 +1,10 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.LoginRequest;
-import com.project.chamjimayo.controller.dto.RefreshAccessTokenRequest;
-import com.project.chamjimayo.controller.dto.SignUpRequest;
+import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.controller.dto.request.LoginRequest;
+import com.project.chamjimayo.controller.dto.request.RefreshAccessTokenRequest;
+import com.project.chamjimayo.controller.dto.request.SignUpRequest;
 import com.project.chamjimayo.service.AuthService;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
 import com.project.chamjimayo.service.dto.AuthTokenDto.Response;

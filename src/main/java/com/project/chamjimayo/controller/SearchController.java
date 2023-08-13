@@ -1,13 +1,11 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
+import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.SearchResponseDto;
-import com.project.chamjimayo.domain.entity.Search;
-import com.project.chamjimayo.domain.entity.User;
-import com.project.chamjimayo.exception.AuthException;
-import com.project.chamjimayo.exception.SearchHistoryNotFoundException;
-import com.project.chamjimayo.exception.UserNotFoundException;
+import com.project.chamjimayo.repository.domain.entity.Search;
+import com.project.chamjimayo.controller.exception.AuthException;
+import com.project.chamjimayo.controller.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.security.CustomUserDetails;
@@ -46,7 +44,6 @@ public class SearchController {
 
   private final SearchService searchService;
   private final SearchRepository searchRepository;
-  private final UserJpaRepository userJpaRepository;
 
   /**
    * 검색어와 유저 id를 받아서 검색어에 대한 도로명 주소, 지번 주소, 가게 이름을 반환 searchAddress 의 count 변수로 조절 가능 예시:
@@ -239,9 +236,7 @@ public class SearchController {
   public ResponseEntity<ApiStandardResponse<String>> deleteRecentSearchHistoryAll(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     Long userId = customUserDetails.getId();
-    User user = userJpaRepository.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
-    searchService.deleteRecentSearchHistoryAll(user);
+    searchService.deleteRecentSearchHistoryAll(userId);
     ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success(
         "모든 검색 기록 삭제 성공");
     return ResponseEntity.ok(apiStandardResponse);

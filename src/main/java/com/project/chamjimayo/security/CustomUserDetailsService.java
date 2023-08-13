@@ -1,6 +1,6 @@
 package com.project.chamjimayo.security;
 
-import com.project.chamjimayo.domain.entity.User;
+import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

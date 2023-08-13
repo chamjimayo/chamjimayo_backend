@@ -1,6 +1,6 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.domain.entity.Token;
+import com.project.chamjimayo.repository.domain.entity.Token;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.JwtTokenProvider;
 import com.project.chamjimayo.security.config.JwtProperties;

@@ -1,10 +1,10 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.PointChangeDto;
-import com.project.chamjimayo.controller.dto.RefundResult;
+import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
+import com.project.chamjimayo.controller.dto.response.RefundResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.InAppPurchaseService;
 import com.project.chamjimayo.service.RefundService;
@@ -66,8 +66,8 @@ public class InAppPurchaseController {
                   + "\"msg\":\"환불 실패.\"} }")))
   })
   @PostMapping("/refund")
-  public ResponseEntity<ApiStandardResponse<List<RefundResult>>> processRefund() {
-    List<RefundResult> result = refundService.processRefund();
+  public ResponseEntity<ApiStandardResponse<List<RefundResponse>>> processRefund() {
+    List<RefundResponse> result = refundService.processRefund();
     return ResponseEntity.ok(ApiStandardResponse.success(result));
   }
 }

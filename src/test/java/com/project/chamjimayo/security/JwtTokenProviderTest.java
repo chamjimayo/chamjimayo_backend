@@ -3,7 +3,7 @@ package com.project.chamjimayo.security;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.project.chamjimayo.exception.InvalidTokenException;
+import com.project.chamjimayo.security.exception.InvalidTokenException;
 import com.project.chamjimayo.security.config.JwtProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

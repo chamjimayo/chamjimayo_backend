@@ -1,6 +1,6 @@
 package com.project.chamjimayo.security;
 
-import com.project.chamjimayo.domain.entity.Role;
+import com.project.chamjimayo.repository.domain.entity.Role;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
-
   private final Long id;
   private final Collection<GrantedAuthority> authorities = new ArrayList<>();
 

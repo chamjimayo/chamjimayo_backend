@@ -1,16 +1,15 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.BaseException;
-import com.project.chamjimayo.controller.dto.EnrollRestroomRequest;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
-import com.project.chamjimayo.controller.dto.NearByResponse;
 import com.project.chamjimayo.controller.dto.PageDto;
-import com.project.chamjimayo.controller.dto.RestroomDetailResponse;
-import com.project.chamjimayo.controller.dto.RestroomNearByRequest;
-import com.project.chamjimayo.controller.dto.RestroomResponse;
-import com.project.chamjimayo.controller.dto.UsingRestroomRequest;
-import com.project.chamjimayo.controller.dto.UsingRestroomResponse;
+import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.request.EnrollRestroomRequest;
+import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.controller.dto.response.NearByResponse;
+import com.project.chamjimayo.controller.dto.response.RestroomDetailResponse;
+import com.project.chamjimayo.controller.dto.request.RestroomNearByRequest;
+import com.project.chamjimayo.controller.dto.response.RestroomResponse;
+import com.project.chamjimayo.controller.dto.request.UsingRestroomRequest;
+import com.project.chamjimayo.controller.dto.response.UsingRestroomResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.RestroomService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +22,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Optional;
-import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -64,7 +61,7 @@ public class RestroomController {
   })
   @PostMapping("/enroll")
   public ResponseEntity<ApiStandardResponse<RestroomResponse>> enrollRestroom(
-      @RequestBody EnrollRestroomRequest enrollRestroomRequest) throws BaseException {
+      @RequestBody EnrollRestroomRequest enrollRestroomRequest) {
     return ResponseEntity.ok(
         ApiStandardResponse.success(restroomService.enrollRestroom(enrollRestroomRequest)));
   }
@@ -114,8 +111,7 @@ public class RestroomController {
   })
   @GetMapping("/detail")
   public ResponseEntity<ApiStandardResponse<RestroomDetailResponse>> restroomDetail(
-      @RequestParam Long restroomId)
-      throws BaseException {
+      @RequestParam Long restroomId) {
     return ResponseEntity.ok(
         ApiStandardResponse.success(restroomService.restroomDetail(restroomId)));
   }

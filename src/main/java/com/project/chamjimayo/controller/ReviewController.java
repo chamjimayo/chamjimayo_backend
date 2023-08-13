@@ -1,13 +1,13 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.ApiStandardResponse;
-import com.project.chamjimayo.controller.dto.ErrorResponse;
+import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.ReviewRequestDto;
 import com.project.chamjimayo.controller.dto.ReviewResponseDto;
 import com.project.chamjimayo.controller.dto.ReviewUpdateDto;
-import com.project.chamjimayo.domain.entity.Review;
-import com.project.chamjimayo.exception.AuthException;
-import com.project.chamjimayo.exception.ReviewNotFoundException;
+import com.project.chamjimayo.repository.domain.entity.Review;
+import com.project.chamjimayo.controller.exception.AuthException;
+import com.project.chamjimayo.service.exception.ReviewNotFoundException;
 import com.project.chamjimayo.repository.ReviewRepository;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.ReviewService;

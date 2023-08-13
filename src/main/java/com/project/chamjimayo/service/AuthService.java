@@ -1,6 +1,6 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.exception.InvalidTokenException;
+import com.project.chamjimayo.security.exception.InvalidTokenException;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
 import com.project.chamjimayo.service.dto.SignUpDto;
 import lombok.RequiredArgsConstructor;

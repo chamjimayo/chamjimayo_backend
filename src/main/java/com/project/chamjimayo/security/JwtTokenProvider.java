@@ -1,6 +1,6 @@
 package com.project.chamjimayo.security;
 
-import com.project.chamjimayo.exception.InvalidTokenException;
+import com.project.chamjimayo.security.exception.InvalidTokenException;
 import com.project.chamjimayo.security.config.JwtProperties;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

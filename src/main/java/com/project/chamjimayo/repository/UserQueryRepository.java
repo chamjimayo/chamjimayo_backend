@@ -1,6 +1,6 @@
 package com.project.chamjimayo.repository;
 
-import static com.project.chamjimayo.domain.entity.QUser.user;
+import static com.project.chamjimayo.repository.domain.entity.QUser.user;
 
 import com.project.chamjimayo.service.dto.UserDetailsDto;
 import com.querydsl.core.types.Projections;

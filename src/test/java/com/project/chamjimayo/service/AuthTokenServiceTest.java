@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.project.chamjimayo.domain.entity.Token;
+import com.project.chamjimayo.repository.domain.entity.Token;
 import com.project.chamjimayo.repository.TokenRepository;
 import com.project.chamjimayo.security.JwtTokenProvider;
 import com.project.chamjimayo.security.config.JwtProperties;
