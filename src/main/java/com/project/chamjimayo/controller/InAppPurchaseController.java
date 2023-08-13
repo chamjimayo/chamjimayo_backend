@@ -3,6 +3,7 @@ package com.project.chamjimayo.controller;
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
 import com.project.chamjimayo.controller.dto.GoogleInAppPurchaseRequest;
+import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.controller.dto.RefundResult;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.InAppPurchaseService;
@@ -50,8 +51,9 @@ public class InAppPurchaseController {
   public ResponseEntity<Object> purchaseVerify(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody GoogleInAppPurchaseRequest request) {
-    inAppPurchaseService.verifyPurchase(customUserDetails.getId(), request);
-    return ResponseEntity.noContent().build();
+    PointChangeDto pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
+        request);
+    return ResponseEntity.ok(ApiStandardResponse.success(pointChangeDto));
   }
 
   @Operation(summary = "포인트 충전 환불", description = "받은 환불 정보를 가지고 포인트 환불 처리")

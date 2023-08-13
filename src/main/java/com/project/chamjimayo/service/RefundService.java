@@ -4,6 +4,7 @@ import com.google.api.services.androidpublisher.AndroidPublisher;
 import com.google.api.services.androidpublisher.model.VoidedPurchase;
 import com.google.api.services.androidpublisher.model.VoidedPurchasesListResponse;
 import com.project.chamjimayo.controller.config.GoogleProperties;
+import com.project.chamjimayo.controller.dto.PointChangeDto;
 import com.project.chamjimayo.controller.dto.RefundResult;
 import com.project.chamjimayo.domain.entity.Order;
 import com.project.chamjimayo.domain.entity.User;
@@ -27,6 +28,7 @@ public class RefundService {
   private final UserJpaRepository userJpaRepository;
   private final AndroidPublisher androidPublisher;
   private final GoogleProperties googleProperties;
+  private final UserService userService;
 
   @Transactional
   public List<RefundResult> processRefund() {
@@ -43,12 +45,10 @@ public class RefundService {
   }
 
   private void refund(List<RefundResult> refundResultList, Order order) {
-    User user = userJpaRepository.findUserByUserId(order.getUserId())
-            .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다"));
-    //포인트 환불, 이미 사용했다면 보유 포인트 마이너스
-    user.deductPoint(user.getPoint(), order.getPoint());
+    userService.deductPoints(PointChangeDto.create(order.getUserId(), order.getPoint()));
+
     // 환불 처리 목록에 추가
-    refundResultList.add(new RefundResult(user.getUserId(), order.getPoint()));
+    refundResultList.add(new RefundResult(order.getUserId(), order.getPoint()));
     order.alreadyRefund(); // order 테이블에서 이미 처리된 환불 요청으로 변경
   }
 

@@ -27,23 +27,10 @@ public class ReceiptValidationService {
 
     if (purchase.getPurchaseState().equals(PURCHASE_CANCEL) || 
         purchase.getPurchaseState().equals(PURCHASE_PENDING)) {
-      throw new PurchaseVerificationException("결제가 완료되지 않았습니다..");
+      throw new PurchaseVerificationException("결제가 완료되지 않았습니다.");
     }
-
-    consumeProducts(request, products);
 
     return true;
-  }
-
-  private void consumeProducts(GoogleInAppPurchaseRequest request, Products products) {
-    try {
-      products
-          .consume(googleProperties.getGoogleApplicationPackageName(),
-              request.getProductId(), request.getToken())
-          .execute();
-    } catch (IOException e) {
-      throw new GoogleClientRequestException(e);
-    }
   }
 
   private ProductPurchase getProductPurchase(GoogleInAppPurchaseRequest request,
