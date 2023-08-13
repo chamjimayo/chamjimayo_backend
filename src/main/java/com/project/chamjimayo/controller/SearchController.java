@@ -2,10 +2,8 @@ package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
-import com.project.chamjimayo.controller.exception.SearchHistoryNotFoundException;
+import com.project.chamjimayo.controller.dto.response.SearchResponse;
 import com.project.chamjimayo.repository.SearchRepository;
-import com.project.chamjimayo.repository.domain.entity.Search;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +70,7 @@ public class SearchController {
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @GetMapping("/search")
-  public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getAddress(
+  public ResponseEntity<ApiStandardResponse<List<SearchResponse>>> getAddress(
       @Parameter(description = "검색어", required = true, example = "스타벅스")
       @NotBlank(message = "검색어를 입력해주세요.")
       @Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "검색어에는 특수문자를 포함할 수 없습니다.")
@@ -80,10 +78,9 @@ public class SearchController {
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     // 현재 로그인 한 유저의 userId를 가져옴
     Long userId = customUserDetails.getId();
-    List<SearchResponseDto> searchResponseDTOList = searchService.searchAddress(searchWord,
-        userId);
-    ApiStandardResponse<List<SearchResponseDto>> apiStandardResponse = ApiStandardResponse.success(
-        searchResponseDTOList);
+    List<SearchResponse> searchResponseList = searchService.searchAddress(searchWord, userId);
+    ApiStandardResponse<List<SearchResponse>> apiStandardResponse = ApiStandardResponse.success(
+        searchResponseList);
     return ResponseEntity.ok(apiStandardResponse);
   }
 
@@ -108,14 +105,14 @@ public class SearchController {
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @GetMapping("/search/recent")
-  public ResponseEntity<ApiStandardResponse<List<SearchResponseDto>>> getUserSearchHistory(
+  public ResponseEntity<ApiStandardResponse<List<SearchResponse>>> getUserSearchHistory(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     // 현재 로그인 한 유저의 userId를 가져옴
     Long userId = customUserDetails.getId();
     // userId를 통해 최근 검색 기록을 가져옴
-    List<SearchResponseDto> searchResponseDTOList = searchService.getUserSearchHistory(userId);
-    ApiStandardResponse<List<SearchResponseDto>> apistandardresponse = ApiStandardResponse.success(
-        searchResponseDTOList);
+    List<SearchResponse> searchResponseList = searchService.getUserSearchHistory(userId);
+    ApiStandardResponse<List<SearchResponse>> apistandardresponse = ApiStandardResponse.success(
+        searchResponseList);
     return ResponseEntity.ok(apistandardresponse);
   }
 
@@ -153,9 +150,9 @@ public class SearchController {
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/search/click")
   public ResponseEntity<ApiStandardResponse<String>> clickAddress(
-      @Valid @RequestBody SearchResponseDto searchResponseDto,
+      @Valid @RequestBody SearchResponse searchResponse,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    searchService.clickAddress(customUserDetails.getId(), searchResponseDto);
+    searchService.clickAddress(customUserDetails.getId(), searchResponse);
     ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success(
         "정상적으로 클릭이 되었습니다.");
     return ResponseEntity.ok(apiStandardResponse);

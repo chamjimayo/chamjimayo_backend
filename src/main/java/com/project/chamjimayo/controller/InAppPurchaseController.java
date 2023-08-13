@@ -3,7 +3,7 @@ package com.project.chamjimayo.controller;
 import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.response.PointResponseDto;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.controller.dto.response.RefundResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.InAppPurchaseService;
@@ -52,7 +52,7 @@ public class InAppPurchaseController {
   public ResponseEntity<Object> purchaseVerify(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody GoogleInAppPurchaseRequest request) {
-    PointResponseDto pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
+    PointResponse pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
         request);
     return ResponseEntity.ok(ApiStandardResponse.success(pointChangeDto));
   }

@@ -1,14 +1,15 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.request.ReviewRequestDto;
-import com.project.chamjimayo.controller.dto.request.ReviewUpdateDto;
-import com.project.chamjimayo.controller.dto.response.ReviewResponseDto;
+import com.project.chamjimayo.controller.dto.request.ReviewRequest;
+import com.project.chamjimayo.controller.dto.request.ReviewUpdateRequest;
+import com.project.chamjimayo.controller.dto.response.ReviewResponse;
 import com.project.chamjimayo.repository.RestroomJpaRepository;
 import com.project.chamjimayo.repository.ReviewRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.repository.domain.entity.Restroom;
 import com.project.chamjimayo.repository.domain.entity.Review;
 import com.project.chamjimayo.repository.domain.entity.User;
+import com.project.chamjimayo.service.dto.ReviewDto;
 import com.project.chamjimayo.service.exception.RestroomNotFoundException;
 import com.project.chamjimayo.service.exception.ReviewNotFoundException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
@@ -33,10 +34,10 @@ public class ReviewService {
   /**
    * 리뷰 등록
    */
-  public ReviewResponseDto createReview(Long userId, ReviewRequestDto reviewRequestDto) {
-    Long restroomId = reviewRequestDto.getRestroomId();
-    String reviewContent = reviewRequestDto.getReviewContent();
-    Integer rating = reviewRequestDto.getRating();
+  public ReviewResponse createReview(Long userId, ReviewDto reviewDto) {
+    Long restroomId = reviewDto.getRestroomId();
+    String reviewContent = reviewDto.getReviewContent();
+    Integer rating = reviewDto.getRating();
 
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
@@ -55,7 +56,7 @@ public class ReviewService {
   /**
    * 해당 리뷰 조회
    */
-  public ReviewResponseDto getReview(Long reviewId) {
+  public ReviewResponse getReview(Long reviewId) {
     Review review = findReviewById(reviewId);
     return dtoFromEntity(review);
   }
@@ -63,12 +64,12 @@ public class ReviewService {
   /**
    * 리뷰 수정
    */
-  public ReviewResponseDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
+  public ReviewResponse updateReview(Long reviewId, ReviewDto reviewDto) {
 
     Review review = findReviewById(reviewId);
 
-    String reviewContent = reviewUpdateDto.getReviewContent();
-    Integer rating = reviewUpdateDto.getRating();
+    String reviewContent = reviewDto.getReviewContent();
+    Integer rating = reviewDto.getRating();
 
     review.updateReview(reviewContent, rating);
     Review updateReview = reviewRepository.save(review);
@@ -92,7 +93,7 @@ public class ReviewService {
   /**
    * 해당 유저의 모든 리뷰 조회 (최신순)
    */
-  public List<ReviewResponseDto> getReviewByUserID(Long userId) {
+  public List<ReviewResponse> getReviewByUserID(Long userId) {
     Optional<User> user = userJpaRepository.findUserByUserId(userId);
     if (user.isEmpty()) {
       throw new UserNotFoundException("유저를 찾을 수 없습니다. ID: " + userId);
@@ -108,7 +109,7 @@ public class ReviewService {
   /**
    * 해당 화장실의 모든 리뷰 조회 (최신순)
    */
-  public List<ReviewResponseDto> getReviewsByRestroomId(Long restroomId) {
+  public List<ReviewResponse> getReviewsByRestroomId(Long restroomId) {
     Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
     if (restroom.isEmpty()) {
       throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
@@ -124,7 +125,7 @@ public class ReviewService {
   /**
    * 해당 화장실의 모든 리뷰를 별점(rating)이 높은 순으로 정렬하여 조회
    */
-  public List<ReviewResponseDto> getReviewsByRestroomIdOrderByHighRating(Long restroomId) {
+  public List<ReviewResponse> getReviewsByRestroomIdOrderByHighRating(Long restroomId) {
     Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
     if (restroom.isEmpty()) {
       throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
@@ -139,7 +140,7 @@ public class ReviewService {
   /**
    * 해당 화장실의 모든 리뷰를 별점(rating)이 낮은 순으로 정렬하여 조회
    */
-  public List<ReviewResponseDto> getReviewsByRestroomIdOrderByLowRating(Long restroomId) {
+  public List<ReviewResponse> getReviewsByRestroomIdOrderByLowRating(Long restroomId) {
     Optional<Restroom> restroom = restroomJpaRepository.findById(restroomId);
     if (restroom.isEmpty()) {
       throw new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId);
@@ -179,10 +180,10 @@ public class ReviewService {
   /**
    * 리뷰에서 response 추출하기
    */
-  public ReviewResponseDto dtoFromEntity(Review review) {
+  public ReviewResponse dtoFromEntity(Review review) {
     User user = review.getUser();
 
-    return ReviewResponseDto.create(review.getReviewId(), user.getUserId(), user.getNickname(),
+    return ReviewResponse.create(review.getReviewId(), user.getUserId(), user.getNickname(),
         user.getUserProfile(), review.getRestroom().getRestroomId(), review.getReviewContent(),
         review.getRating(), review.getUpdatedDate());
   }

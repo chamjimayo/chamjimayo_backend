@@ -8,6 +8,7 @@ import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
 import com.project.chamjimayo.service.dto.DuplicateCheckDto;
+import com.project.chamjimayo.service.dto.PointDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto.Response;
 import com.project.chamjimayo.service.dto.UserDetailsDto;
@@ -128,9 +129,10 @@ public class UserController {
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
   @PostMapping("/point/charge")
   public ResponseEntity<ApiStandardResponse<PointResponse>> chargePoints(
-      @Valid @RequestBody PointRequest requestDTO) {
-    PointResponse responseDTO = userService.chargePoints(requestDTO);
-    return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
+      @Valid @RequestBody PointRequest pointRequest) {
+    PointDto pointDto = PointDto.create(pointRequest);
+    PointResponse pointResponse = userService.chargePoints(pointDto);
+    return ResponseEntity.ok(ApiStandardResponse.success(pointResponse));
   }
 
   @Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감합니다.")
@@ -157,8 +159,9 @@ public class UserController {
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
   @PostMapping("/point/deduct")
   public ResponseEntity<ApiStandardResponse<PointResponse>> deductPoints(
-      @Valid @RequestBody PointRequest requestDTO) {
-    PointResponse responseDTO = userService.deductPoints(requestDTO);
-    return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
+      @Valid @RequestBody PointRequest pointRequest) {
+    PointDto pointDto = PointDto.create(pointRequest);
+    PointResponse pointResponse = userService.deductPoints(pointDto);
+    return ResponseEntity.ok(ApiStandardResponse.success(pointResponse));
   }
 }

@@ -8,7 +8,11 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class ReviewUpdateDto {
+public class ReviewRequest {
+
+  @Schema(type = "Long", example = "1")
+  @NotNull(message = "화장실 ID를 입력해주세요.")
+  private Long restroomId;
 
   @Schema(type = "string", example = "깔끔해요!")
   @NotBlank(message = "리뷰 내용을 입력해주세요.")
@@ -19,13 +23,4 @@ public class ReviewUpdateDto {
   @Min(value = 0, message = "평점은 0 ~ 5점으로 입력해주세요.")
   @Max(value = 5, message = "평점은 0 ~ 5점으로 입력해주세요.")
   private Integer rating;
-
-  private ReviewUpdateDto(String reviewContent, Integer rating) {
-    this.reviewContent = reviewContent;
-    this.rating = rating;
-  }
-
-  public static ReviewUpdateDto create(String reviewContent, Integer rating) {
-    return new ReviewUpdateDto(reviewContent, rating);
-  }
 }

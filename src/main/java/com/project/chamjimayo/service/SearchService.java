@@ -1,7 +1,7 @@
 package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
-import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
+import com.project.chamjimayo.controller.dto.response.SearchResponse;
 import com.project.chamjimayo.controller.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
@@ -43,7 +43,7 @@ public class SearchService {
    * 검색어에 대한 주소 검색을 수행하고, 검색 결과를 반환
    */
   @Transactional
-  public List<SearchResponseDto> searchAddress(String searchWord, Long userId) {
+  public List<SearchResponse> searchAddress(String searchWord, Long userId) {
     // 검색 결과 가져올 개수와 검색어 설정
     int count = 10;
 
@@ -85,7 +85,7 @@ public class SearchService {
     List<Double> latitudeList = extractLatitude(responseEntity.getBody());
     List<Double> longitudeList = extractLongitude(responseEntity.getBody());
 
-    List<SearchResponseDto> searchResponseDTOList = new ArrayList<>();
+    List<SearchResponse> searchResponseList = new ArrayList<>();
 
     // 검색 리시트를 각 주소마다 분리해서 Search 엔티티로 저장
     for (int i = 0; i < fullAddressRoadList.size(); i++) {
@@ -96,11 +96,11 @@ public class SearchService {
       Double longitude = longitudeList.get(i);
 
       // 검색 결과 DTO 생성 및 추가
-      SearchResponseDto responseDTO = SearchResponseDto.create(searchWord, fullAddressRoad,
+      SearchResponse responseDTO = SearchResponse.create(searchWord, fullAddressRoad,
           lotNumberAddress, name, latitude, longitude);
-      searchResponseDTOList.add(responseDTO);
+      searchResponseList.add(responseDTO);
     }
-    return searchResponseDTOList;
+    return searchResponseList;
   }
 
   /**
@@ -213,17 +213,17 @@ public class SearchService {
    * 도로명 주소를 클릭한 경우
    */
   @Transactional
-  public void clickAddress(Long userId, SearchResponseDto searchResponseDto) {
+  public void clickAddress(Long userId, SearchResponse searchResponse) {
 
     // userRepository 에서 userId를 통해 user 객체를 가져옴
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
-    String searchWord = searchResponseDto.getSearchWord();
-    String roadAddress = searchResponseDto.getRoadAddress();
-    String lotNumberAddress = searchResponseDto.getLotNumberAddress();
-    String name = searchResponseDto.getName();
-    Double latitude = searchResponseDto.getLatitude();
-    Double longitude = searchResponseDto.getLongitude();
+    String searchWord = searchResponse.getSearchWord();
+    String roadAddress = searchResponse.getRoadAddress();
+    String lotNumberAddress = searchResponse.getLotNumberAddress();
+    String name = searchResponse.getName();
+    Double latitude = searchResponse.getLatitude();
+    Double longitude = searchResponse.getLongitude();
 
     Search search = Search.create(user, searchWord, roadAddress, lotNumberAddress, name,
         latitude, longitude);
@@ -260,7 +260,7 @@ public class SearchService {
   /**
    * 해당 유저의 최근 검색 기록 리스트 반환
    */
-  public List<SearchResponseDto> getUserSearchHistory(Long userId) {
+  public List<SearchResponse> getUserSearchHistory(Long userId) {
     // userRepository 에서 userId를 통해 user 객체를 가져옴
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다."));
@@ -268,7 +268,7 @@ public class SearchService {
     // userId에 해당하는 모든 검색 기록 반환
     List<Search> searchList = searchRepository.findAllByUser(user);
 
-    List<SearchResponseDto> searchResponseDTOList = new ArrayList<>();
+    List<SearchResponse> searchResponseList = new ArrayList<>();
 
     // 검색 결과 DTO 리스트 생성
     for (Search searchHistory : searchList) {
@@ -279,12 +279,12 @@ public class SearchService {
       double latitude = searchHistory.getLatitude();
       double longitude = searchHistory.getLongitude();
 
-      SearchResponseDto searchResponse = SearchResponseDto.create(searchWord, roadAddress,
+      SearchResponse searchResponse = SearchResponse.create(searchWord, roadAddress,
           lotNumberAddress, name, latitude, longitude);
-      searchResponseDTOList.add(searchResponse);
+      searchResponseList.add(searchResponse);
     }
-    Collections.reverse(searchResponseDTOList);
-    return searchResponseDTOList;
+    Collections.reverse(searchResponseList);
+    return searchResponseList;
   }
 }
 

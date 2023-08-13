@@ -1,12 +1,14 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.request.PointRequestDto;
-import com.project.chamjimayo.controller.dto.response.PointResponseDto;
+import com.project.chamjimayo.controller.dto.request.PointRequest;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
+import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.repository.RestroomQueryRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.repository.UserQueryRepository;
 import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.dto.DuplicateCheckDto;
+import com.project.chamjimayo.service.dto.PointDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto;
 import com.project.chamjimayo.service.dto.SignUpDto;
 import com.project.chamjimayo.service.dto.UserDetailsDto;
@@ -78,24 +80,34 @@ public class UserService {
    * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 충전 후 포인트)
    */
   @Transactional
-  public PointResponseDto chargePoints(PointRequestDto requestDTO) {
-    User user = getUser(requestDTO);
+  public PointResponse chargePoints(PointDto pointDto) {
 
-    Integer newPoint = requestDTO.getPoint();
+    if (pointDto.getUserId() == null) {
+      throw new JsonFileNotFoundException("userId를 입력해주세요.");
+    }
+
+    User user = getUser(pointDto);
+
+    Integer newPoint = pointDto.getPoint();
 
     user.addPoint(newPoint);
 
-    return PointResponseDto.create(user.getUserId(), user.getPoint());
+    return PointResponse.create(user.getUserId(), user.getPoint());
   }
 
   /**
    * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 후 포인트)
    */
   @Transactional
-  public PointResponseDto deductPoints(PointRequestDto requestDTO) {
-    User user = getUser(requestDTO);
+  public PointResponse deductPoints(PointDto pointDto) {
 
-    Integer deductionPoint = requestDTO.getPoint();
+    if (pointDto.getUserId() == null) {
+      throw new JsonFileNotFoundException("userId를 입력해주세요.");
+    }
+
+    User user = getUser(pointDto);
+
+    Integer deductionPoint = pointDto.getPoint();
 
     if (deductionPoint > user.getPoint()) {
       throw new PointLackException("포인트가 부족합니다.");
@@ -103,12 +115,12 @@ public class UserService {
 
     user.deductPoint(deductionPoint);
 
-    return PointResponseDto.create(user.getUserId(), user.getPoint());
+    return PointResponse.create(user.getUserId(), user.getPoint());
   }
 
-  private User getUser(PointRequestDto requestDto) {
-    return userJpaRepository.findById(requestDto.getUserId())
+  private User getUser(PointDto pointDto) {
+    return userJpaRepository.findById(pointDto.getUserId())
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: "
-            + requestDto.getUserId()));
+            + pointDto.getUserId()));
   }
 }
