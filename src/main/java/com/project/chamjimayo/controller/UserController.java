@@ -1,8 +1,9 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.request.PointRequestDto;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.PointChangeDto;
+import com.project.chamjimayo.controller.dto.response.PointResponseDto;
 import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
@@ -136,14 +137,14 @@ public class UserController {
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/point/charge")
-  public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
-      @Valid @RequestBody PointChangeDto requestDTO,
+  public ResponseEntity<ApiStandardResponse<PointResponseDto>> chargePoints(
+      @Valid @RequestBody PointRequestDto requestDTO,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     if (requestDTO.getUserId() == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
     }
     if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-      PointChangeDto responseDTO = userService.chargePoints(requestDTO);
+      PointResponseDto responseDTO = userService.chargePoints(requestDTO);
       return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
     } else {
       throw new AuthException("권한이 없습니다.");
@@ -182,14 +183,14 @@ public class UserController {
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/point/deduct")
-  public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
-      @Valid @RequestBody PointChangeDto requestDTO,
+  public ResponseEntity<ApiStandardResponse<PointResponseDto>> deductPoints(
+      @Valid @RequestBody PointRequestDto requestDTO,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     if (requestDTO.getUserId() == null) {
       throw new JsonFileNotFoundException("유저 ID를 입력해주세요.");
     }
     if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-      PointChangeDto responseDTO = userService.deductPoints(requestDTO);
+      PointResponseDto responseDTO = userService.deductPoints(requestDTO);
       return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
     } else {
       throw new AuthException("권한이 없습니다.");

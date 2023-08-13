@@ -2,12 +2,11 @@ package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.SearchResponseDto;
+import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
 import com.project.chamjimayo.repository.domain.entity.Search;
 import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.controller.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
-import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;

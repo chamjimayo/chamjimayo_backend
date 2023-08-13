@@ -1,7 +1,8 @@
 package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
-import com.project.chamjimayo.controller.dto.PointChangeDto;
+import com.project.chamjimayo.controller.dto.request.PointRequestDto;
+import com.project.chamjimayo.controller.dto.response.PointResponseDto;
 import com.project.chamjimayo.repository.domain.entity.Product;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,11 @@ public class InAppPurchaseService {
   private final ReceiptValidationService receiptValidationService;
 
   @Transactional
-  public PointChangeDto verifyPurchase(Long userId, GoogleInAppPurchaseRequest request) {
+  public PointResponseDto verifyPurchase(Long userId, GoogleInAppPurchaseRequest request) {
     if (receiptValidationService.validateReceipt(request)) {
       Integer point = Product.pointsFromProductId(request.getProductId());
-      PointChangeDto pointChangeDto = userService.chargePoints(
-          PointChangeDto.create(userId, point));
+      PointResponseDto pointChangeDto = userService.chargePoints(
+          PointRequestDto.create(userId, point));
 
       orderService.createOrder(request.getToken(), pointChangeDto.getUserId(),
           pointChangeDto.getPoint());
@@ -27,6 +28,6 @@ public class InAppPurchaseService {
       return pointChangeDto;
     }
 
-    return PointChangeDto.create(userId, 0);
+    return PointResponseDto.create(userId, 0);
   }
 }

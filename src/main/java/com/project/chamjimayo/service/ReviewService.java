@@ -1,8 +1,8 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.ReviewRequestDto;
-import com.project.chamjimayo.controller.dto.ReviewResponseDto;
-import com.project.chamjimayo.controller.dto.ReviewUpdateDto;
+import com.project.chamjimayo.controller.dto.request.ReviewRequestDto;
+import com.project.chamjimayo.controller.dto.response.ReviewResponseDto;
+import com.project.chamjimayo.controller.dto.request.ReviewUpdateDto;
 import com.project.chamjimayo.repository.domain.entity.Restroom;
 import com.project.chamjimayo.repository.domain.entity.Review;
 import com.project.chamjimayo.repository.domain.entity.User;

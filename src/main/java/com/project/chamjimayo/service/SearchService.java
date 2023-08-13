@@ -1,7 +1,7 @@
 package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
-import com.project.chamjimayo.controller.dto.SearchResponseDto;
+import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
 import com.project.chamjimayo.repository.domain.entity.Search;
 import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.exception.ApiNotFoundException;

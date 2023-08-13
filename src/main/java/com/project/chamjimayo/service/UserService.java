@@ -1,6 +1,7 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.PointChangeDto;
+import com.project.chamjimayo.controller.dto.request.PointRequestDto;
+import com.project.chamjimayo.controller.dto.response.PointResponseDto;
 import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.exception.PointLackException;
 import com.project.chamjimayo.service.exception.UserDuplicateException;
@@ -77,27 +78,21 @@ public class UserService {
    * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 충전 후 포인트)
    */
   @Transactional
-  public PointChangeDto chargePoints(PointChangeDto requestDTO) {
+  public PointResponseDto chargePoints(PointRequestDto requestDTO) {
     User user = getUser(requestDTO);
 
     Integer newPoint = requestDTO.getPoint();
 
     user.addPoint(newPoint);
 
-    return PointChangeDto.create(user.getUserId(), user.getPoint());
-  }
-
-  private User getUser(PointChangeDto requestDto) {
-    return userJpaRepository.findById(requestDto.getUserId())
-        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: "
-            + requestDto.getUserId()));
+    return PointResponseDto.create(user.getUserId(), user.getPoint());
   }
 
   /**
    * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 후 포인트)
    */
   @Transactional
-  public PointChangeDto deductPoints(PointChangeDto requestDTO) {
+  public PointResponseDto deductPoints(PointRequestDto requestDTO) {
     User user = getUser(requestDTO);
 
     Integer deductionPoint = requestDTO.getPoint();
@@ -108,6 +103,12 @@ public class UserService {
 
     user.deductPoint(deductionPoint);
 
-    return PointChangeDto.create(user.getUserId(), user.getPoint());
+    return PointResponseDto.create(user.getUserId(), user.getPoint());
+  }
+
+  private User getUser(PointRequestDto requestDto) {
+    return userJpaRepository.findById(requestDto.getUserId())
+        .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: "
+            + requestDto.getUserId()));
   }
 }

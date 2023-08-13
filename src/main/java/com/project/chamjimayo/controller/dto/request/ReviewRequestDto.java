@@ -1,4 +1,4 @@
-package com.project.chamjimayo.controller.dto;
+package com.project.chamjimayo.controller.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Max;
