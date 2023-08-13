@@ -33,16 +33,6 @@ public class UserExceptionHandler {
     return ApiStandardResponse.fail(errorResponse);
   }
 
-  // 인증 오류
-  @ExceptionHandler(AuthException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ApiStandardResponse<ErrorResponse> handleAuthException(AuthException e) {
-    log.error("", e);
-
-    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-    return ApiStandardResponse.fail(errorResponse);
-  }
-
   // 포인트가 부족한 경우 (포인트 차감시)
   @ExceptionHandler(PointLackException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)

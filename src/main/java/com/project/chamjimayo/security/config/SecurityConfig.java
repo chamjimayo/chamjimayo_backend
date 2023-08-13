@@ -68,7 +68,7 @@ public class SecurityConfig {
 
     http.requestMatchers(
             request -> request.antMatchers("/api/users/me/**", "/api/address/search/**",
-                    "/api/review", "/api/review/*", "/api/review/list/*",
+                    "/api/review", "/api/review/list",
                     "/api/users/point/**",
                     "/api/restroom/use",
                     "/api/restroom/endofuse",

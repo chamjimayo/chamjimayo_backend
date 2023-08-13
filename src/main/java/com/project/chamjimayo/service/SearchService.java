@@ -2,6 +2,7 @@ package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
+import com.project.chamjimayo.controller.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.repository.domain.entity.Search;
@@ -237,11 +238,13 @@ public class SearchService {
   }
 
   /**
-   * 최근 검색 기록 삭제
+   * 최근 검색 기록 삭제 (가게 이름으로 삭제)
    */
   @Transactional
-  public void deleteRecentSearchHistory(Search search) {
-    searchRepository.deleteById(search.getSearchId());
+  public void deleteSearchHistoryByName(String name) {
+    Search existingSearch = searchRepository.findByName(name)
+        .orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
+    searchRepository.delete(existingSearch);
   }
 
   /**

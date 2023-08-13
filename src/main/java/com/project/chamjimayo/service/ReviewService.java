@@ -56,15 +56,16 @@ public class ReviewService {
    * 해당 리뷰 조회
    */
   public ReviewResponseDto getReview(Long reviewId) {
-    Review review = reviewRepository.findById(reviewId)
-        .orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
+    Review review = findReviewById(reviewId);
     return dtoFromEntity(review);
   }
 
   /**
    * 리뷰 수정
    */
-  public ReviewResponseDto updateReview(Review review, ReviewUpdateDto reviewUpdateDto) {
+  public ReviewResponseDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
+
+    Review review = findReviewById(reviewId);
 
     String reviewContent = reviewUpdateDto.getReviewContent();
     Integer rating = reviewUpdateDto.getRating();
@@ -80,8 +81,8 @@ public class ReviewService {
   /**
    * 리뷰 삭제
    */
-  public void deleteReview(Review review) {
-    Long reviewId = review.getReviewId();
+  public void deleteReview(Long reviewId) {
+    Review review = findReviewById(reviewId);
     Optional<Review> updateReview = reviewRepository.findById(reviewId);
     Long restroomId = updateReview.get().getRestroom().getRestroomId();
     reviewRepository.deleteById(reviewId);
@@ -175,6 +176,9 @@ public class ReviewService {
     updateRestroom.updateRating(averageRating);
   }
 
+  /**
+  * 리뷰에서 response 추출하기
+  */
   public ReviewResponseDto dtoFromEntity(Review review) {
     User user = review.getUser();
 
@@ -182,4 +186,13 @@ public class ReviewService {
         user.getUserProfile(), review.getRestroom().getRestroomId(), review.getReviewContent(),
         review.getRating(), review.getUpdatedDate());
   }
+
+  /**
+   * 리뷰 찾기
+   */
+  public Review findReviewById(Long reviewId) {
+    return reviewRepository.findById(reviewId)
+        .orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
+  }
+
 }

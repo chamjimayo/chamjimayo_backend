@@ -3,7 +3,6 @@ package com.project.chamjimayo.controller;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
-import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.controller.exception.SearchHistoryNotFoundException;
 import com.project.chamjimayo.repository.SearchRepository;
 import com.project.chamjimayo.repository.domain.entity.Search;
@@ -179,13 +178,6 @@ public class SearchController {
               examples = @ExampleObject(value = "{ \"code\": \"02\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
                   + "\"msg\":\"파라미터가 부족합니다.\"} }"))),
-      @ApiResponse(responseCode = "403",
-          description = "1. 권한이 없습니다. \t\n",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"05\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
-                  + "\"msg\":\"권한이 없습니다.\"} }"))),
       @ApiResponse(responseCode = "404",
           description = "1. 검색 기록을 찾을 수 없습니다.",
           content = @Content(mediaType = "application/json",
@@ -202,16 +194,9 @@ public class SearchController {
       @Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "가게 이름에는 특수문자를 포함할 수 없습니다.")
       @RequestParam("name") String name,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    Search existingSearch = searchRepository.findByName(name)
-        .orElseThrow(() -> new SearchHistoryNotFoundException("검색 기록을 찾을 수 없습니다."));
-    if (existingSearch.getUser().getUserId().equals(customUserDetails.getId())) {
-      searchService.deleteRecentSearchHistory(existingSearch);
-      ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success(
-          "검색 기록 삭제 성공");
-      return ResponseEntity.ok(apiStandardResponse);
-    } else {
-      throw new AuthException("권한이 없습니다.");
-    }
+    searchService.deleteSearchHistoryByName(name);
+    ApiStandardResponse<String> apiStandardResponse = ApiStandardResponse.success("검색 기록 삭제 성공");
+    return ResponseEntity.ok(apiStandardResponse);
   }
 
   @Operation(summary = "해당 유저의 모든 검색 기록 삭제", description = "해당 유저의 모든 검색 기록을 삭제합니다.")

@@ -4,7 +4,6 @@ import com.project.chamjimayo.controller.dto.request.PointRequestDto;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.response.PointResponseDto;
-import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
@@ -120,13 +119,6 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }"))),
-      @ApiResponse(responseCode = "403",
-          description = "1. 권한이 없습니다. \t\n",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"05\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
-                  + "\"msg\":\"권한이 없습니다.\"} }"))),
       @ApiResponse(responseCode = "404",
           description = "1. 유저를 찾지 못했습니다.",
           content = @Content(mediaType = "application/json",
@@ -143,12 +135,8 @@ public class UserController {
     if (requestDTO.getUserId() == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
     }
-    if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-      PointResponseDto responseDTO = userService.chargePoints(requestDTO);
-      return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
-    } else {
-      throw new AuthException("권한이 없습니다.");
-    }
+    PointResponseDto responseDTO = userService.chargePoints(requestDTO);
+    return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
   }
 
   @Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감합니다.")
@@ -166,13 +154,6 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"22\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"POINT_NOT_ENOUGH\", "
                   + "\"msg\":\"포인트가 부족합니다.\"} }"))),
-      @ApiResponse(responseCode = "403",
-          description = "1. 권한이 없습니다. \t\n",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"05\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
-                  + "\"msg\":\"권한이 없습니다.\"} }"))),
       @ApiResponse(responseCode = "404",
           description = "1. 유저를 찾지 못했습니다.",
           content = @Content(mediaType = "application/json",
@@ -189,11 +170,7 @@ public class UserController {
     if (requestDTO.getUserId() == null) {
       throw new JsonFileNotFoundException("유저 ID를 입력해주세요.");
     }
-    if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-      PointResponseDto responseDTO = userService.deductPoints(requestDTO);
-      return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
-    } else {
-      throw new AuthException("권한이 없습니다.");
-    }
+    PointResponseDto responseDTO = userService.deductPoints(requestDTO);
+    return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
   }
 }
