@@ -2,9 +2,12 @@ package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.ErrorResponse;
+import com.project.chamjimayo.controller.dto.ErrorStatus;
 import com.project.chamjimayo.exception.AddressNotFoundException;
 import com.project.chamjimayo.exception.FileNotFoundException;
+import com.project.chamjimayo.exception.IndexException;
 import com.project.chamjimayo.exception.IoException;
+import com.project.chamjimayo.exception.PageOutOfRangeException;
 import com.project.chamjimayo.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.exception.RestroomNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +67,22 @@ public class RestroomExceptionHandler {
     log.error("", e);
 
     final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
+  @ExceptionHandler(IndexOutOfBoundsException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> IndexOutOfBoundsException(
+      IndexOutOfBoundsException e) {
+    log.error("", e);
+    final ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INDEX_EXCEPTION,"잘못된 인덱스 요청입니다");
+    return ApiStandardResponse.fail(errorResponse);
+  }
+  @ExceptionHandler(PageOutOfRangeException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> PageOutOfRangeException(
+      PageOutOfRangeException e) {
+    log.error("", e);
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(),e.getMessage());
     return ApiStandardResponse.fail(errorResponse);
   }
 }

@@ -34,8 +34,9 @@ public enum ErrorStatus {
   GOOGLE_CLIENT_REQUEST_EXCEPTION("25"),
   REFUND_EXCEPTION("26"),
   SECURITY_EXCEPTION("27"),
-  VOIDED_PURCHASE_NOT_FOUND("28");
-
+  VOIDED_PURCHASE_NOT_FOUND("28"),
+  INDEX_EXCEPTION("29"),
+  PAGE_OUT_OF_RANGE("30");
   private final String code;
 
   ErrorStatus(String code) {
