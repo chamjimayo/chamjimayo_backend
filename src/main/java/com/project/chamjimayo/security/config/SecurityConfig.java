@@ -67,9 +67,11 @@ public class SecurityConfig {
         .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
     http.requestMatchers(
-            request -> request.antMatchers("/api/users/me/**", "/api/address/search/**",
-                    "/api/review", "/api/review/list",
-                    "/api/users/point/**",
+            request -> request.antMatchers(
+                    "/api/users/me/**",
+                    "/api/address/search/**",
+                    "/api/review",
+                    "/api/review/list",
                     "/api/restroom/use",
                     "/api/restroom/endofuse",
                     "/api/in-app/purchase/verify")
