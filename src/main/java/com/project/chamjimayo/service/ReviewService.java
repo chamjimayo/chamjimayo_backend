@@ -177,8 +177,8 @@ public class ReviewService {
   }
 
   /**
-  * 리뷰에서 response 추출하기
-  */
+   * 리뷰에서 response 추출하기
+   */
   public ReviewResponseDto dtoFromEntity(Review review) {
     User user = review.getUser();
 
