@@ -1,9 +1,9 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.request.PointRequestDto;
+import com.project.chamjimayo.controller.dto.request.PointRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.response.PointResponseDto;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
@@ -126,16 +126,10 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-      in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/point/charge")
-  public ResponseEntity<ApiStandardResponse<PointResponseDto>> chargePoints(
-      @Valid @RequestBody PointRequestDto requestDTO,
-      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    if (requestDTO.getUserId() == null) {
-      throw new JsonFileNotFoundException("userId를 입력해주세요.");
-    }
-    PointResponseDto responseDTO = userService.chargePoints(requestDTO);
+  public ResponseEntity<ApiStandardResponse<PointResponse>> chargePoints(
+      @Valid @RequestBody PointRequest requestDTO) {
+    PointResponse responseDTO = userService.chargePoints(requestDTO);
     return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
   }
 
@@ -161,16 +155,10 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-      in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/point/deduct")
-  public ResponseEntity<ApiStandardResponse<PointResponseDto>> deductPoints(
-      @Valid @RequestBody PointRequestDto requestDTO,
-      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    if (requestDTO.getUserId() == null) {
-      throw new JsonFileNotFoundException("유저 ID를 입력해주세요.");
-    }
-    PointResponseDto responseDTO = userService.deductPoints(requestDTO);
+  public ResponseEntity<ApiStandardResponse<PointResponse>> deductPoints(
+      @Valid @RequestBody PointRequest requestDTO) {
+    PointResponse responseDTO = userService.deductPoints(requestDTO);
     return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
   }
 }
