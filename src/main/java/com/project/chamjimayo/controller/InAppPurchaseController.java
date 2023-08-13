@@ -1,8 +1,8 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.response.PointResponseDto;
 import com.project.chamjimayo.controller.dto.response.RefundResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "in-app", description = "in-app 결제 관련 api")
 @RequestMapping("/api/in-app")
 public class InAppPurchaseController {
+
   private final InAppPurchaseService inAppPurchaseService;
   private final RefundService refundService;
 

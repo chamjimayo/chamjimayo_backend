@@ -54,57 +54,57 @@ public class UserController {
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 
-	@Operation(summary = "사용자 정보 조회", description = "Jwt 토큰으로 요청 후 해당 사용자 정보 반환")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
-		@ApiResponse(responseCode = "400", description = "1. 사용자가 존재하지 않습니다.",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
-					+ "\"msg\":\"사용자가 존재하지 않습니다\"} }")
-			)
-		)
-	})
-	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	@GetMapping("/me")
-	public ResponseEntity<ApiStandardResponse<UserDetailsDto.Response>> userDetails(
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		UserDetailsDto dto = userService.getUserDetails(customUserDetails.getId());
-		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
-	}
+  @Operation(summary = "사용자 정보 조회", description = "Jwt 토큰으로 요청 후 해당 사용자 정보 반환")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
+      @ApiResponse(responseCode = "400", description = "1. 사용자가 존재하지 않습니다.",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorResponse.class),
+              examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
+                  + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
+                  + "\"msg\":\"사용자가 존재하지 않습니다\"} }")
+          )
+      )
+  })
+  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
+  @GetMapping("/me")
+  public ResponseEntity<ApiStandardResponse<UserDetailsDto.Response>> userDetails(
+      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    UserDetailsDto dto = userService.getUserDetails(customUserDetails.getId());
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+  }
 
-	@Operation(summary = "사용중인 화장실 조회",
-		description = "Jwt 토큰으로 요청 후 해당 사용자의 사용 중인 화장실 반환")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "사용 중인 화장실 정보 조회 성공")
-	})
-	@GetMapping("/me/using-restroom")
-	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	public ResponseEntity<ApiStandardResponse<RestroomSummaryDto.Response>> usingRestroomSummary(
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		RestroomSummaryDto dto = userService.getUsingRestroom(customUserDetails.getId());
-		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
-	}
+  @Operation(summary = "사용중인 화장실 조회",
+      description = "Jwt 토큰으로 요청 후 해당 사용자의 사용 중인 화장실 반환")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "사용 중인 화장실 정보 조회 성공")
+  })
+  @GetMapping("/me/using-restroom")
+  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
+  public ResponseEntity<ApiStandardResponse<RestroomSummaryDto.Response>> usingRestroomSummary(
+      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    RestroomSummaryDto dto = userService.getUsingRestroom(customUserDetails.getId());
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+  }
 
-	@Operation(summary = "화장실 사용 내역 조회",
-		description = "Jwt 토큰으로 요청 후 해당 사용자의 화장실 사용 내역 반환")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "화장실 사용 내역 조회 성공")
-	})
-	@GetMapping("/me/used-restrooms")
-	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	public ResponseEntity<ApiStandardResponse<Page<RestroomSummaryDto.Response>>> usedRestroomsSummary(
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@RequestParam int page, @RequestParam int size) {
-		Page<Response> responses = userService
-			.getUsedRestrooms(customUserDetails.getId(), PageRequest.of(page, size))
-			.map(RestroomSummaryDto::toResponse);
-		return ResponseEntity.ok(ApiStandardResponse.success(responses));
-	}
+  @Operation(summary = "화장실 사용 내역 조회",
+      description = "Jwt 토큰으로 요청 후 해당 사용자의 화장실 사용 내역 반환")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "화장실 사용 내역 조회 성공")
+  })
+  @GetMapping("/me/used-restrooms")
+  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
+  public ResponseEntity<ApiStandardResponse<Page<RestroomSummaryDto.Response>>> usedRestroomsSummary(
+      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @RequestParam int page, @RequestParam int size) {
+    Page<Response> responses = userService
+        .getUsedRestrooms(customUserDetails.getId(), PageRequest.of(page, size))
+        .map(RestroomSummaryDto::toResponse);
+    return ResponseEntity.ok(ApiStandardResponse.success(responses));
+  }
 
   @Operation(summary = "포인트 충전", description = "해당 유저의 포인트를 충전합니다.")
   @ApiResponses({

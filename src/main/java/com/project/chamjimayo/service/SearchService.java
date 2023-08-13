@@ -2,12 +2,12 @@ package com.project.chamjimayo.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.project.chamjimayo.controller.dto.response.SearchResponseDto;
+import com.project.chamjimayo.repository.SearchRepository;
+import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.repository.domain.entity.Search;
 import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.exception.ApiNotFoundException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
-import com.project.chamjimayo.repository.SearchRepository;
-import com.project.chamjimayo.repository.UserJpaRepository;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
