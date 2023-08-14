@@ -1,4 +1,4 @@
-package com.project.chamjimayo.controller.dto;
+package com.project.chamjimayo.controller.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Min;
@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class PointChangeDto {
+public class PointResponse {
 
   @Schema(type = "Long", example = "1")
   @NotNull(message = "유저 ID를 입력해주세요.")
@@ -17,12 +17,12 @@ public class PointChangeDto {
   @Min(value = 0, message = "포인트의 최솟값은 0입니다.")
   private Integer point;
 
-  private PointChangeDto(Long userId, Integer point) {
+  private PointResponse(Long userId, Integer point) {
     this.userId = userId;
     this.point = point;
   }
 
-  public static PointChangeDto create(Long userId, Integer point) {
-    return new PointChangeDto(userId, point);
+  public static PointResponse create(Long userId, Integer point) {
+    return new PointResponse(userId, point);
   }
 }

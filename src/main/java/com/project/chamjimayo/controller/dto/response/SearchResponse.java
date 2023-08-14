@@ -1,4 +1,4 @@
-package com.project.chamjimayo.controller.dto;
+package com.project.chamjimayo.controller.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Max;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class SearchResponseDto {
+public class SearchResponse {
 
   @Schema(type = "string", example = "스타벅스")
   @NotBlank(message = "검색어를 입력해주세요.")
@@ -38,7 +38,7 @@ public class SearchResponseDto {
   @Max(value = 180, message = "경도는 -180 ~ 180으로 입력해주세요.")
   private final Double longitude;
 
-  private SearchResponseDto(String searchWord, String roadAddress, String lotNumberAddress,
+  private SearchResponse(String searchWord, String roadAddress, String lotNumberAddress,
       String name, Double latitude, Double longitude) {
     this.searchWord = searchWord;
     this.roadAddress = roadAddress;
@@ -48,9 +48,9 @@ public class SearchResponseDto {
     this.longitude = longitude;
   }
 
-  public static SearchResponseDto create(String searchWord, String roadAddress,
+  public static SearchResponse create(String searchWord, String roadAddress,
       String lotNumberAddress, String name, Double latitude, Double longitude) {
-    return new SearchResponseDto(searchWord, roadAddress, lotNumberAddress, name,
+    return new SearchResponse(searchWord, roadAddress, lotNumberAddress, name,
         latitude, longitude);
   }
 }

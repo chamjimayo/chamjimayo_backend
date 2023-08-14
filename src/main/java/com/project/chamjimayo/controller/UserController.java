@@ -1,13 +1,13 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.request.PointRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.PointChangeDto;
-import com.project.chamjimayo.controller.exception.AuthException;
-import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
 import com.project.chamjimayo.service.dto.DuplicateCheckDto;
+import com.project.chamjimayo.service.dto.PointDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto.Response;
 import com.project.chamjimayo.service.dto.UserDetailsDto;
@@ -53,57 +53,57 @@ public class UserController {
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 
-	@Operation(summary = "사용자 정보 조회", description = "Jwt 토큰으로 요청 후 해당 사용자 정보 반환")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
-		@ApiResponse(responseCode = "400", description = "1. 사용자가 존재하지 않습니다.",
-			content = @Content(mediaType = "application/json",
-				schema = @Schema(implementation = ErrorResponse.class),
-				examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
-					+ " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
-					+ "\"msg\":\"사용자가 존재하지 않습니다\"} }")
-			)
-		)
-	})
-	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	@GetMapping("/me")
-	public ResponseEntity<ApiStandardResponse<UserDetailsDto.Response>> userDetails(
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		UserDetailsDto dto = userService.getUserDetails(customUserDetails.getId());
-		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
-	}
+  @Operation(summary = "사용자 정보 조회", description = "Jwt 토큰으로 요청 후 해당 사용자 정보 반환")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
+      @ApiResponse(responseCode = "400", description = "1. 사용자가 존재하지 않습니다.",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorResponse.class),
+              examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
+                  + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
+                  + "\"msg\":\"사용자가 존재하지 않습니다\"} }")
+          )
+      )
+  })
+  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
+  @GetMapping("/me")
+  public ResponseEntity<ApiStandardResponse<UserDetailsDto.Response>> userDetails(
+      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    UserDetailsDto dto = userService.getUserDetails(customUserDetails.getId());
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+  }
 
-	@Operation(summary = "사용중인 화장실 조회",
-		description = "Jwt 토큰으로 요청 후 해당 사용자의 사용 중인 화장실 반환")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "사용 중인 화장실 정보 조회 성공")
-	})
-	@GetMapping("/me/using-restroom")
-	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	public ResponseEntity<ApiStandardResponse<RestroomSummaryDto.Response>> usingRestroomSummary(
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		RestroomSummaryDto dto = userService.getUsingRestroom(customUserDetails.getId());
-		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
-	}
+  @Operation(summary = "사용중인 화장실 조회",
+      description = "Jwt 토큰으로 요청 후 해당 사용자의 사용 중인 화장실 반환")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "사용 중인 화장실 정보 조회 성공")
+  })
+  @GetMapping("/me/using-restroom")
+  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
+  public ResponseEntity<ApiStandardResponse<RestroomSummaryDto.Response>> usingRestroomSummary(
+      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    RestroomSummaryDto dto = userService.getUsingRestroom(customUserDetails.getId());
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+  }
 
-	@Operation(summary = "화장실 사용 내역 조회",
-		description = "Jwt 토큰으로 요청 후 해당 사용자의 화장실 사용 내역 반환")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "화장실 사용 내역 조회 성공")
-	})
-	@GetMapping("/me/used-restrooms")
-	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	public ResponseEntity<ApiStandardResponse<Page<RestroomSummaryDto.Response>>> usedRestroomsSummary(
-		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@RequestParam int page, @RequestParam int size) {
-		Page<Response> responses = userService
-			.getUsedRestrooms(customUserDetails.getId(), PageRequest.of(page, size))
-			.map(RestroomSummaryDto::toResponse);
-		return ResponseEntity.ok(ApiStandardResponse.success(responses));
-	}
+  @Operation(summary = "화장실 사용 내역 조회",
+      description = "Jwt 토큰으로 요청 후 해당 사용자의 화장실 사용 내역 반환")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "화장실 사용 내역 조회 성공")
+  })
+  @GetMapping("/me/used-restrooms")
+  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
+  public ResponseEntity<ApiStandardResponse<Page<RestroomSummaryDto.Response>>> usedRestroomsSummary(
+      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @RequestParam int page, @RequestParam int size) {
+    Page<Response> responses = userService
+        .getUsedRestrooms(customUserDetails.getId(), PageRequest.of(page, size))
+        .map(RestroomSummaryDto::toResponse);
+    return ResponseEntity.ok(ApiStandardResponse.success(responses));
+  }
 
   @Operation(summary = "포인트 충전", description = "해당 유저의 포인트를 충전합니다.")
   @ApiResponses({
@@ -119,13 +119,6 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }"))),
-      @ApiResponse(responseCode = "403",
-          description = "1. 권한이 없습니다. \t\n",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"05\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
-                  + "\"msg\":\"권한이 없습니다.\"} }"))),
       @ApiResponse(responseCode = "404",
           description = "1. 유저를 찾지 못했습니다.",
           content = @Content(mediaType = "application/json",
@@ -133,21 +126,12 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-      in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/point/charge")
-  public ResponseEntity<ApiStandardResponse<PointChangeDto>> chargePoints(
-      @Valid @RequestBody PointChangeDto requestDTO,
-      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    if (requestDTO.getUserId() == null) {
-      throw new JsonFileNotFoundException("userId를 입력해주세요.");
-    }
-    if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-      PointChangeDto responseDTO = userService.chargePoints(requestDTO);
-      return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
-    } else {
-      throw new AuthException("권한이 없습니다.");
-    }
+  public ResponseEntity<ApiStandardResponse<PointResponse>> chargePoints(
+      @Valid @RequestBody PointRequest pointRequest) {
+    PointDto pointDto = PointDto.create(pointRequest);
+    PointResponse pointResponse = userService.chargePoints(pointDto);
+    return ResponseEntity.ok(ApiStandardResponse.success(pointResponse));
   }
 
   @Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감합니다.")
@@ -165,13 +149,6 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"22\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"POINT_NOT_ENOUGH\", "
                   + "\"msg\":\"포인트가 부족합니다.\"} }"))),
-      @ApiResponse(responseCode = "403",
-          description = "1. 권한이 없습니다. \t\n",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"05\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"AUTH_EXCEPTION\", "
-                  + "\"msg\":\"권한이 없습니다.\"} }"))),
       @ApiResponse(responseCode = "404",
           description = "1. 유저를 찾지 못했습니다.",
           content = @Content(mediaType = "application/json",
@@ -179,20 +156,11 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-      in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/point/deduct")
-  public ResponseEntity<ApiStandardResponse<PointChangeDto>> deductPoints(
-      @Valid @RequestBody PointChangeDto requestDTO,
-      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    if (requestDTO.getUserId() == null) {
-      throw new JsonFileNotFoundException("유저 ID를 입력해주세요.");
-    }
-    if (requestDTO.getUserId().equals(customUserDetails.getId())) {
-      PointChangeDto responseDTO = userService.deductPoints(requestDTO);
-      return ResponseEntity.ok(ApiStandardResponse.success(responseDTO));
-    } else {
-      throw new AuthException("권한이 없습니다.");
-    }
+  public ResponseEntity<ApiStandardResponse<PointResponse>> deductPoints(
+      @Valid @RequestBody PointRequest pointRequest) {
+    PointDto pointDto = PointDto.create(pointRequest);
+    PointResponse pointResponse = userService.deductPoints(pointDto);
+    return ResponseEntity.ok(ApiStandardResponse.success(pointResponse));
   }
 }

@@ -1,9 +1,9 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.PointChangeDto;
+import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.controller.dto.response.RefundResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.InAppPurchaseService;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "in-app", description = "in-app 결제 관련 api")
 @RequestMapping("/api/in-app")
 public class InAppPurchaseController {
+
   private final InAppPurchaseService inAppPurchaseService;
   private final RefundService refundService;
 
@@ -51,7 +52,7 @@ public class InAppPurchaseController {
   public ResponseEntity<Object> purchaseVerify(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody GoogleInAppPurchaseRequest request) {
-    PointChangeDto pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
+    PointResponse pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
         request);
     return ResponseEntity.ok(ApiStandardResponse.success(pointChangeDto));
   }

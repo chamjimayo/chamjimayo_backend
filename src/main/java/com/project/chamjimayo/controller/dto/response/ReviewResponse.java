@@ -1,4 +1,4 @@
-package com.project.chamjimayo.controller.dto;
+package com.project.chamjimayo.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class ReviewResponseDto {
+public class ReviewResponse {
 
   @Schema(type = "Long", example = "1")
   private Long reviewId;
@@ -33,7 +33,7 @@ public class ReviewResponseDto {
   @JsonFormat(pattern = "yy.MM.dd")
   private LocalDateTime dateTime;
 
-  private ReviewResponseDto(Long reviewId, Long userId, String nickname, String userProfile,
+  private ReviewResponse(Long reviewId, Long userId, String nickname, String userProfile,
       Long restroomId, String reviewContent,
       Integer rating, LocalDateTime dateTime) {
     this.reviewId = reviewId;
@@ -46,10 +46,10 @@ public class ReviewResponseDto {
     this.dateTime = dateTime;
   }
 
-  public static ReviewResponseDto create(Long reviewId, Long userId, String nickname,
+  public static ReviewResponse create(Long reviewId, Long userId, String nickname,
       String userProfile, Long restroomId, String reviewContent, Integer rating,
       LocalDateTime dateTime) {
-    return new ReviewResponseDto(reviewId, userId, nickname, userProfile, restroomId, reviewContent,
+    return new ReviewResponse(reviewId, userId, nickname, userProfile, restroomId, reviewContent,
         rating, dateTime);
   }
 }
