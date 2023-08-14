@@ -1,5 +1,6 @@
 package com.project.chamjimayo.controller.dto.request;
 
+import com.project.chamjimayo.service.dto.EnrollRestroomDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,4 +30,9 @@ public class EnrollRestroomRequest {
   private String publicOrPaid;
 
   private long restroomManagerId = 0;
+
+  public EnrollRestroomDto toDto() {
+    return EnrollRestroomDto.create(restroomName, address, operatingHour, imageUrl, maleToiletCount,
+        femaleToiletCount, publicOrPaid);
+  }
 }

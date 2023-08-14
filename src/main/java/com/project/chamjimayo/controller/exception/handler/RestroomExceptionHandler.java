@@ -10,6 +10,7 @@ import com.project.chamjimayo.service.exception.FileNotFoundException;
 import com.project.chamjimayo.service.exception.IoException;
 import com.project.chamjimayo.service.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.service.exception.RestroomNotFoundException;
+import com.project.chamjimayo.service.exception.UsingRestroomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -81,6 +82,14 @@ public class RestroomExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ApiStandardResponse<ErrorResponse> PageOutOfRangeException(
       PageOutOfRangeException e) {
+    log.error("", e);
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(),e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
+  @ExceptionHandler(UsingRestroomException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> UsingRestroomException(
+      UsingRestroomException e) {
     log.error("", e);
     final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(),e.getMessage());
     return ApiStandardResponse.fail(errorResponse);

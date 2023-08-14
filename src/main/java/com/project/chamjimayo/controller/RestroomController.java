@@ -3,15 +3,20 @@ package com.project.chamjimayo.controller;
 import com.project.chamjimayo.controller.dto.PageDto;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.request.EnrollRestroomRequest;
+import com.project.chamjimayo.controller.dto.response.EndOfUsingRestroomResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.response.NearByResponse;
 import com.project.chamjimayo.controller.dto.response.RestroomDetailResponse;
-import com.project.chamjimayo.controller.dto.request.RestroomNearByRequest;
+import com.project.chamjimayo.service.dto.EndOfUsingRestroomDto;
+import com.project.chamjimayo.service.dto.RestroomDetailDto;
+import com.project.chamjimayo.service.dto.RestroomNearByDto;
 import com.project.chamjimayo.controller.dto.response.RestroomResponse;
 import com.project.chamjimayo.controller.dto.request.UsingRestroomRequest;
 import com.project.chamjimayo.controller.dto.response.UsingRestroomResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.RestroomService;
+import com.project.chamjimayo.service.dto.EnrollRestroomDto;
+import com.project.chamjimayo.service.dto.UsingRestroomDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -62,8 +67,9 @@ public class RestroomController {
   @PostMapping("/enroll")
   public ResponseEntity<ApiStandardResponse<RestroomResponse>> enrollRestroom(
       @RequestBody EnrollRestroomRequest enrollRestroomRequest) {
+    EnrollRestroomDto dto = enrollRestroomRequest.toDto();
     return ResponseEntity.ok(
-        ApiStandardResponse.success(restroomService.enrollRestroom(enrollRestroomRequest)));
+        ApiStandardResponse.success( restroomService.enrollRestroom(dto).toResponse()));
   }
 
   @Operation(summary = "주변 유/무료 화장실리스트",
@@ -93,11 +99,11 @@ public class RestroomController {
       @RequestParam(defaultValue = "distance") String sortBy,
       @RequestParam(defaultValue = "-1") int page,
       @RequestParam(defaultValue = "10") int size) {
-    RestroomNearByRequest restroomNearByRequest = new RestroomNearByRequest(longitude,
+    RestroomNearByDto restroomNearByDto = new RestroomNearByDto(longitude,
         latitude, publicOrPaidOrEntire, distance, sortBy);
     PageDto pageDto = new PageDto(page,size);
     return ResponseEntity.ok(
-        ApiStandardResponse.success(restroomService.nearBy(restroomNearByRequest,pageDto)));
+        ApiStandardResponse.success(restroomService.nearBy(restroomNearByDto,pageDto)));
   }
 
   @Operation(summary = "화장실 세부 정보", description = "받은 화장실Id로 화장실 세부 정보를 검색 및 반환")
@@ -112,8 +118,9 @@ public class RestroomController {
   @GetMapping("/detail")
   public ResponseEntity<ApiStandardResponse<RestroomDetailResponse>> restroomDetail(
       @RequestParam Long restroomId) {
+    RestroomDetailDto dto = new RestroomDetailDto(restroomId);
     return ResponseEntity.ok(
-        ApiStandardResponse.success(restroomService.restroomDetail(restroomId)));
+        ApiStandardResponse.success(restroomService.restroomDetail(dto).toResponse()));
   }
 
   @Operation(summary = "화장실 사용", description = "받은 화장실 Id로 화장실 사용 로직 수행")
@@ -133,9 +140,10 @@ public class RestroomController {
       @Parameter(hidden = true) @AuthenticationPrincipal
       CustomUserDetails userDetails) {
     long userId = userDetails.getId();
+    UsingRestroomDto dto = usingRestroomRequest.toDto(userId);
     return ResponseEntity.ok(
         ApiStandardResponse.success(
-            restroomService.usingRestroom(userId, usingRestroomRequest.getRestroomId())));
+            restroomService.usingRestroom(dto).toResponse()));
   }
 
   @Operation(summary = "화장실 사용종료", description = "받은 화장실 Id로 화장실 사용종료 로직 수행")
@@ -150,11 +158,12 @@ public class RestroomController {
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping("/endofuse")
-  public ResponseEntity<ApiStandardResponse<UsingRestroomResponse>> endOfUsingRestroom(
+  public ResponseEntity<ApiStandardResponse<EndOfUsingRestroomResponse>> endOfUsingRestroom(
       @Parameter(hidden = true) @AuthenticationPrincipal
       CustomUserDetails userDetails) {
     long userId = userDetails.getId();
+    EndOfUsingRestroomDto dto = new EndOfUsingRestroomDto(userId);
     return ResponseEntity.ok(ApiStandardResponse.success(
-        restroomService.endOfUsingRestroom(userId)));
+        restroomService.endOfUsingRestroom(dto).toResponse()));
   }
 }

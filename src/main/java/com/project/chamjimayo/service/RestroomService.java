@@ -4,11 +4,14 @@ package com.project.chamjimayo.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.PageDto;
+import com.project.chamjimayo.service.dto.EndOfUsingRestroomDto;
+import com.project.chamjimayo.service.dto.EnrollRestroomDto;
+import com.project.chamjimayo.service.dto.RestroomDetailDto;
+import com.project.chamjimayo.service.dto.UsingRestroomDto;
 import com.project.chamjimayo.service.exception.PageOutOfRangeException;
-import com.project.chamjimayo.controller.dto.request.EnrollRestroomRequest;
 import com.project.chamjimayo.controller.dto.response.NearByResponse;
 import com.project.chamjimayo.controller.dto.response.RestroomDetailResponse;
-import com.project.chamjimayo.controller.dto.request.RestroomNearByRequest;
+import com.project.chamjimayo.service.dto.RestroomNearByDto;
 import com.project.chamjimayo.controller.dto.response.RestroomResponse;
 import com.project.chamjimayo.controller.dto.response.UsingRestroomResponse;
 import com.project.chamjimayo.repository.domain.entity.Restroom;
@@ -25,6 +28,7 @@ import com.project.chamjimayo.repository.RestroomJpaRepository;
 import com.project.chamjimayo.repository.RestroomPhotoRepository;
 import com.project.chamjimayo.repository.UsedRestroomRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
+import com.project.chamjimayo.service.exception.UsingRestroomException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -189,44 +193,42 @@ public class RestroomService {
   }
 
   /* 유료 화장실 등록 */
-  public RestroomResponse enrollRestroom(EnrollRestroomRequest enrollRestroomRequest) {
+  public EnrollRestroomDto enrollRestroom(EnrollRestroomDto dto) {
     if (restroomJpaRepository.existsRestroomByRestroomName(
-        enrollRestroomRequest.getRestroomName())) {
+        dto.getRestroomName())) {
       throw new RestroomNameDuplicateException("중복되는 화장실 명입니다.");
     }
-    double[] longNLat = getLongNLat(enrollRestroomRequest.getAddress());
+    double[] longNLat = getLongNLat(dto.getAddress());
     Restroom restroom = Restroom.builder()
-        .restroomName(enrollRestroomRequest.getRestroomName())
+        .restroomName(dto.getRestroomName())
         .locationLatitude(longNLat[1])
         .locationLongitude(longNLat[0])
-        .unisex(checkSex(enrollRestroomRequest.getMaleToiletCount(),
-            enrollRestroomRequest.getFemaleToiletCount())) // 남여공용이면 true 아니면 false
+        .unisex(checkSex(dto.getMaleToiletCount(),
+            dto.getFemaleToiletCount())) // 남여공용이면 true 아니면 false
 //            .restroomManager(restroomManagerRepository.getReferenceById(
 //                enrollRestroomRequest.getRestroomManagerId())) //restroomManager 차후개발
-        .address(enrollRestroomRequest.getAddress())
-        .operatingHour(enrollRestroomRequest.getOperatingHour())
+        .address(dto.getAddress())
+        .operatingHour(dto.getOperatingHour())
         .equipmentExistenceProbability(0)
-        .publicOrPaid(enrollRestroomRequest.getPublicOrPaid())
+        .publicOrPaid(dto.getPublicOrPaid())
         .accessibleToiletExistence(true)
-        .maleToiletCount(enrollRestroomRequest.getMaleToiletCount())
-        .femaleToiletCount(enrollRestroomRequest.getFemaleToiletCount())
-        .availableFemaleToiletCount(enrollRestroomRequest.getFemaleToiletCount())
-        .availableMaleToiletCount(enrollRestroomRequest.getMaleToiletCount())
+        .maleToiletCount(dto.getMaleToiletCount())
+        .femaleToiletCount(dto.getFemaleToiletCount())
+        .availableFemaleToiletCount(dto.getFemaleToiletCount())
+        .availableMaleToiletCount(dto.getMaleToiletCount())
         .build();
-    RestroomResponse response = new RestroomResponse(
-        restroomJpaRepository.save(restroom).getRestroomId(), restroom.getRestroomName());
+    dto.setRestroomId(restroomJpaRepository.save(restroom).getRestroomId());
     //화장실 이미지 추가
-    for(String imgUrl: enrollRestroomRequest.getImageUrl()) {
+    for (String imgUrl : dto.getImageUrl()) {
       RestroomPhoto restroomPhoto = new RestroomPhoto();
       restroomPhoto.createImage(restroom, imgUrl);
       restroomPhotoRespository.save(restroomPhoto);
     }
 
-
-    return response;
+    return dto;
   }
 
-  public double calculateDistance(RestroomNearByRequest req, Restroom restroom) {
+  public double calculateDistance(RestroomNearByDto req, Restroom restroom) {
     final double EARTH_RADIUS_KM = 6371.0;
     double lat1 = req.getLatitude();
     double lon1 = req.getLongitude();
@@ -254,35 +256,38 @@ public class RestroomService {
 
   /* 주어진 좌표 주변 유/무료 화장실 검색 후 리스트 반환*/
   @Transactional(readOnly = true)
-  public List<NearByResponse> nearBy(RestroomNearByRequest request, PageDto pageDto) {
+  public List<NearByResponse> nearBy(RestroomNearByDto nearByDto, PageDto pageDto) {
     Optional<List<Restroom>> restroomList;
-    if (request.getPublicOrPaidOrEntire().equals("entire")) {
+    if (nearByDto.getPublicOrPaidOrEntire().equals("entire")) {
       restroomList = Optional.of(restroomJpaRepository.findAll());
     } else {
       restroomList = restroomJpaRepository.findPublicOrPaid(
-          request.getPublicOrPaidOrEntire());
+          nearByDto.getPublicOrPaidOrEntire());
     }
     List<NearByResponse> nearByList = new ArrayList<>();
     if (restroomList.isEmpty()) {
       throw new RestroomNotFoundException("근처 화장실을 찾을 수 없습니다");
     }
     for (Restroom restroom : restroomList.get()) {
-      double distance = calculateDistance(request, restroom);
-      if (distance <= request.getDistance()) {
+      double distance = calculateDistance(nearByDto, restroom);
+      if (distance <= nearByDto.getDistance()) {
         restroom.getReviews().size(); // lazy initialize 문제 때문에 추가
         NearByResponse responseDto = new NearByResponse();
         responseDto = responseDto.makeDto(restroom, distance);
         nearByList.add(responseDto);
       }
     }
-    List<NearByResponse> sortedList = sortList(nearByList, request.getSortBy());
+    List<NearByResponse> sortedList = sortList(nearByList, nearByDto.getSortBy());
     //default page값이 들어온 경우는 페이징 처리 X
-    if(pageDto.getPage() == -1) return sortedList;
-    else return getPagedList(sortedList, pageDto.getPage(), pageDto.getSize());
+    if (pageDto.getPage() == -1) {
+      return sortedList;
+    } else {
+      return getPagedList(sortedList, pageDto.getPage(), pageDto.getSize());
+    }
   }
 
   public List<NearByResponse> getPagedList(List<NearByResponse> sortedList, int page, int size) {
-    int startIndex = (page-1) * size;
+    int startIndex = (page - 1) * size;
     int endIndex = Math.min(startIndex + size, sortedList.size());
 
     if (startIndex >= endIndex) {
@@ -292,16 +297,16 @@ public class RestroomService {
     return sortedList.subList(startIndex, endIndex);
   }
 
-  public List<NearByResponse> sortList(List<NearByResponse> nearByList, String sortBy){
+  public List<NearByResponse> sortList(List<NearByResponse> nearByList, String sortBy) {
     List<NearByResponse> sortedList;
     // 별점순 정렬
-    if(sortBy.equals("rating")) {
+    if (sortBy.equals("rating")) {
       sortedList = nearByList.stream()
           .sorted(Comparator.comparingDouble(NearByResponse::getReviewRating).reversed())
           .collect(Collectors.toList());
     }
     // 거리순 정렬
-    else{
+    else {
       sortedList = nearByList.stream()
           .sorted(Comparator.comparingDouble(NearByResponse::getDistance))
           .collect(Collectors.toList());
@@ -311,42 +316,49 @@ public class RestroomService {
 
   /* 화장실 Id를 통해 화장실 세부 정보 검색 */
   @Transactional(readOnly = true)
-  public RestroomDetailResponse restroomDetail(long restroomId) {
+  public RestroomDetailDto restroomDetail(RestroomDetailDto dto) {
     Optional<Restroom> restroomOp = Optional.ofNullable(
-        restroomJpaRepository.findRestroomByRestroomId(restroomId)
+        restroomJpaRepository.findRestroomByRestroomId(dto.getRestroomId())
             .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
-    Restroom restrooms = restroomOp.get();
+    Restroom restroom = restroomOp.get();
+    dto.setRestroom(restroom);
+    restroomOp.get().getRestroomPhotos().size();// lazy initialize 문제 때문에 추가
     restroomOp.get().getReviews().size(); // lazy initialize 문제 때문에 추가
     restroomOp.get().getEquipments().size(); // lazy initialize 문제 때문에 추가
-    RestroomDetailResponse responseDto = new RestroomDetailResponse();
-    responseDto = responseDto.makeDto(restrooms);
-    return responseDto;
+    return dto;
   }
 
   @Transactional(readOnly = false)
-  public UsingRestroomResponse usingRestroom(long userId, long restroomId) {
-    Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(userId)
+  public UsingRestroomDto usingRestroom(UsingRestroomDto dto) {
+    Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(dto.getUserId())
         .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다")));
+    if(user.get().getUsingRestroomId() != null){
+      throw new UsingRestroomException("이미 화장실을 사용중입니다");
+    }
     Optional<Restroom> restroom = Optional.ofNullable(
-        restroomJpaRepository.findRestroomByRestroomId(restroomId)
+        restroomJpaRepository.findRestroomByRestroomId(dto.getRestroomId())
             .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
     restroom.get().useRestroom(user.get().getGender()); // 이용가능 변기 수 차감
     user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시
-    UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(restroomId)
+    UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(dto.getRestroomId())
         .build(); // 사용한 화장실 엔티티 생성
     usedRestroomRepository.save(usedRestroom); // 화장실 이용 내역을 DB에 저장
-    return new UsingRestroomResponse(userId, restroomId);
+    return dto;
   }
 
   @Transactional(readOnly = false)
-  public UsingRestroomResponse endOfUsingRestroom(long userId) {
-    Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(userId)
+  public EndOfUsingRestroomDto endOfUsingRestroom(EndOfUsingRestroomDto dto) {
+    Optional<User> user = Optional.ofNullable(userJpaRepository.findUserByUserId(dto.getUserId())
         .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다")));
+    if(user.get().getUsingRestroomId() == null){
+      throw new UsingRestroomException("사용중인 화장실이 없습니다");
+    }
     Optional<Restroom> restroom = Optional.ofNullable(
         restroomJpaRepository.findRestroomByRestroomId(user.get().getUsingRestroomId())
             .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
     restroom.get().endOfUseRestroom(user.get().getGender()); // 이용가능 변기 수 차증
     user.get().endOfUseRestroom(); // 현재 사용자에게 사용중 화장실 삭제
-    return new UsingRestroomResponse(userId, restroom.get().getRestroomId());
+    dto.setRestroomId(restroom.get().getRestroomId());
+    return dto;
   }
 }
