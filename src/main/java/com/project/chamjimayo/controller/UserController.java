@@ -1,15 +1,17 @@
 package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.DuplicateCheckResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.PointChangeDto;
+import com.project.chamjimayo.controller.dto.response.RestroomSummaryResponse;
+import com.project.chamjimayo.controller.dto.response.UserDetailsResponse;
 import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
 import com.project.chamjimayo.service.dto.DuplicateCheckDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto;
-import com.project.chamjimayo.service.dto.RestroomSummaryDto.Response;
 import com.project.chamjimayo.service.dto.UserDetailsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,7 +49,7 @@ public class UserController {
       @ApiResponse(responseCode = "200", description = "중복 체크 성공")
   })
   @GetMapping("/check-nickname/{nickname}")
-  public ResponseEntity<ApiStandardResponse<DuplicateCheckDto.Response>> nicknameCheckDuplication(
+  public ResponseEntity<ApiStandardResponse<DuplicateCheckResponse>> nicknameCheckDuplication(
       @PathVariable("nickname") String nickname) {
     DuplicateCheckDto dto = userService.isNicknameDuplicate(nickname);
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
@@ -68,7 +70,7 @@ public class UserController {
 	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
 		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
 	@GetMapping("/me")
-	public ResponseEntity<ApiStandardResponse<UserDetailsDto.Response>> userDetails(
+	public ResponseEntity<ApiStandardResponse<UserDetailsResponse>> userDetails(
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		UserDetailsDto dto = userService.getUserDetails(customUserDetails.getId());
 		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
@@ -82,7 +84,7 @@ public class UserController {
 	@GetMapping("/me/using-restroom")
 	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
 		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	public ResponseEntity<ApiStandardResponse<RestroomSummaryDto.Response>> usingRestroomSummary(
+	public ResponseEntity<ApiStandardResponse<RestroomSummaryResponse>> usingRestroomSummary(
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		RestroomSummaryDto dto = userService.getUsingRestroom(customUserDetails.getId());
 		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
@@ -96,10 +98,10 @@ public class UserController {
 	@GetMapping("/me/used-restrooms")
 	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
 		in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-	public ResponseEntity<ApiStandardResponse<Page<RestroomSummaryDto.Response>>> usedRestroomsSummary(
+	public ResponseEntity<ApiStandardResponse<Page<RestroomSummaryResponse>>> usedRestroomsSummary(
 		@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@RequestParam int page, @RequestParam int size) {
-		Page<Response> responses = userService
+		Page<RestroomSummaryResponse> responses = userService
 			.getUsedRestrooms(customUserDetails.getId(), PageRequest.of(page, size))
 			.map(RestroomSummaryDto::toResponse);
 		return ResponseEntity.ok(ApiStandardResponse.success(responses));

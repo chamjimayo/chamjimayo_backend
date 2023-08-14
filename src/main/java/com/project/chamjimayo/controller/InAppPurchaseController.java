@@ -52,7 +52,7 @@ public class InAppPurchaseController {
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody GoogleInAppPurchaseRequest request) {
     PointChangeDto pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
-        request);
+        request.toDto());
     return ResponseEntity.ok(ApiStandardResponse.success(pointChangeDto));
   }
 
