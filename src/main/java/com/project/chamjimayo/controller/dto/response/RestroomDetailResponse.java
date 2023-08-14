@@ -59,7 +59,7 @@ public class RestroomDetailResponse {
 
   private Float averageRating;
 
-  public RestroomDetailResponse makeDto(Restroom restroom) {
+  public RestroomDetailResponse(Restroom restroom) {
     this.restroomName = restroom.getRestroomName();
     this.longitude = restroom.getLocationLongitude();
     this.latitude = restroom.getLocationLatitude();
@@ -92,6 +92,5 @@ public class RestroomDetailResponse {
           restroom.getRestroomManager().getManagerId());
     }
     this.averageRating = restroom.getAverageRating();
-    return this;
   }
 }
