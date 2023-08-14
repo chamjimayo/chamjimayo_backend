@@ -1,7 +1,5 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.request.ReviewRequest;
-import com.project.chamjimayo.controller.dto.request.ReviewUpdateRequest;
 import com.project.chamjimayo.controller.dto.response.ReviewResponse;
 import com.project.chamjimayo.repository.RestroomJpaRepository;
 import com.project.chamjimayo.repository.ReviewRepository;

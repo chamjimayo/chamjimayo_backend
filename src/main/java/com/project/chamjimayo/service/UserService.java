@@ -1,6 +1,5 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.request.PointRequest;
 import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.repository.RestroomQueryRepository;

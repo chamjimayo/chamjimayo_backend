@@ -4,7 +4,6 @@ import com.project.chamjimayo.controller.dto.request.PointRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.response.PointResponse;
-import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
 import com.project.chamjimayo.service.dto.DuplicateCheckDto;
