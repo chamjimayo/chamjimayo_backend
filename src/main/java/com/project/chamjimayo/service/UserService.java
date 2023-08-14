@@ -79,7 +79,7 @@ public class UserService {
    * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 충전 후 포인트)
    */
   @Transactional
-  public PointResponse chargePoints(PointDto pointDto) {
+  public PointDto chargePoints(PointDto pointDto) {
 
     if (pointDto.getUserId() == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
@@ -91,14 +91,14 @@ public class UserService {
 
     user.addPoint(newPoint);
 
-    return PointResponse.create(user.getUserId(), user.getPoint());
+    return PointDto.create(user.getUserId(), user.getPoint());
   }
 
   /**
    * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 후 포인트)
    */
   @Transactional
-  public PointResponse deductPoints(PointDto pointDto) {
+  public PointDto deductPoints(PointDto pointDto) {
 
     if (pointDto.getUserId() == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
@@ -114,7 +114,7 @@ public class UserService {
 
     user.deductPoint(deductionPoint);
 
-    return PointResponse.create(user.getUserId(), user.getPoint());
+    return PointDto.create(user.getUserId(), user.getPoint());
   }
 
   private User getUser(PointDto pointDto) {

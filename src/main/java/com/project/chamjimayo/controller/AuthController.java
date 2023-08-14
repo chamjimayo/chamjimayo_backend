@@ -1,13 +1,13 @@
 package com.project.chamjimayo.controller;
 
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
+import com.project.chamjimayo.controller.dto.response.AuthTokenResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.controller.dto.request.LoginRequest;
 import com.project.chamjimayo.controller.dto.request.RefreshAccessTokenRequest;
 import com.project.chamjimayo.controller.dto.request.SignUpRequest;
 import com.project.chamjimayo.service.AuthService;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
-import com.project.chamjimayo.service.dto.AuthTokenDto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -44,7 +44,7 @@ public class AuthController {
       )
   })
   @PostMapping("/signup")
-  public ResponseEntity<ApiStandardResponse<Response>> signUp(
+  public ResponseEntity<ApiStandardResponse<AuthTokenResponse>> signUp(
       @RequestBody SignUpRequest request) {
     AuthTokenDto dto = authService.issueNewToken(request.toDto());
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
@@ -63,7 +63,7 @@ public class AuthController {
       )
   })
   @PostMapping("/login")
-  public ResponseEntity<ApiStandardResponse<Response>> login(
+  public ResponseEntity<ApiStandardResponse<AuthTokenResponse>> login(
       @RequestBody LoginRequest request) {
     AuthTokenDto dto = authService.issueToken(request.getAuthId());
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
@@ -84,7 +84,7 @@ public class AuthController {
       )
   })
   @PostMapping("/token/access")
-  public ResponseEntity<ApiStandardResponse<Response>> issueToken(
+  public ResponseEntity<ApiStandardResponse<AuthTokenResponse>> issueToken(
       @RequestBody RefreshAccessTokenRequest request) {
     AuthTokenDto dto = authService.refreshToken(request.getRefreshToken());
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
