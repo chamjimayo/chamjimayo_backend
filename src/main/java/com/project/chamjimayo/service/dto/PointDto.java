@@ -1,6 +1,7 @@
 package com.project.chamjimayo.service.dto;
 
 import com.project.chamjimayo.controller.dto.request.PointRequest;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -29,5 +30,9 @@ public class PointDto {
 
   public static PointDto create(Long userId, Integer point) {
     return new PointDto(userId, point);
+  }
+
+  public PointResponse toResponse() {
+    return PointResponse.create(userId, point);
   }
 }
