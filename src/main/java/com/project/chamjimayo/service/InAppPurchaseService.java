@@ -19,13 +19,13 @@ public class InAppPurchaseService {
   public PointDto verifyPurchase(Long userId, GoogleInAppPurchaseDto dto) {
     if (receiptValidationService.validateReceipt(dto)) {
       Integer point = Product.pointsFromProductId(dto.getProductId());
-      PointDto pointDto = userService.chargePoints(
+      PointDto pointChangeDto = userService.chargePoints(
           PointDto.create(userId, point));
 
-      orderService.createOrder(dto.getToken(), pointDto.getUserId(),
-          pointDto.getPoint());
+      orderService.createOrder(dto.getToken(), pointChangeDto.getUserId(),
+          pointChangeDto.getPoint());
 
-      return pointDto;
+      return pointChangeDto;
     }
 
     return PointDto.create(userId, 0);

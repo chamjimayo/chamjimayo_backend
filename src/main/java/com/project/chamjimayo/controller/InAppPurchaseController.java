@@ -53,9 +53,9 @@ public class InAppPurchaseController {
   public ResponseEntity<ApiStandardResponse<PointResponse>> purchaseVerify(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody GoogleInAppPurchaseRequest request) {
-    PointDto dto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
+    PointDto pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
         request.toDto());
-    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+    return ResponseEntity.ok(ApiStandardResponse.success(pointChangeDto.toResponse()));
   }
 
   @Operation(summary = "포인트 충전 환불", description = "받은 환불 정보를 가지고 포인트 환불 처리")
