@@ -13,7 +13,7 @@ public class ApiKeyAuthenticationFilter extends AbstractPreAuthenticatedProcessi
   @Override
   protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
     String key = request.getHeader(principalRequestHeader);
-    if (key == null) {
+    if (key == null || key == "") {
       throw new BadCredentialsException("Api 키가 올바르지 않습니다.");
     }
     return key;
