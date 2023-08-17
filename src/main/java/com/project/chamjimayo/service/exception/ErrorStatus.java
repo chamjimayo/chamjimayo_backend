@@ -37,7 +37,8 @@ public enum ErrorStatus {
   VOIDED_PURCHASE_NOT_FOUND("28"),
   INDEX_EXCEPTION("29"),
   PAGE_OUT_OF_RANGE("30"),
-  USING_RESTROOM_EXCEPTION("31");
+  USING_RESTROOM_EXCEPTION("31"),
+  API_KEY_NOT_VALID_EXCEPTION("32");
   private final String code;
 
   ErrorStatus(String code) {
