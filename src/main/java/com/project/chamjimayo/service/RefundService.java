@@ -5,9 +5,9 @@ import com.google.api.services.androidpublisher.model.VoidedPurchase;
 import com.google.api.services.androidpublisher.model.VoidedPurchasesListResponse;
 import com.project.chamjimayo.controller.config.GoogleProperties;
 import com.project.chamjimayo.controller.dto.response.RefundResponse;
-import com.project.chamjimayo.repository.OrderRepository;
+import com.project.chamjimayo.repository.InAppOrderJpaRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
-import com.project.chamjimayo.repository.domain.entity.Order;
+import com.project.chamjimayo.repository.domain.entity.InAppOrder;
 import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.exception.IoException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
@@ -23,11 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RefundService {
 
-  private final OrderRepository orderRepository;
+  private final InAppOrderJpaRepository inAppOrderJpaRepository;
   private final UserJpaRepository userJpaRepository;
   private final AndroidPublisher androidPublisher;
   private final GoogleProperties googleProperties;
-  private final UserService userService;
 
   @Transactional
   public List<RefundResponse> processRefund() {
@@ -35,22 +34,22 @@ public class RefundService {
 
     List<RefundResponse> refundResponseList = new ArrayList<>();
     for (VoidedPurchase voidedPurchase : voidedPurchases) {
-      Order order = orderRepository.findOrderByPurchaseToken(voidedPurchase.getPurchaseToken());
-      if (!order.isAlreadyRefund()) { //환불 처리된게 아니라면 환불 처리
-        refund(refundResponseList, order);
+      InAppOrder inAppOrder = inAppOrderJpaRepository.findOrderByPurchaseToken(voidedPurchase.getPurchaseToken());
+      if (!inAppOrder.isAlreadyRefund()) { //환불 처리된게 아니라면 환불 처리
+        refund(refundResponseList, inAppOrder);
       }
     }
     return refundResponseList;
   }
 
-  private void refund(List<RefundResponse> refundResponseList, Order order) {
-    User user = userJpaRepository.findUserByUserId(order.getUserId())
+  private void refund(List<RefundResponse> refundResponseList, InAppOrder inAppOrder) {
+    User user = userJpaRepository.findUserByUserId(inAppOrder.getUserId())
         .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다"));
     //포인트 환불, 이미 사용했다면 보유 포인트 마이너스
-    user.deductPoint(order.getPoint());
+    user.deductPoint(inAppOrder.getPoint());
     // 환불 처리 목록에 추가
-    refundResponseList.add(new RefundResponse(user.getUserId(), order.getPoint()));
-    order.alreadyRefund(); // order 테이블에서 이미 처리된 환불 요청으로 변경
+    refundResponseList.add(new RefundResponse(user.getUserId(), inAppOrder.getPoint()));
+    inAppOrder.alreadyRefund(); // order 테이블에서 이미 처리된 환불 요청으로 변경
   }
 
   private List<VoidedPurchase> getVoidedPurchases() {
