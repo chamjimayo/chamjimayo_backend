@@ -107,35 +107,7 @@ public class UserController {
 		return ResponseEntity.ok(ApiStandardResponse.success(responses));
 	}
 
-  @Operation(summary = "포인트 충전", description = "해당 유저의 포인트를 충전합니다.")
-  @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "포인트 충전 성공."),
-      @ApiResponse(responseCode = "400",
-          description = "1. 유저 ID를 입력해주세요. \t\n"
-              + "3. 포인트를 입력해주세요. \t\n"
-              + "4. 포인트의 최솟값은 0입니다. \t\n"
-              + "5. 올바르지 않은 JSON 형식입니다. \t\n"
-              + "6. 유효한 토큰이 아닙니다.",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
-                  + "\"msg\":\"유저를 찾지 못했습니다.\"} }"))),
-      @ApiResponse(responseCode = "404",
-          description = "1. 유저를 찾지 못했습니다.",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
-                  + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-  @PostMapping("/point/charge")
-  public ResponseEntity<ApiStandardResponse<PointResponse>> chargePoints(
-      @Valid @RequestBody PointRequest pointRequest) {
-    PointDto dto = userService.chargePoints(PointDto.create(pointRequest));
-    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
-  }
-
-  @Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감합니다.")
+  @Operation(summary = "포인트 차감", description = "해당 유저의 포인트를 차감한 후 남은 포인트를 반환합니다.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "포인트 차감 성공."),
       @ApiResponse(responseCode = "400",
@@ -157,10 +129,14 @@ public class UserController {
               examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
-  @PostMapping("/point/deduct")
+  @PostMapping("/me/point/deduct")
+	@Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
+			in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
   public ResponseEntity<ApiStandardResponse<PointResponse>> deductPoints(
+			@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @Valid @RequestBody PointRequest pointRequest) {
-    PointDto dto = userService.deductPoints(PointDto.create(pointRequest));
-    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+    PointDto dto = userService.deductPoints(customUserDetails.getId(),
+				PointDto.create(pointRequest.getPoint()));
+		return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 }
