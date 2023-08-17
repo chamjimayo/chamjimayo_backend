@@ -1,8 +1,0 @@
-package com.project.chamjimayo.repository;
-
-import com.project.chamjimayo.repository.domain.entity.Order;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface OrderJpaRepository extends JpaRepository<Order, String> {
-
-}
