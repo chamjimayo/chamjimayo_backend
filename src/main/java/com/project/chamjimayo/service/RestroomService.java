@@ -300,9 +300,14 @@ public class RestroomService {
   public List<NearByResponse> sortList(List<NearByResponse> nearByList, String sortBy) {
     List<NearByResponse> sortedList;
     // 별점순 정렬
-    if (sortBy.equals("rating")) {
+    if (sortBy.equals("rating_des")) {
       sortedList = nearByList.stream()
           .sorted(Comparator.comparingDouble(NearByResponse::getReviewRating).reversed())
+          .collect(Collectors.toList());
+    }
+    else if(sortBy.equals("rating_asc")){
+      sortedList = nearByList.stream()
+          .sorted(Comparator.comparingDouble(NearByResponse::getReviewRating))
           .collect(Collectors.toList());
     }
     // 거리순 정렬
