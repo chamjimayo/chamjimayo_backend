@@ -1,13 +1,14 @@
 package com.project.chamjimayo.controller;
 
-import com.project.chamjimayo.controller.dto.PointChangeDto;
+import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
-import com.project.chamjimayo.controller.dto.request.GoogleInAppPurchaseRequest;
+import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.controller.dto.response.RefundResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.InAppPurchaseService;
 import com.project.chamjimayo.service.RefundService;
+import com.project.chamjimayo.service.dto.PointDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "in-app", description = "in-app 결제 관련 api")
 @RequestMapping("/api/in-app")
 public class InAppPurchaseController {
+
   private final InAppPurchaseService inAppPurchaseService;
   private final RefundService refundService;
 
@@ -48,12 +50,12 @@ public class InAppPurchaseController {
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
   @PostMapping("/purchase/verify")
-  public ResponseEntity<Object> purchaseVerify(
+  public ResponseEntity<ApiStandardResponse<PointResponse>> purchaseVerify(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody GoogleInAppPurchaseRequest request) {
-    PointChangeDto pointChangeDto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
-        request);
-    return ResponseEntity.ok(ApiStandardResponse.success(pointChangeDto));
+    PointDto dto = inAppPurchaseService.verifyPurchase(customUserDetails.getId(),
+        request.toDto());
+    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 
   @Operation(summary = "포인트 충전 환불", description = "받은 환불 정보를 가지고 포인트 환불 처리")

@@ -1,16 +1,16 @@
 package com.project.chamjimayo.security.config;
 
-import com.project.chamjimayo.service.exception.ApiKeyAuthenticationFilter;
-import com.project.chamjimayo.security.filter.AuthenticationExceptionFilter;
 import com.project.chamjimayo.security.CustomUserDetailsService;
-import com.project.chamjimayo.security.filter.JwtAuthenticationFilter;
 import com.project.chamjimayo.security.RestAuthenticationEntryPoint;
+import com.project.chamjimayo.security.exception.ApiKeyNotValidException;
+import com.project.chamjimayo.security.filter.AuthenticationExceptionFilter;
+import com.project.chamjimayo.security.filter.JwtAuthenticationFilter;
 import com.project.chamjimayo.service.AuthTokenService;
+import com.project.chamjimayo.security.filter.ApiKeyAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -42,11 +42,12 @@ public class SecurityConfig {
       String principal = (String) authentication.getPrincipal();
 
       if (!apiProperties.getApiKey().equals(principal)) {
-        throw new BadCredentialsException("Api 키가 잘못됐습니다.");
+        throw new ApiKeyNotValidException("Api 키가 잘못됐습니다.");
       }
       authentication.setAuthenticated(true);
       return authentication;
     });
+
     return apiKeyAuthenticationFilter;
   }
 
@@ -67,9 +68,11 @@ public class SecurityConfig {
         .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
     http.requestMatchers(
-            request -> request.antMatchers("/api/users/me/**", "/api/address/search/**",
-                    "/api/review", "/api/review/*", "/api/review/list/*",
-                    "/api/users/point/**",
+            request -> request.antMatchers(
+                    "/api/users/me/**",
+                    "/api/address/search/**",
+                    "/api/review",
+                    "/api/review/list",
                     "/api/restroom/use",
                     "/api/restroom/endofuse",
                     "/api/in-app/purchase/verify")

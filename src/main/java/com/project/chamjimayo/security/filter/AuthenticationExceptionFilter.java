@@ -3,6 +3,7 @@ package com.project.chamjimayo.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.security.exception.ApiKeyNotValidException;
 import com.project.chamjimayo.service.exception.ErrorStatus;
 import com.project.chamjimayo.security.exception.InvalidTokenException;
 import java.io.IOException;
@@ -28,8 +29,8 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
       ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_TOKEN_EXCEPTION,
           e.getMessage());
       createApiErrorResponse(HttpStatus.BAD_REQUEST, response, errorResponse);
-    } catch (BadCredentialsException e) {
-      ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.AUTHENTICATION_EXCEPTION,
+    } catch (ApiKeyNotValidException e) {
+      ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.API_KEY_NOT_VALID_EXCEPTION,
           e.getMessage());
       createApiErrorResponse(HttpStatus.UNAUTHORIZED, response, errorResponse);
     }

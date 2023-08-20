@@ -60,16 +60,6 @@ public class ReviewExceptionHandler {
     return ApiStandardResponse.fail(errorResponse);
   }
 
-  // 인증 오류
-  @ExceptionHandler(AuthException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ApiStandardResponse<ErrorResponse> handleAuthException(AuthException e) {
-    log.error("", e);
-
-    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
-    return ApiStandardResponse.fail(errorResponse);
-  }
-
   // 파라미터가 올바르지 않은 경우 (validation에 걸린 경우)
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
