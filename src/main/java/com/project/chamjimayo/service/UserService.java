@@ -1,6 +1,5 @@
 package com.project.chamjimayo.service;
 
-import com.project.chamjimayo.controller.dto.response.PointResponse;
 import com.project.chamjimayo.controller.exception.JsonFileNotFoundException;
 import com.project.chamjimayo.repository.RestroomQueryRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
@@ -76,35 +75,35 @@ public class UserService {
   }
 
   /**
-   * 해당 유저의 포인트를 충전합니다. (반환값 : 유저Id, 충전 후 포인트)
+   * 해당 유저의 포인트를 충전합니다. (반환값 : 충전 후 포인트)
    */
   @Transactional
-  public PointDto chargePoints(PointDto pointDto) {
+  public PointDto chargePoints(Long userId, PointDto pointDto) {
 
-    if (pointDto.getUserId() == null) {
+    if (userId == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
     }
 
-    User user = getUser(pointDto);
+    User user = getUser(userId);
 
     Integer newPoint = pointDto.getPoint();
 
     user.addPoint(newPoint);
 
-    return PointDto.create(user.getUserId(), user.getPoint());
+    return PointDto.create(user.getPoint());
   }
 
   /**
-   * 해당 유저의 포인트를 차감합니다. (반환값 : 유저Id, 차감 후 포인트)
+   * 해당 유저의 포인트를 차감합니다. (반환값 : 차감 후 포인트)
    */
   @Transactional
-  public PointDto deductPoints(PointDto pointDto) {
+  public PointDto deductPoints(Long userId, PointDto pointDto) {
 
-    if (pointDto.getUserId() == null) {
+    if (userId == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
     }
 
-    User user = getUser(pointDto);
+    User user = getUser(userId);
 
     Integer deductionPoint = pointDto.getPoint();
 
@@ -114,12 +113,12 @@ public class UserService {
 
     user.deductPoint(deductionPoint);
 
-    return PointDto.create(user.getUserId(), user.getPoint());
+    return PointDto.create(user.getPoint());
   }
 
-  private User getUser(PointDto pointDto) {
-    return userJpaRepository.findById(pointDto.getUserId())
+  private User getUser(Long userId) {
+    return userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: "
-            + pointDto.getUserId()));
+            + userId));
   }
 }

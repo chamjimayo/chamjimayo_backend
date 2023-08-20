@@ -9,30 +9,20 @@ import lombok.Getter;
 
 @Getter
 public class PointDto {
-
-  @Schema(type = "Long", example = "1")
-  @NotNull(message = "유저 ID를 입력해주세요.")
-  private Long userId;
-
   @Schema(type = "Integer", example = "2000")
   @NotNull(message = "포인트를 입력해주세요.")
   @Min(value = 0, message = "포인트의 최솟값은 0입니다.")
   private Integer point;
 
-  private PointDto(Long userId, Integer point) {
-    this.userId = userId;
+  private PointDto(Integer point) {
     this.point = point;
   }
 
-  public static PointDto create(PointRequest pointRequest) {
-    return new PointDto(pointRequest.getUserId(), pointRequest.getPoint());
-  }
-
-  public static PointDto create(Long userId, Integer point) {
-    return new PointDto(userId, point);
+  public static PointDto create(Integer point) {
+    return new PointDto(point);
   }
 
   public PointResponse toResponse() {
-    return PointResponse.create(userId, point);
+    return PointResponse.create( point);
   }
 }
