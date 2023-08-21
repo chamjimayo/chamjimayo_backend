@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SignUpRequest {
-
   @NotNull
   @Schema(description = "인증 플랫폼")
   private AuthType authType;
@@ -29,12 +28,15 @@ public class SignUpRequest {
   @Schema(description = "사용자 닉네임")
   private String nickname;
 
+  @Schema(description = "사용자 프로필 url")
+  private String userProfile;
+
   @NotBlank
   @Pattern(regexp = "^(female|male)")
   @Schema(description = "성별")
   private String gender;
 
   public SignUpDto toDto() {
-    return SignUpDto.create(authType, authId, name, nickname, gender);
+    return SignUpDto.create(authType, authId, name, nickname, userProfile, gender);
   }
 }
