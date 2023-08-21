@@ -346,9 +346,9 @@ public class RestroomService {
     Optional<Restroom> restroom = Optional.ofNullable(
         restroomJpaRepository.findRestroomByRestroomId(dto.getRestroomId())
             .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
-    userService.deductPoints(user.get().getUserId(), PointDto.create(restroom.get().getPrice()));
+    userService.deductPoints(user.get().getUserId(), PointDto.create(restroom.get().getPrice())); // 포인트 차감
     restroom.get().useRestroom(user.get().getGender()); // 이용가능 변기 수 차감
-    user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시, 포인트 차감
+    user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시
     UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(dto.getRestroomId())
         .build(); // 사용한 화장실 엔티티 생성
     usedRestroomRepository.save(usedRestroom); // 화장실 이용 내역을 DB에 저장
