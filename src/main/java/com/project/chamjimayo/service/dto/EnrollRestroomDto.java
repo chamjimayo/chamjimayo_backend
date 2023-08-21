@@ -33,8 +33,10 @@ public class EnrollRestroomDto {
 
   private long restroomManagerId = 0;
 
+  private Integer price;
+
   private EnrollRestroomDto(String restroomName, String address, String operatingHour,
-      List<String> imageUrl, Integer maleToiletCount, Integer femaleToiletCount,String publicOrPaid){
+      List<String> imageUrl, Integer maleToiletCount, Integer femaleToiletCount,String publicOrPaid, Integer price){
     this.restroomName = restroomName;
     this.address = address;
     this.operatingHour = operatingHour;
@@ -42,10 +44,11 @@ public class EnrollRestroomDto {
     this.maleToiletCount = maleToiletCount;
     this.femaleToiletCount = femaleToiletCount;
     this.publicOrPaid = publicOrPaid;
+    this.price = price;
   }
   public static EnrollRestroomDto create(String restroomName, String address, String operatingHour,
-      List<String> imageUrl, Integer maleToiletCount, Integer femaleToiletCount,String publicOrPaid){
-    return new EnrollRestroomDto(restroomName,address,operatingHour,imageUrl,maleToiletCount,femaleToiletCount,publicOrPaid);
+      List<String> imageUrl, Integer maleToiletCount, Integer femaleToiletCount,String publicOrPaid,Integer price){
+    return new EnrollRestroomDto(restroomName,address,operatingHour,imageUrl,maleToiletCount,femaleToiletCount,publicOrPaid,price);
   }
   public void setRestroomId(long restroomId) {
     this.restroomId = restroomId;

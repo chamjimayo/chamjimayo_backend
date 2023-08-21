@@ -8,6 +8,7 @@ import com.project.chamjimayo.service.exception.AddressNotFoundException;
 import com.project.chamjimayo.service.exception.ErrorStatus;
 import com.project.chamjimayo.service.exception.FileNotFoundException;
 import com.project.chamjimayo.service.exception.IoException;
+import com.project.chamjimayo.service.exception.PointLackException;
 import com.project.chamjimayo.service.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.service.exception.RestroomNotFoundException;
 import com.project.chamjimayo.service.exception.UsingRestroomException;
@@ -92,6 +93,14 @@ public class RestroomExceptionHandler {
       UsingRestroomException e) {
     log.error("", e);
     final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(),e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
+  @ExceptionHandler(PointLackException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handlePointLackException(PointLackException e) {
+    log.error("", e);
+
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
     return ApiStandardResponse.fail(errorResponse);
   }
 }

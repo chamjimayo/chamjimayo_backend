@@ -59,6 +59,8 @@ public class NearByResponse {
 
   private Long restroomId;
 
+  private Integer price;
+
 
   public NearByResponse makeDto(Restroom restroom, double distance) {
     this.restroomName = restroom.getRestroomName();
@@ -89,6 +91,7 @@ public class NearByResponse {
     }
     this.distance = distance;
     this.restroomId = restroom.getRestroomId();
+    this.price = restroom.getPrice();
     return this;
   }
 }

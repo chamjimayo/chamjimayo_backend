@@ -6,14 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.chamjimayo.controller.dto.PageDto;
 import com.project.chamjimayo.service.dto.EndOfUsingRestroomDto;
 import com.project.chamjimayo.service.dto.EnrollRestroomDto;
+import com.project.chamjimayo.service.dto.PointDto;
 import com.project.chamjimayo.service.dto.RestroomDetailDto;
 import com.project.chamjimayo.service.dto.UsingRestroomDto;
 import com.project.chamjimayo.service.exception.PageOutOfRangeException;
 import com.project.chamjimayo.controller.dto.response.NearByResponse;
-import com.project.chamjimayo.controller.dto.response.RestroomDetailResponse;
 import com.project.chamjimayo.service.dto.RestroomNearByDto;
 import com.project.chamjimayo.controller.dto.response.RestroomResponse;
-import com.project.chamjimayo.controller.dto.response.UsingRestroomResponse;
 import com.project.chamjimayo.repository.domain.entity.Restroom;
 import com.project.chamjimayo.repository.domain.entity.RestroomPhoto;
 import com.project.chamjimayo.repository.domain.entity.UsedRestroom;
@@ -21,6 +20,7 @@ import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.exception.AddressNotFoundException;
 import com.project.chamjimayo.service.exception.FileNotFoundException;
 import com.project.chamjimayo.service.exception.IoException;
+import com.project.chamjimayo.service.exception.PointLackException;
 import com.project.chamjimayo.service.exception.RestroomNameDuplicateException;
 import com.project.chamjimayo.service.exception.RestroomNotFoundException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
@@ -57,6 +57,7 @@ public class RestroomService {
   private final UsedRestroomRepository usedRestroomRepository;
   private final RestroomPhotoRepository restroomPhotoRespository;
   private final Environment env;
+  private final UserService userService;
 
   /*공공화장실 데이터가 담긴 json 파일 읽어오기*/
   public ArrayList<Map> readJson() {
@@ -179,6 +180,7 @@ public class RestroomService {
               (String) restroom_info.get("남성용-대변기수")))// default를 전체 대변기 수로 설정)
           .availableFemaleToiletCount(Integer.parseInt(
               (String) restroom_info.get("여성용-대변기수"))) // default를 전체 대변기 수로 설정
+          .price(0) // 공공 화장실이니까 가격은 0원
           .build();
       RestroomResponse restroomResponse = new RestroomResponse(
           restroomJpaRepository.save(restroom).getRestroomId(),
@@ -216,6 +218,7 @@ public class RestroomService {
         .femaleToiletCount(dto.getFemaleToiletCount())
         .availableFemaleToiletCount(dto.getFemaleToiletCount())
         .availableMaleToiletCount(dto.getMaleToiletCount())
+        .price(dto.getPrice())
         .build();
     dto.setRestroomId(restroomJpaRepository.save(restroom).getRestroomId());
     //화장실 이미지 추가
@@ -343,11 +346,13 @@ public class RestroomService {
     Optional<Restroom> restroom = Optional.ofNullable(
         restroomJpaRepository.findRestroomByRestroomId(dto.getRestroomId())
             .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
+    userService.deductPoints(user.get().getUserId(), PointDto.create(restroom.get().getPrice())); // 포인트 차감
     restroom.get().useRestroom(user.get().getGender()); // 이용가능 변기 수 차감
     user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시
     UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(dto.getRestroomId())
         .build(); // 사용한 화장실 엔티티 생성
     usedRestroomRepository.save(usedRestroom); // 화장실 이용 내역을 DB에 저장
+    dto.setPrice(restroom.get().getPrice());
     return dto;
   }
 

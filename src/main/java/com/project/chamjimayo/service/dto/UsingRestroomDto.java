@@ -7,15 +7,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class UsingRestroomDto {
-  long userId;
-  long restroomId;
+  private long userId;
+  private long restroomId;
+
+  private Integer price;
+
+  private UsingRestroomDto(long userId,long restroomId){
+    this.userId = userId;
+    this.restroomId = restroomId;
+    price = 0;
+  }
 
   public static UsingRestroomDto create(long userId,long restroomId){
     return new UsingRestroomDto(userId, restroomId);
   }
   public UsingRestroomResponse toResponse(){
-    return new UsingRestroomResponse(userId,restroomId);
+    return new UsingRestroomResponse(userId,restroomId,price);
+  }
+
+  public void setPrice(Integer price) {
+    this.price = price;
   }
 }

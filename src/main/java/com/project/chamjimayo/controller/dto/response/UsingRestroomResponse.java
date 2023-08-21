@@ -10,4 +10,6 @@ public class UsingRestroomResponse {
   long userId;
 
   long restroomId;
+
+  Integer price;
 }

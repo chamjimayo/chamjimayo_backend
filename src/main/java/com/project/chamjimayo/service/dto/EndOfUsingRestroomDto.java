@@ -1,15 +1,13 @@
 package com.project.chamjimayo.service.dto;
 
 import com.project.chamjimayo.controller.dto.response.EndOfUsingRestroomResponse;
-import com.project.chamjimayo.controller.dto.response.UsingRestroomResponse;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 public class EndOfUsingRestroomDto {
 
-  long userId;
-  long restroomId;
+  private long userId;
+  private long restroomId;
 
   public EndOfUsingRestroomDto(long userId) {
     this.userId = userId;
