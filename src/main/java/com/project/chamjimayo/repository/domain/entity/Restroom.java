@@ -96,12 +96,15 @@ public class Restroom extends BaseEntity {
   @Column(name = "average_rating")
   private Float averageRating = (float) 0;
 
+  @Column(name = "price")
+  private Integer price;
+
   @Builder
   public Restroom(String restroomName, double locationLatitude, double locationLongitude,
       String address, String operatingHour, double equipmentExistenceProbability,
       String publicOrPaid,
       boolean accessibleToiletExistence, int maleToiletCount, int femaleToiletCount,
-      int availableMaleToiletCount, int availableFemaleToiletCount, boolean unisex) {
+      int availableMaleToiletCount, int availableFemaleToiletCount, boolean unisex, int price) {
     super();
     this.restroomName = restroomName;
     this.locationLatitude = locationLatitude;
@@ -116,6 +119,7 @@ public class Restroom extends BaseEntity {
     this.availableMaleToiletCount = availableMaleToiletCount;
     this.availableFemaleToiletCount = availableFemaleToiletCount;
     this.unisex = unisex;
+    this.price = price;
   }
 
   public void updateRating(Float averageRating) {

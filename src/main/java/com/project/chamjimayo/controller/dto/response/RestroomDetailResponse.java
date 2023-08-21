@@ -59,6 +59,8 @@ public class RestroomDetailResponse {
 
   private Float averageRating;
 
+  private Integer price;
+
   public RestroomDetailResponse(Restroom restroom) {
     this.restroomName = restroom.getRestroomName();
     this.longitude = restroom.getLocationLongitude();
@@ -92,5 +94,6 @@ public class RestroomDetailResponse {
           restroom.getRestroomManager().getManagerId());
     }
     this.averageRating = restroom.getAverageRating();
+    this.price = restroom.getPrice();
   }
 }

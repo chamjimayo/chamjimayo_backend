@@ -31,8 +31,10 @@ public class EnrollRestroomRequest {
 
   private long restroomManagerId = 0;
 
+  private Integer price;
+
   public EnrollRestroomDto toDto() {
     return EnrollRestroomDto.create(restroomName, address, operatingHour, imageUrl, maleToiletCount,
-        femaleToiletCount, publicOrPaid);
+        femaleToiletCount, publicOrPaid, price);
   }
 }

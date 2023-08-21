@@ -108,7 +108,7 @@ public class RestroomController {
 
   @Operation(summary = "화장실 세부 정보", description = "받은 화장실Id로 화장실 세부 정보를 검색 및 반환")
   @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "주변 화장실 세부 정보 조회 성공"),
+      @ApiResponse(responseCode = "200", description = "화장실 세부 정보 조회 성공"),
       @ApiResponse(responseCode = "400", description = "요청 변수 에러",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
