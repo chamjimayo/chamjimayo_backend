@@ -19,8 +19,10 @@ public class UserQueryRepository {
   }
 
   public Optional<UserDetailsDto> findUserDetailsById(Long id) {
-    return Optional.ofNullable(jpaQueryFactory.select(
-            Projections.constructor(UserDetailsDto.class, user.name, user.nickname, user.point))
+    return Optional.ofNullable(
+        jpaQueryFactory.select(Projections.constructor(UserDetailsDto.class,
+                user.name, user.nickname, user.point, user.gender, user.userProfile,
+                user.usingRestroomId))
         .from(user)
         .where(user.userId.eq(id))
         .fetchOne());

@@ -6,6 +6,7 @@ import com.project.chamjimayo.controller.dto.response.ErrorResponse;
 import com.project.chamjimayo.service.exception.ErrorStatus;
 import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.service.exception.PointLackException;
+import com.project.chamjimayo.service.exception.UserNickNameDuplicateException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,8 +69,20 @@ public class UserExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ApiStandardResponse<ErrorResponse> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException e) {
+    log.error("", e);
+
     ErrorResponse errorResponse = ErrorResponse.create(ErrorStatus.INVALID_JSON,
-        "올바르지 않은 JSON 형식입니다.");
+        "올바르지 않은 요청입니다.");
+    return ApiStandardResponse.fail(errorResponse);
+  }
+
+  @ExceptionHandler(UserNickNameDuplicateException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handleUserNickNameDuplicateException(
+      UserNickNameDuplicateException e) {
+    log.error("", e);
+
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
     return ApiStandardResponse.fail(errorResponse);
   }
 }

@@ -9,6 +9,7 @@ import com.project.chamjimayo.service.dto.DuplicateCheckDto;
 import com.project.chamjimayo.service.dto.PointDto;
 import com.project.chamjimayo.service.dto.RestroomSummaryDto;
 import com.project.chamjimayo.service.dto.SignUpDto;
+import com.project.chamjimayo.service.dto.UserAttributeChangeDto;
 import com.project.chamjimayo.service.dto.UserDetailsDto;
 import com.project.chamjimayo.service.exception.PointLackException;
 import com.project.chamjimayo.service.exception.UserDuplicateException;
@@ -32,7 +33,7 @@ public class UserService {
   public String saveUser(SignUpDto dto) {
     validateDuplicateUser(dto.getAuthId(), dto.getNickname());
 
-    User user = dto.createNewUser();
+    User user = dto.toEntity();
 
     return String.valueOf(userJpaRepository.save(user).getUserId());
   }
@@ -77,7 +78,6 @@ public class UserService {
   /**
    * 해당 유저의 포인트를 충전합니다. (반환값 : 충전 후 포인트)
    */
-  @Transactional
   public PointDto chargePoints(Long userId, PointDto pointDto) {
 
     if (userId == null) {
@@ -96,7 +96,6 @@ public class UserService {
   /**
    * 해당 유저의 포인트를 차감합니다. (반환값 : 차감 후 포인트)
    */
-  @Transactional
   public PointDto deductPoints(Long userId, PointDto pointDto) {
 
     if (userId == null) {
@@ -120,5 +119,26 @@ public class UserService {
     return userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: "
             + userId));
+  }
+
+  public UserAttributeChangeDto changeNickName(Long id, UserAttributeChangeDto dto) {
+    DuplicateCheckDto duplicateCheckDto = isNicknameDuplicate(dto.getAttribute());
+    if (duplicateCheckDto.isDuplicate()) {
+      throw new UserNickNameDuplicateException("사용자 닉네임이 중복되었습니다.");
+    }
+
+    User user = getUser(id);
+
+    user.changeNickname(dto.getAttribute());
+
+    return UserAttributeChangeDto.create(user.getNickname());
+  }
+
+  public UserAttributeChangeDto changeUserProfile(Long id, UserAttributeChangeDto dto) {
+    User user = getUser(id);
+
+    user.changeUserProfile(dto.getAttribute());
+
+    return UserAttributeChangeDto.create(user.getUserProfile());
   }
 }
