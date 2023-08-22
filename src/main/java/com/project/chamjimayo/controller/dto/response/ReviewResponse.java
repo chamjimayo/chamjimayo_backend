@@ -14,14 +14,20 @@ public class ReviewResponse {
   @Schema(type = "Long", example = "1")
   private Long userId;
 
-  @Schema(type = "string", example = "nickname")
+  @Schema(type = "string", example = "닉네임")
   private String nickname;
 
-  @Schema(type = "string", example = "https://example.com/profile.jpg")
+  @Schema(type = "string", example = "https://example.com/userProfile.jpg")
   private String userProfile;
 
   @Schema(type = "Long", example = "1")
   private Long restroomId;
+
+  @Schema(type = "string", example = "https://example.com/restroomImg.jpg")
+  private String restroomPhotoUrl;
+
+  @Schema(type = "string", example = "화장실 이름")
+  private String restroomName;
 
   @Schema(type = "string", example = "깔끔해요!")
   private String reviewContent;
@@ -29,12 +35,12 @@ public class ReviewResponse {
   @Schema(type = "Integer", example = "4")
   private Integer rating;
 
-  @Schema(type = "string", example = "23.07.29")
-  @JsonFormat(pattern = "yy.MM.dd")
+  @Schema(type = "string", example = "8월 22일")
+  @JsonFormat(pattern = "M'월' d'일'")
   private LocalDateTime dateTime;
 
   private ReviewResponse(Long reviewId, Long userId, String nickname, String userProfile,
-      Long restroomId, String reviewContent,
+      Long restroomId, String restroomPhotoUrl, String restroomName, String reviewContent,
       Integer rating, LocalDateTime dateTime) {
     this.reviewId = reviewId;
     this.userId = userId;
@@ -44,12 +50,14 @@ public class ReviewResponse {
     this.reviewContent = reviewContent;
     this.rating = rating;
     this.dateTime = dateTime;
+    this.restroomPhotoUrl = restroomPhotoUrl;
+    this.restroomName = restroomName;
   }
 
   public static ReviewResponse create(Long reviewId, Long userId, String nickname,
-      String userProfile, Long restroomId, String reviewContent, Integer rating,
-      LocalDateTime dateTime) {
-    return new ReviewResponse(reviewId, userId, nickname, userProfile, restroomId, reviewContent,
-        rating, dateTime);
+      String userProfile, Long restroomId, String restroomPhotoUrl, String restroomName,
+      String reviewContent, Integer rating, LocalDateTime dateTime) {
+    return new ReviewResponse(reviewId, userId, nickname, userProfile, restroomId, restroomPhotoUrl,
+        restroomName, reviewContent, rating, dateTime);
   }
 }
