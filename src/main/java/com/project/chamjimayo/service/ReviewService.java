@@ -180,10 +180,18 @@ public class ReviewService {
    */
   public ReviewResponse dtoFromEntity(Review review) {
     User user = review.getUser();
+    Restroom restroom = review.getRestroom();  // 리뷰와 연관된 화장실 정보 가져오기
 
-    return ReviewResponse.create(review.getReviewId(), user.getUserId(), user.getNickname(),
-        user.getUserProfile(), review.getRestroom().getRestroomId(), review.getReviewContent(),
-        review.getRating(), review.getUpdatedDate());
+    // 화장실 사진이 없으면 null 반환
+    String restroomPhotoUrl = restroom.getRestroomPhotos().isEmpty()
+        ? null : restroom.getRestroomPhotos().get(0).getPhotoUrl();
+
+    return ReviewResponse.create(
+        review.getReviewId(), user.getUserId(), user.getNickname(),
+        user.getUserProfile(), restroom.getRestroomId(), restroomPhotoUrl,
+        restroom.getRestroomName(), review.getReviewContent(), review.getRating(),
+        review.getUpdatedDate()
+    );
   }
 
   /**

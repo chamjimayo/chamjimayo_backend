@@ -76,16 +76,21 @@ public class User extends BaseEntity {
   @Column(name = "using_restroom_id")
   private Long usingRestroomId;
 
-  @Builder
-  public User(String name, String nickname, Integer point,
-      String gender, Role role, String authId, AuthType authType) {
+  private User(String name, String nickname, Integer point, String gender,
+      String userProfile, Role role, String authId, AuthType authType) {
     this.name = name;
     this.nickname = nickname;
-    this.point = (point != null) ? point : 0;
+    this.point = point;
     this.gender = gender;
+    this.userProfile = userProfile;
     this.role = role;
     this.authId = authId;
     this.authType = authType;
+  }
+
+  public static User createNewUser(String name, String nickname, String gender,
+      String userProfile, String authId, AuthType authType) {
+    return new User(name, nickname, 0, gender, userProfile, Role.ROLE_USER, authId, authType);
   }
 
   // 포인트 충전을 위한 로직
@@ -104,5 +109,13 @@ public class User extends BaseEntity {
 
   public void endOfUseRestroom() {
     this.usingRestroomId = null;
+  }
+
+  public void changeNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public void changeUserProfile(String userProfile) {
+    this.userProfile = userProfile;
   }
 }
