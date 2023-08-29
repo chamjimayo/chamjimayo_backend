@@ -1,11 +1,12 @@
 package com.project.chamjimayo.controller;
 
+import com.project.chamjimayo.controller.dto.request.NicknameProfileUrlChangeRequest;
 import com.project.chamjimayo.controller.dto.request.UserAttributeChangeRequest;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.DuplicateCheckResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.controller.dto.response.NickNameAndProfileUrlChangeResponse;
 import com.project.chamjimayo.controller.dto.response.RestroomSummaryResponse;
-import com.project.chamjimayo.controller.dto.response.UserAttributeChangeResponse;
 import com.project.chamjimayo.controller.dto.response.UserDetailsResponse;
 import com.project.chamjimayo.security.CustomUserDetails;
 import com.project.chamjimayo.service.UserService;
@@ -29,8 +30,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,11 +71,12 @@ public class UserController {
     return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
   }
 
-  @Operation(summary = "사용자 닉네임 변경",
-      description = "Jwt 토큰과 변경할 닉네임으로 요청 후 변경된 닉네임 반환")
-  @ApiResponses({@ApiResponse(responseCode = "200", description = "사용자 닉네임 변경 성공"),
+  @Operation(summary = "사용자 닉네임, 프로필 url 변경",
+      description = "Jwt 토큰과 변경할 닉네임, 프로필 url로 요청 후 변경된 값 반환, 공백이나 빈 문자 허용 x")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "사용자 정보 변경 성공"),
       @ApiResponse(responseCode = "400", description = "1. 사용자가 존재하지 않습니다.\n"
-          + "2. 닉네임이 올바르지 않습니다.\n"
+          + "2. 프로필 주소가 올바르지 않습니다.\n"
+          + "3. 닉네임이 올바르지 않습니다.\n"
           + "3. 요청한 닉네임이 중복되었습니다.\n"
           + "4. 요청한 값이 올바르지 않습니다.",
           content = @Content(mediaType = "application/json",
@@ -84,34 +86,19 @@ public class UserController {
                   + "\"msg\":\"사용자가 존재하지 않습니다\"} }")))})
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-  @PostMapping("/me/nickname")
-  public ResponseEntity<ApiStandardResponse<UserAttributeChangeResponse>> nicknameChange(
-      @Validated @RequestBody UserAttributeChangeRequest request,
+  @PatchMapping("/me/Info")
+  public ResponseEntity<ApiStandardResponse<NickNameAndProfileUrlChangeResponse>> userProfileChange(
+      @RequestBody(required = false) NicknameProfileUrlChangeRequest request,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    UserAttributeChangeDto dto = userService.changeNickName(
-        customUserDetails.getId(), request.toDto());
-    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
-  }
+    String changedNickname = userService.changeNickName(
+        customUserDetails.getId(), UserAttributeChangeDto.create(request.getNickname()))
+        .getAttribute();
 
-  @Operation(summary = "사용자 프로필 url 변경",
-      description = "Jwt 토큰과 변경할 프로필 url로 요청 후 변경된 프로필 주소 반환")
-  @ApiResponses({@ApiResponse(responseCode = "200", description = "사용자 닉네임 변경 성공"),
-      @ApiResponse(responseCode = "400", description = "1. 사용자가 존재하지 않습니다.\n\t"
-          + "2. 프로필 주소가 올바르지 않습니다.",
-          content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"08\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \"USER_NOT_FOUND_EXCEPTION\", "
-                  + "\"msg\":\"사용자가 존재하지 않습니다\"} }")))})
-  @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
-      in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-  @PostMapping("/me/profile")
-  public ResponseEntity<ApiStandardResponse<UserAttributeChangeResponse>> userProfileChange(
-      @Validated @RequestBody UserAttributeChangeRequest request,
-      @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-    UserAttributeChangeDto dto = userService.changeUserProfile(
-        customUserDetails.getId(), request.toDto());
-    return ResponseEntity.ok(ApiStandardResponse.success(dto.toResponse()));
+    String changedProfileUrl = userService.changeUserProfile(
+        customUserDetails.getId(), UserAttributeChangeDto.create(request.getProfileUrl()))
+        .getAttribute();
+    return ResponseEntity.ok(ApiStandardResponse.success(
+        NickNameAndProfileUrlChangeResponse.create(changedNickname, changedProfileUrl)));
   }
 
   @Operation(summary = "사용중인 화장실 조회",
