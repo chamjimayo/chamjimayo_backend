@@ -122,6 +122,10 @@ public class UserService {
   }
 
   public UserAttributeChangeDto changeNickName(Long id, UserAttributeChangeDto dto) {
+    if (dto.getAttribute() == null || dto.getAttribute().isEmpty() || dto.getAttribute().isBlank()) {
+      return UserAttributeChangeDto.create(null);
+    }
+
     DuplicateCheckDto duplicateCheckDto = isNicknameDuplicate(dto.getAttribute());
     if (duplicateCheckDto.isDuplicate()) {
       throw new UserNickNameDuplicateException("사용자 닉네임이 중복되었습니다.");
@@ -135,6 +139,10 @@ public class UserService {
   }
 
   public UserAttributeChangeDto changeUserProfile(Long id, UserAttributeChangeDto dto) {
+    if (dto.getAttribute() == null || dto.getAttribute().isEmpty() || dto.getAttribute().isBlank()) {
+      return UserAttributeChangeDto.create(null);
+    }
+
     User user = getUser(id);
 
     user.changeUserProfile(dto.getAttribute());
