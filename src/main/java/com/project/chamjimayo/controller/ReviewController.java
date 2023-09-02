@@ -80,7 +80,8 @@ public class ReviewController {
               + "3. 평점을 입력해주세요. \t\n"
               + "4. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
               + "5. 올바르지 않은 JSON 형식입니다. \t\n"
-              + "6. 유효한 토큰이 아닙니다.",
+              + "6. 유효한 토큰이 아닙니다. \t\n"
+              + "7. 이미 리뷰가 작성되었습니다. 리뷰 수정을 이용해주세요.",
           content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"23\", \"msg\": \"fail\","

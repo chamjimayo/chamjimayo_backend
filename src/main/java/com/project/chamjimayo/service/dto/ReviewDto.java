@@ -34,7 +34,7 @@ public class ReviewDto {
   }
 
   public static ReviewDto create(ReviewRequest reviewRequest) {
-    return new ReviewDto(reviewRequest.getRestroomId(), reviewRequest.getReviewContent(),
+    return new ReviewDto(reviewRequest.getUsedRestroomId(), reviewRequest.getReviewContent(),
         reviewRequest.getRating());
   }
 

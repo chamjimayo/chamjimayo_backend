@@ -3,11 +3,14 @@ package com.project.chamjimayo.service;
 import com.project.chamjimayo.controller.dto.response.ReviewResponse;
 import com.project.chamjimayo.repository.RestroomJpaRepository;
 import com.project.chamjimayo.repository.ReviewRepository;
+import com.project.chamjimayo.repository.UsedRestroomRepository;
 import com.project.chamjimayo.repository.UserJpaRepository;
 import com.project.chamjimayo.repository.domain.entity.Restroom;
 import com.project.chamjimayo.repository.domain.entity.Review;
+import com.project.chamjimayo.repository.domain.entity.UsedRestroom;
 import com.project.chamjimayo.repository.domain.entity.User;
 import com.project.chamjimayo.service.dto.ReviewDto;
+import com.project.chamjimayo.service.exception.AllReadyReviewedException;
 import com.project.chamjimayo.service.exception.RestroomNotFoundException;
 import com.project.chamjimayo.service.exception.ReviewNotFoundException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
@@ -28,24 +31,41 @@ public class ReviewService {
   private final ReviewRepository reviewRepository;
   private final RestroomJpaRepository restroomJpaRepository;
   private final UserJpaRepository userJpaRepository;
+  private final UsedRestroomRepository usedRestroomRepository;
 
   /**
    * 리뷰 등록
    */
   public ReviewResponse createReview(Long userId, ReviewDto reviewDto) {
-    Long restroomId = reviewDto.getRestroomId();
-    String reviewContent = reviewDto.getReviewContent();
-    Integer rating = reviewDto.getRating();
 
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
+
+    Long usedRestroomId = reviewDto.getRestroomId();
+    UsedRestroom usedRestroom = usedRestroomRepository.findById(usedRestroomId)
+        .orElseThrow(
+            () -> new RestroomNotFoundException("사용된 화장실을 찾을 수 없습니다. ID: " + usedRestroomId));
+
+    // 이미 리뷰가 작성된 경우
+    if (usedRestroom.isReviewed()) {
+      throw new AllReadyReviewedException("이미 리뷰가 작성되었습니다. 리뷰 수정을 이용해주세요.");
+    }
+
+    // 사용된 화장실로 화장실 찾은 후 true 처리
+    Long restroomId = usedRestroom.getRestroomId();
     Restroom restroom = restroomJpaRepository.findById(restroomId)
         .orElseThrow(
             () -> new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId));
+    usedRestroom.EnrollReview(true);
+
+    // 리뷰 생성 후 등록
+    String reviewContent = reviewDto.getReviewContent();
+    Integer rating = reviewDto.getRating();
 
     Review review = Review.create(user, restroom, reviewContent, rating);
     reviewRepository.save(review);
 
+    // 평균 평점 업데이트
     averageRating(review.getRestroom().getRestroomId());
 
     return dtoFromEntity(review);
