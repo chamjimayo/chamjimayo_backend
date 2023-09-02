@@ -8,6 +8,7 @@ public class EndOfUsingRestroomDto {
 
   private long userId;
   private long restroomId;
+  private long usedRestroomId;
 
   public EndOfUsingRestroomDto(long userId) {
     this.userId = userId;
@@ -21,7 +22,9 @@ public class EndOfUsingRestroomDto {
     this.restroomId = restroomId;
   }
 
+  public void setUsedRestroomId(long usedRestroomId){this.usedRestroomId = usedRestroomId;}
+
   public EndOfUsingRestroomResponse toResponse() {
-    return new EndOfUsingRestroomResponse(userId, restroomId);
+    return new EndOfUsingRestroomResponse(userId, restroomId, usedRestroomId);
   }
 }
