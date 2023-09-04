@@ -154,7 +154,7 @@ public class UserController {
                   + "\"msg\":\"유저를 찾지 못했습니다.\"} }")))})
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534", required = true)
-  @PostMapping("/point/charge")
+  @PostMapping("/me/point/charge")
   public ResponseEntity<ApiStandardResponse<PointResponse>> chargePoints(
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @Valid @RequestBody PointRequest pointRequest) {

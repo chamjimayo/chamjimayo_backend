@@ -79,7 +79,6 @@ public class UserService {
    * 해당 유저의 포인트를 충전합니다. (반환값 : 충전 후 포인트)
    */
   public PointDto chargePoints(Long userId, PointDto pointDto) {
-
     if (userId == null) {
       throw new JsonFileNotFoundException("userId를 입력해주세요.");
     }
