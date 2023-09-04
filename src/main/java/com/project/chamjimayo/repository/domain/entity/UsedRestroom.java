@@ -33,15 +33,26 @@ public class UsedRestroom extends BaseEntity {
   @Column(name = "is_reviewed")
   private boolean isReviewed;
 
+  @Column(name = "review_id")
+  private Long reviewId;
+
   @Builder
   public UsedRestroom(User user, long restroomId) {
     this.user = user;
     this.restroomId = restroomId;
     this.isReviewed = false;
+    this.reviewId = (long) -1;
   }
 
-  // 리뷰 등록 후 isReview 변경을 위한 setter
-  public void EnrollReview(boolean isReviewed) {
-    this.isReviewed = isReviewed;
+  // 리뷰 등록 후 isReview true + reviewId 등록
+  public void EnrollReview(Long reviewId) {
+    this.reviewId = reviewId;
+    this.isReviewed = true;
+  }
+
+  // 리뷰 삭제 후 isReview false + reviewId 삭제
+  public void DeleteReview() {
+    this.reviewId = (long) -1;
+    this.isReviewed = false;
   }
 }

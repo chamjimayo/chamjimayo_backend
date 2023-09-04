@@ -159,7 +159,8 @@ public class ReviewController {
                   + " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
                   + "\"msg\":\"파라미터가 부족합니다.\"} }"))),
       @ApiResponse(responseCode = "404",
-          description = "1. 리뷰를 찾을 수 없습니다. \t\n",
+          description = "1. 리뷰를 찾을 수 없습니다."
+              + "2. 사용된 화장실을 찾을 수 없습니다. \t\n",
           content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","

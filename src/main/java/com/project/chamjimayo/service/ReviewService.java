@@ -46,17 +46,15 @@ public class ReviewService {
         .orElseThrow(
             () -> new RestroomNotFoundException("사용된 화장실을 찾을 수 없습니다. ID: " + usedRestroomId));
 
-    // 이미 리뷰가 작성된 경우
-    if (usedRestroom.isReviewed()) {
-      throw new AllReadyReviewedException("리뷰가 이미 작성되었습니다.");
-    }
-
-    // 사용된 화장실로 화장실 찾은 후 true 처리
     Long restroomId = usedRestroom.getRestroomId();
     Restroom restroom = restroomJpaRepository.findById(restroomId)
         .orElseThrow(
             () -> new RestroomNotFoundException("해당 화장실을 찾을 수 없습니다. ID: " + restroomId));
-    usedRestroom.EnrollReview(true);
+
+    // 이미 리뷰가 작성된 경우
+    if (usedRestroom.isReviewed()) {
+      throw new AllReadyReviewedException("리뷰가 이미 작성되었습니다.");
+    }
 
     // 리뷰 생성 후 등록
     String reviewContent = reviewDto.getReviewContent();
@@ -64,6 +62,9 @@ public class ReviewService {
 
     Review review = Review.create(user, restroom, reviewContent, rating);
     reviewRepository.save(review);
+
+    // usedRestroom에 등록
+    usedRestroom.EnrollReview(review.getReviewId());
 
     // 평균 평점 업데이트
     averageRating(review.getRestroom().getRestroomId());
@@ -101,10 +102,17 @@ public class ReviewService {
    * 리뷰 삭제
    */
   public void deleteReview(Long reviewId) {
-    Review review = findReviewById(reviewId);
-    Optional<Review> updateReview = reviewRepository.findById(reviewId);
-    Long restroomId = updateReview.get().getRestroom().getRestroomId();
+    Review review = reviewRepository.findById(reviewId)
+        .orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
+    Long restroomId = review.getRestroom().getRestroomId();
+
+    UsedRestroom usedRestroom = usedRestroomRepository.findUsedRestroomByReviewId(reviewId)
+        .orElseThrow(
+            () -> new RestroomNotFoundException("사용된 화장실을 찾을 수 없습니다."));
+    usedRestroom.DeleteReview();
+
     reviewRepository.deleteById(reviewId);
+
     averageRating(restroomId);
   }
 
