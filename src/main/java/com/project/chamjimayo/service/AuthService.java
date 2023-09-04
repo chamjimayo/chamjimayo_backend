@@ -2,6 +2,7 @@ package com.project.chamjimayo.service;
 
 import com.project.chamjimayo.security.exception.InvalidTokenException;
 import com.project.chamjimayo.service.dto.AuthTokenDto;
+import com.project.chamjimayo.service.dto.PointDto;
 import com.project.chamjimayo.service.dto.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class AuthService {
 
   public AuthTokenDto issueNewToken(SignUpDto dto) {
     String id = userService.saveUser(dto);
+
+    userService.chargePoints(Long.valueOf(id), PointDto.create(10000));
+
     return authTokenService.createAuthToken(id);
   }
 
