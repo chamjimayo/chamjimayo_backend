@@ -48,7 +48,7 @@ public class ReviewService {
 
     // 이미 리뷰가 작성된 경우
     if (usedRestroom.isReviewed()) {
-      throw new AllReadyReviewedException("이미 리뷰가 작성되었습니다. 리뷰 수정을 이용해주세요.");
+      throw new AllReadyReviewedException("리뷰가 이미 작성되었습니다.");
     }
 
     // 사용된 화장실로 화장실 찾은 후 true 처리
