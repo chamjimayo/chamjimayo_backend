@@ -34,10 +34,10 @@ public class UsedRestroom extends BaseEntity {
   private boolean isReviewed;
 
   @Builder
-  public UsedRestroom(User user, long restroomId, boolean isReviewed) {
+  public UsedRestroom(User user, long restroomId) {
     this.user = user;
     this.restroomId = restroomId;
-    this.isReviewed = isReviewed;
+    this.isReviewed = false;
   }
 
   // 리뷰 등록 후 isReview 변경을 위한 setter
