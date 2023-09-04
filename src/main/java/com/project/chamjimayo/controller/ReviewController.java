@@ -88,13 +88,14 @@ public class ReviewController {
                   + " \"data\": {\"status\": \"VALIDATION_EXCEPTION\", "
                   + "\"msg\":\"화장실 ID를 입력해주세요.\"} }"))),
       @ApiResponse(responseCode = "404",
-          description = "1. 화장실을 찾을 수 없습니다. \t\n"
-              + "2. 유저를 찾지 못했습니다.",
+          description = "1. 해당 화장실을 찾을 수 없습니다. \t\n"
+              + "2. 사용된 화장실을 찾을 수 없습니다. \t\n"
+              + "3. 유저를 찾지 못했습니다.",
           content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
-                  + "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
+                  + "\"msg\":\"해당 화장실을 찾을 수 없습니다.\"} }")))})
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping()

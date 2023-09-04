@@ -229,5 +229,4 @@ public class ReviewService {
     return reviewRepository.findById(reviewId)
         .orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
   }
-
 }
