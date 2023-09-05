@@ -103,7 +103,9 @@ public class ReviewController {
       @Valid @RequestBody ReviewRequest reviewRequest,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     Long userId = customUserDetails.getId();
-    ReviewDto reviewDto = ReviewDto.create(reviewRequest);
+    Long usedRestroomId = reviewRequest.getUsedRestroomId();
+    Long restroomId = reviewService.findRestroomIdByUsedRestroomId(usedRestroomId);
+    ReviewDto reviewDto = ReviewDto.create(reviewRequest, restroomId);
     ReviewResponse createdReview = reviewService.createReview(userId, reviewDto);
     ApiStandardResponse<ReviewResponse> apiStandardResponse = ApiStandardResponse.success(
         createdReview);

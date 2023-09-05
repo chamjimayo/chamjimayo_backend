@@ -41,7 +41,7 @@ public class ReviewService {
     User user = userJpaRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("유저를 찾지 못했습니다. ID: " + userId));
 
-    Long usedRestroomId = reviewDto.getRestroomId();
+    Long usedRestroomId = reviewDto.getUsedRestroomId();
     UsedRestroom usedRestroom = usedRestroomRepository.findById(usedRestroomId)
         .orElseThrow(
             () -> new RestroomNotFoundException("사용된 화장실을 찾을 수 없습니다. ID: " + usedRestroomId));
@@ -228,5 +228,12 @@ public class ReviewService {
   public Review findReviewById(Long reviewId) {
     return reviewRepository.findById(reviewId)
         .orElseThrow(() -> new ReviewNotFoundException("리뷰를 찾지 못했습니다. ID: " + reviewId));
+  }
+
+  /**
+   * usedRestroomId로 restroomId 찾기
+   */
+  public Long findRestroomIdByUsedRestroomId(Long usedRestroomId) {
+    return usedRestroomRepository.findById(usedRestroomId).get().getRestroomId();
   }
 }
