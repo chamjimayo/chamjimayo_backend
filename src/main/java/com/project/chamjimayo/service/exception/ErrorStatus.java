@@ -38,7 +38,8 @@ public enum ErrorStatus {
   INDEX_EXCEPTION("29"),
   PAGE_OUT_OF_RANGE("30"),
   USING_RESTROOM_EXCEPTION("31"),
-  API_KEY_NOT_VALID_EXCEPTION("32");
+  API_KEY_NOT_VALID_EXCEPTION("32"),
+  ALL_READY_REVIEW_EXCEPTION("33");
   private final String code;
 
   ErrorStatus(String code) {

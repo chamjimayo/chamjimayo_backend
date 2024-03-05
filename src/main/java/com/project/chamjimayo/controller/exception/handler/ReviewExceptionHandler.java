@@ -3,8 +3,8 @@ package com.project.chamjimayo.controller.exception.handler;
 import com.project.chamjimayo.controller.ReviewController;
 import com.project.chamjimayo.controller.dto.response.ApiStandardResponse;
 import com.project.chamjimayo.controller.dto.response.ErrorResponse;
+import com.project.chamjimayo.service.exception.AllReadyReviewedException;
 import com.project.chamjimayo.service.exception.ErrorStatus;
-import com.project.chamjimayo.controller.exception.AuthException;
 import com.project.chamjimayo.service.exception.RestroomNotFoundException;
 import com.project.chamjimayo.service.exception.ReviewNotFoundException;
 import com.project.chamjimayo.service.exception.UserNotFoundException;
@@ -54,6 +54,17 @@ public class ReviewExceptionHandler {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public ApiStandardResponse<ErrorResponse> handleRestroomNotFoundException(
       RestroomNotFoundException e) {
+    log.error("", e);
+
+    final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());
+    return ApiStandardResponse.fail(errorResponse);
+  }
+
+  // 리뷰가 이미 작성된 경우
+  @ExceptionHandler(AllReadyReviewedException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiStandardResponse<ErrorResponse> handleAllReadyReviewedException(
+      AllReadyReviewedException e) {
     log.error("", e);
 
     final ErrorResponse errorResponse = ErrorResponse.create(e.toErrorCode(), e.getMessage());

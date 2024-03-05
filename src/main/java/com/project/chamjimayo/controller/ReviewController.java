@@ -80,20 +80,22 @@ public class ReviewController {
               + "3. 평점을 입력해주세요. \t\n"
               + "4. 평점은 0 ~ 5점으로 입력해주세요. \t\n"
               + "5. 올바르지 않은 JSON 형식입니다. \t\n"
-              + "6. 유효한 토큰이 아닙니다.",
+              + "6. 유효한 토큰이 아닙니다. \t\n"
+              + "7. 이미 리뷰가 작성되었습니다. 리뷰 수정을 이용해주세요.",
           content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"23\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"VALIDATION_EXCEPTION\", "
                   + "\"msg\":\"화장실 ID를 입력해주세요.\"} }"))),
       @ApiResponse(responseCode = "404",
-          description = "1. 화장실을 찾을 수 없습니다. \t\n"
-              + "2. 유저를 찾지 못했습니다.",
+          description = "1. 해당 화장실을 찾을 수 없습니다. \t\n"
+              + "2. 사용된 화장실을 찾을 수 없습니다. \t\n"
+              + "3. 유저를 찾지 못했습니다.",
           content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
                   + " \"data\": {\"status\": \"RESTROOM_NOT_FOUND\", "
-                  + "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))})
+                  + "\"msg\":\"해당 화장실을 찾을 수 없습니다.\"} }")))})
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
   @PostMapping()
@@ -101,7 +103,9 @@ public class ReviewController {
       @Valid @RequestBody ReviewRequest reviewRequest,
       @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     Long userId = customUserDetails.getId();
-    ReviewDto reviewDto = ReviewDto.create(reviewRequest);
+    Long usedRestroomId = reviewRequest.getUsedRestroomId();
+    Long restroomId = reviewService.findRestroomIdByUsedRestroomId(usedRestroomId);
+    ReviewDto reviewDto = ReviewDto.create(reviewRequest, restroomId);
     ReviewResponse createdReview = reviewService.createReview(userId, reviewDto);
     ApiStandardResponse<ReviewResponse> apiStandardResponse = ApiStandardResponse.success(
         createdReview);
@@ -158,7 +162,8 @@ public class ReviewController {
                   + " \"data\": {\"status\": \"NEED_MORE_PARAMETER\", "
                   + "\"msg\":\"파라미터가 부족합니다.\"} }"))),
       @ApiResponse(responseCode = "404",
-          description = "1. 리뷰를 찾을 수 없습니다. \t\n",
+          description = "1. 리뷰를 찾을 수 없습니다."
+              + "2. 사용된 화장실을 찾을 수 없습니다. \t\n",
           content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorResponse.class),
               examples = @ExampleObject(value = "{ \"code\": \"16\", \"msg\": \"fail\","
