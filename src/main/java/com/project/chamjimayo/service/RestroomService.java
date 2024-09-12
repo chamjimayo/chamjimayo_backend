@@ -349,9 +349,6 @@ public class RestroomService {
     userService.deductPoints(user.get().getUserId(), PointDto.create(restroom.get().getPrice())); // 포인트 차감
     restroom.get().useRestroom(user.get().getGender()); // 이용가능 변기 수 차감
     user.get().useRestroom(restroom.get().getRestroomId()); // 현재 사용자에게 사용중 화장실 표시
-    UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(dto.getRestroomId())
-        .build(); // 사용한 화장실 엔티티 생성
-    usedRestroomRepository.save(usedRestroom); // 화장실 이용 내역을 DB에 저장
     dto.setPrice(restroom.get().getPrice());
     return dto;
   }
@@ -368,7 +365,10 @@ public class RestroomService {
             .orElseThrow(() -> new RestroomNotFoundException("화장실을 찾을 수 없습니다")));
     restroom.get().endOfUseRestroom(user.get().getGender()); // 이용가능 변기 수 차증
     user.get().endOfUseRestroom(); // 현재 사용자에게 사용중 화장실 삭제
-    dto.setRestroomId(restroom.get().getRestroomId());
+    UsedRestroom usedRestroom = UsedRestroom.builder().user(user.get()).restroomId(dto.getRestroomId())
+        .build(); // 사용한 화장실 엔티티 생성
+    dto.setUsedRestroomId(usedRestroomRepository.save(usedRestroom).getId()); // 사용한 화장실 저장 및 dto에 usedRestroomId 저장
+    dto.setRestroomId(restroom.get().getRestroomId()); // 화장실 Id dto에 추가
     return dto;
   }
 }

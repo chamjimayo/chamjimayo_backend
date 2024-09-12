@@ -10,4 +10,6 @@ public class EndOfUsingRestroomResponse {
   long userId;
 
   long restroomId;
+
+  long usedRestroomId;
 }

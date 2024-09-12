@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class UsedRestroom {
+public class UsedRestroom extends BaseEntity{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,12 @@ public class UsedRestroom {
   @Column(name = "restroom_id")
   private Long restroomId;
 
+  @Column(name = "is_reviewed")
+  private boolean isReviewed;
   @Builder
   public UsedRestroom(User user, long restroomId) {
     this.user = user;
     this.restroomId = restroomId;
+    this.isReviewed = false;
   }
 }

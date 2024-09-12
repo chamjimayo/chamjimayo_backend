@@ -26,6 +26,6 @@ public class ApiStandardResponse<T> {
   }
 
   public static <T extends ErrorResponse> ApiStandardResponse<T> fail(T data) {
-    return new ApiStandardResponse<>(data.getStatus().toString(), "fail", data);
+    return new ApiStandardResponse<>(data.getStatus().toString(), data.getMsg(), null);
   }
 }

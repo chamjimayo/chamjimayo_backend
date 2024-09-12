@@ -60,9 +60,8 @@ public class RestroomController {
       @ApiResponse(responseCode = "200", description = "유료화장실 등록 성공"),
       @ApiResponse(responseCode = "400", description = "요청 변수 에러",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"20\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \" RESTROOM_NAME_DUPLICATE_EXCEPTION\", "
-                  + "\"msg\":\"화장실명이 이미 존재합니다.\"} }")))
+              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"같은 화장실명이 이미 존재합니다\","
+                  + " \"data\": \"null\"}")))
   })
   @PostMapping("/enroll")
   public ResponseEntity<ApiStandardResponse<RestroomResponse>> enrollRestroom(
@@ -78,9 +77,8 @@ public class RestroomController {
       @ApiResponse(responseCode = "200", description = "주변 화장실 리스트 검색 성공"),
       @ApiResponse(responseCode = "400", description = "요청 변수 에러",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
-                  + "\"msg\":\"주변에 화장실이 존재하지 않습니다.\"} }")))
+              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"주변에 화장실이 존재하지 않습니다\","
+                  + " \"data\": \"null\"}")))
   })
   @Parameter(name = "sortBy", schema = @Schema(type = "string"),
       in = ParameterIn.QUERY, example = "distance / rating_asc / rating_des", description = "default = distance")
@@ -111,9 +109,8 @@ public class RestroomController {
       @ApiResponse(responseCode = "200", description = "화장실 세부 정보 조회 성공"),
       @ApiResponse(responseCode = "400", description = "요청 변수 에러",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
-                  + "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
+              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"화장실을 찾을 수 없습니다\","
+                  + " \"data\": \"null\"}")))
   })
   @GetMapping("/detail")
   public ResponseEntity<ApiStandardResponse<RestroomDetailResponse>> restroomDetail(
@@ -128,9 +125,8 @@ public class RestroomController {
       @ApiResponse(responseCode = "200", description = "화장실 사용 로직 성공"),
       @ApiResponse(responseCode = "400", description = "요청 변수 에러",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
-                  + "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
+              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"화장실을 찾을 수 없습니다\","
+                  + " \"data\": \"null\"}")))
   })
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
@@ -151,9 +147,8 @@ public class RestroomController {
       @ApiResponse(responseCode = "200", description = "화장실 사용종료 로직 성공"),
       @ApiResponse(responseCode = "400", description = "요청 변수 에러",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"fail\","
-                  + " \"data\": {\"status\": \" RESTROOM_NOT_FOUND\", "
-                  + "\"msg\":\"화장실을 찾을 수 없습니다.\"} }")))
+              examples = @ExampleObject(value = "{ \"code\": \"17\", \"msg\": \"화장실을 찾을 수 없습니다\","
+                  + " \"data\": \"null\"}")))
   })
   @Parameter(name = "Bearer-Token", description = "jwt token", schema = @Schema(type = "string"),
       in = ParameterIn.HEADER, example = "Bearer e1323423534")
